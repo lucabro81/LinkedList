@@ -3,6 +3,7 @@ import {ListElement} from "./ListElement";
 class LinkedList {
 
     private prev_elem:ListElement;
+    private curr_elem:ListElement;
 
     public start:ListElement;
     public end:ListElement;
@@ -41,6 +42,7 @@ class LinkedList {
             this.end = this.end.right;
         }
 
+        this.curr_elem = this.end;
         this.prev_elem = this.end;
     }
 
@@ -58,6 +60,7 @@ class LinkedList {
             this.start = this.start.left;
         }
 
+        this.curr_elem = this.start;
         this.prev_elem = this.start;
     }
 
@@ -120,6 +123,42 @@ class LinkedList {
             }
             current = current.right;
         }
+    }
+
+    /**
+     *
+     * @returns {ListElement}
+     */
+    public getStart():ListElement {
+        this.curr_elem = this.start;
+        return this.curr_elem;
+    }
+
+    /**
+     *
+      * @returns {ListElement}
+     */
+    public getNext():ListElement {
+        this.curr_elem = (this.curr_elem.right) ? this.curr_elem.right : this.end;
+        return this.curr_elem;
+    }
+
+    /**
+     *
+     * @returns {ListElement}
+     */
+    public getPrev():ListElement {
+        this.curr_elem = (this.curr_elem.left) ? this.curr_elem.left : this.start;
+        return this.curr_elem;
+    }
+
+    /**
+     *
+     * @returns {ListElement}
+     */
+    public getEnd():ListElement {
+        this.curr_elem = this.end;
+        return this.curr_elem;
     }
 
     /**
