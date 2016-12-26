@@ -1,4 +1,6 @@
-class ListElement {
+import {IListElement} from "./interface/IListElement";
+
+class ListElement implements IListElement {
 
     public left:any;
     public right:any;

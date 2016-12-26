@@ -1,4 +1,7 @@
 .idea
 node_modules
 dist/js
-dist/libs
+src/**/*.js
+spec/**/*.js
+typings
+typings.json
