@@ -4,4 +4,3 @@ dist/js
 src/**/*.js
 spec/**/*.js
 typings
-typings.json
