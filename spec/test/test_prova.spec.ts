@@ -16,15 +16,14 @@ import {LinkedList} from "../../src/core/LinkedList";
 
 class LinkedListSpec {
 
+    public static ADD_ELEM_TEST:string = "addElemTest";
     public linked_list:LinkedList;
+    public table:any;
 
     public constructor() {
         this.linked_list = new LinkedList();
-        this.init(this.addElemTest);
-    }
-
-    public init(func):void {
-        describe("test_prova", func);
+        this.table = [];
+        this.table[LinkedListSpec.ADD_ELEM_TEST] = this.addElemTest;
     }
 
     public addElemTest() {
@@ -35,6 +34,11 @@ class LinkedListSpec {
             expect(result).toEqual(null);
         });
     }
+
+    public runTest(test) {
+        describe("test_prova", this.table[test]);
+    }
 }
 
 var stica:LinkedListSpec = new LinkedListSpec();
+stica.runTest(LinkedListSpec.ADD_ELEM_TEST);
