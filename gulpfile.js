@@ -27,7 +27,8 @@ function tsToFile(file) {
 function tsCommonJS(from, to) {
     return gulp.src(from)
         .pipe(ts({
-            module: "CommonJS"
+            module: "CommonJS",
+            removeComments: true
         }))
         .pipe(gulp.dest(to));
 }
@@ -53,7 +54,7 @@ gulp.task('typescript-tests', ['typescript-commonjs'], function() {
 // todo: better regex (https://regex101.com/r/xbbNVm/1), take a look to gulp-replace doc
 gulp.task('build-test', ['typescript-tests'], function() {
     return gulp.src('spec/test/**/*.js')
-        .pipe(replace(/(..\/)|(.\/)?src/g, './app'))
+        .pipe(replace(/(?:\.\/|\.\.\/|src)+/g, '../app'))
         .pipe(gulp.dest('spec/test'));
 });
 
