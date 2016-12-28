@@ -52,8 +52,8 @@ gulp.task('typescript-tests', ['typescript-commonjs'], function() {
 });
 
 gulp.task('build-test', ['typescript-tests'], function() {
-    return gulp.src('spec/test/**/*.js')
-        .pipe(replace(/(?:\.\/|\.\.\/|src)+/g, '../app'))
+    return gulp.src('spec/test/**/*.spec.js')
+        .pipe(replace(/(?:(?:\.\.\/)+src)+/g, '../app')) // capture strings like ../../../src
         .pipe(gulp.dest('spec/test'));
 });
 
