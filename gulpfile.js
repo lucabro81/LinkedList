@@ -51,7 +51,6 @@ gulp.task('typescript-tests', ['typescript-commonjs'], function() {
     return tsCommonJS('spec/**/*.ts', 'spec/');
 });
 
-// todo: better regex (https://regex101.com/r/xbbNVm/1), take a look to gulp-replace doc
 gulp.task('build-test', ['typescript-tests'], function() {
     return gulp.src('spec/test/**/*.js')
         .pipe(replace(/(?:\.\/|\.\.\/|src)+/g, '../app'))
