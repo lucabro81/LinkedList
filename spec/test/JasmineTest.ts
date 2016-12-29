@@ -113,12 +113,33 @@ class JasmineTest<T> {
         this.test_func = this.testFunc(this.spec_name, () => {
             var result = this.custom_func(this.test_class_instance);
             expect(result).toEqual(expected_value);
-            if (this.test_class_instance[this.destroy_method]) {
-                this.test_class_instance[this.destroy_method]();
-            }
-            else {
-                throw new Error("“Fatal Error: " + this.destroy_method + " doesn't exists, use setDestroyMethod to set a destroyer”")
-            }
+            this.destroyObject();
+        });
+        return this;
+    }
+
+    /**
+     *
+     * @returns {JasmineTest}
+     */
+    public resultFalse():JasmineTest<T> {
+        this.test_func = this.testFunc(this.spec_name, () => {
+            var result = this.custom_func(this.test_class_instance);
+            expect(result).toBe(false);
+            this.destroyObject();
+        });
+        return this;
+    }
+
+    /**
+     *
+     * @returns {JasmineTest}
+     */
+    public resultTrue():JasmineTest<T> {
+        this.test_func = this.testFunc(this.spec_name, () => {
+            var result = this.custom_func(this.test_class_instance);
+            expect(result).toBe(true);
+            this.destroyObject();
         });
         return this;
     }
@@ -158,6 +179,18 @@ class JasmineTest<T> {
      */
     private createObject<T>(c: {new(): T; }): T {
         return new c();
+    }
+
+    /**
+     *
+     */
+    private destroyObject() {
+        if (this.test_class_instance[this.destroy_method]) {
+            this.test_class_instance[this.destroy_method]();
+        }
+        else {
+            throw new Error("“Fatal Error: " + this.destroy_method + " doesn't exists, use setDestroyMethod to set a destroyer”")
+        }
     }
 
     /**

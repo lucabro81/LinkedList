@@ -22,7 +22,7 @@ function tsToFile(file) {
 }
 
 /**
- * compile ts with CommonJS module flag
+ * compile ts with CommonJS module flag, removing comments from code
  */
 function tsCommonJS(from, to) {
     return gulp.src(from)
@@ -57,7 +57,18 @@ gulp.task('build-test', ['typescript-tests'], function() {
         .pipe(gulp.dest('spec/test'));
 });
 
-
 gulp.task('build', ['typescript-app', 'typescript-config'], function() {
    console.log("app built");
+});
+
+gulp.task('run-tests', function() {
+    // TODO: todo run-tests task
+});
+
+gulp.task('watch', function() {
+    // TODO: todo watch task
+});
+
+gulp.task('watch-test', function() {
+    // TODO: todo watch-tests task
 });

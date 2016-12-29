@@ -1,7 +1,5 @@
 import {ListElement} from "./ListElement";
 
-// TODO: methods used to move through the list and to modify it should return this?
-
 class LinkedList {
 
     private prev_elem:ListElement;
@@ -9,6 +7,11 @@ class LinkedList {
 
     public start:ListElement;
     public end:ListElement;
+
+    // current elem props
+    public left:ListElement;
+    public data:any;
+    public right:ListElement;
 
     /**
      *
@@ -29,15 +32,15 @@ class LinkedList {
      *
      * @param data
      */
-    public addElem(data:any):void {
-        this.addElemRight(data);
+    public addElem(data:any):LinkedList {
+        return this.addElemRight(data);
     }
 
     /**
      *
      * @param data
      */
-    public addElemRight(data:any):void {
+    public addElemRight(data:any):LinkedList {
 
         var new_elem:ListElement = new ListElement(data);
 
@@ -49,13 +52,15 @@ class LinkedList {
 
         this.curr_elem = this.end;
         this.prev_elem = this.end;
+
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @param data
      */
-    public addElemLeft(data:any):void {
+    public addElemLeft(data:any):LinkedList {
 
         var new_elem:ListElement = new ListElement(data);
 
@@ -67,19 +72,23 @@ class LinkedList {
 
         this.curr_elem = this.start;
         this.prev_elem = this.start;
+
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @param elem
      */
-    public removeElem(elem:ListElement):void {
+    public removeElem(elem:ListElement):LinkedList {
 
         if (this.isStart(elem)) {
             this.removeStart();
+            this.curr_elem = this.start;
         }
         else if (this.isEnd(elem)) {
             this.removeEnd();
+            this.curr_elem = this.end;
         }
         else {
             var left_elem:ListElement = elem.left;
@@ -87,19 +96,24 @@ class LinkedList {
 
             left_elem.right = right_elem;
             right_elem.left = left_elem;
+            this.curr_elem = right_elem;
         }
 
         elem = null;
+
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @param pos
      */
-    public removeElemByPos(pos:number):void {
+    public removeElemByPos(pos:number):LinkedList {
         if (pos === 0) {
             this.removeStart();
-            return;
+            this.curr_elem = this.start;
+
+            return this.setCurrentProps();
         }
 
         var i:number = 0;
@@ -107,63 +121,69 @@ class LinkedList {
 
         while (current !== null) {
             if (i === pos) {
+                this.curr_elem = current.left;
                 this.removeElem(current);
                 return;
             }
             current = current.right;
         }
+
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @param data
      */
-    public removeElemByData(data:any):void {
+    public removeElemByData(data:any):LinkedList {
         var current:ListElement = this.start;
 
         while (current !== null) {
             if (current.data === data) {
+                this.curr_elem = current.left;
                 this.removeElem(current);
                 return;
             }
             current = current.right;
         }
+
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @returns {ListElement}
      */
-    public getStart():ListElement {
+    public getStart():LinkedList {
         this.curr_elem = this.start;
-        return this.curr_elem;
+        return this.setCurrentProps();
     }
 
     /**
      *
       * @returns {ListElement}
      */
-    public getNext():ListElement {
+    public getNext():LinkedList {
         this.curr_elem = (this.curr_elem.right) ? this.curr_elem.right : this.end;
-        return this.curr_elem;
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @returns {ListElement}
      */
-    public getPrev():ListElement {
+    public getPrev():LinkedList {
         this.curr_elem = (this.curr_elem.left) ? this.curr_elem.left : this.start;
-        return this.curr_elem;
+        return this.setCurrentProps();
     }
 
     /**
      *
      * @returns {ListElement}
      */
-    public getEnd():ListElement {
+    public getEnd():LinkedList {
         this.curr_elem = this.end;
-        return this.curr_elem;
+        return this.setCurrentProps();
     }
 
     public destroy():void {
@@ -172,10 +192,19 @@ class LinkedList {
             this.removeStart();
         }
 
-        this.start = null;
         this.end = null;
         this.curr_elem = null;
         this.prev_elem = null;
+        this.left = null;
+        this.data = null;
+        this.right = null;
+    }
+
+    private setCurrentProps():LinkedList {
+        this.left = this.curr_elem.left;
+        this.data = this.curr_elem.data;
+        this.right = this.curr_elem.right;
+        return this;
     }
 
     /**

@@ -26,17 +26,17 @@ C.right = null;
 
 function addElemTestFunc(ll:LinkedList):ListElement {
     ll.init();
-    ll.addElem('data1');
-    ll.addElem('data2');
-    ll.addElem('data3');
+    ll.addElem('data1')
+        .addElem('data2')
+        .addElem('data3');
     return ll.start;
 }
 
 function addElemLeftTestFunc(ll:LinkedList):ListElement {
     ll.init();
-    ll.addElemRight('data1');
-    ll.addElemRight('data2');
-    ll.addElemRight('data3');
+    ll.addElemRight('data1')
+        .addElemRight('data2')
+        .addElemRight('data3');
     return ll.start;
 }
 
@@ -45,7 +45,7 @@ function addElemLeftTestFunc(ll:LinkedList):ListElement {
 //////////////////
 
 var jasmine_test:JasmineTest<LinkedList> = new JasmineTest<LinkedList>();
-jasmine_test.init("LinkedList TESTS", LinkedList);
+jasmine_test.init("LinkedList SUITE", LinkedList);
 
 ///////////
 // TESTS //
