@@ -1,5 +1,7 @@
 import {ListElement} from "./ListElement";
 
+// TODO: methods used to move through the list and to modify it should return this?
+
 class LinkedList {
 
     private prev_elem:ListElement;
@@ -15,6 +17,9 @@ class LinkedList {
 
     }
 
+    /**
+     *
+     */
     public init():void {
         this.start = null;
         this.end = null;

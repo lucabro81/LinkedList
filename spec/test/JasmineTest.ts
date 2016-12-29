@@ -10,18 +10,50 @@ class JasmineTest<T> {
     private custom_func:any;
     private test_func:Function;
     private spec_name:string;
+    private destroy_method:string;
+    private init_method:string;
 
-    public constructor() {}
+    public constructor() {
+        this.destroy_method = "destroy";
+        this.init_method = "init";
+    }
 
     /**
      *
      * @param describe_name
      * @param c
      */
-    public init(describe_name:string, c: {new(): T; }) {
+    public init(describe_name:string, c: {new(): T; }):void {
         this.describe_name = describe_name;
         this.test_class_instance = this.createObject(c);
-        this.test_class_instance['init']();
+
+        if (this.init_method == null) {
+            return;
+        }
+        else if (this.test_class_instance[this.init_method]) {
+            this.test_class_instance[this.init_method]();
+        }
+        else {
+            throw new Error("Fatal Error: " + this.init_method + " doesn't exists, use setInitMethod to set an initializer. " +
+            "If not needed use setInitMethod(null)");
+        }
+
+    }
+
+    /**
+     *
+     * @param destroy_method
+     */
+    public setDestroyMethod(destroy_method:string) {
+        this.destroy_method = destroy_method;
+    }
+
+    /**
+     *
+     * @param init_method
+     */
+    public setInitMethod(init_method:string) {
+        this.init_method = init_method;
     }
 
     /**
@@ -81,7 +113,12 @@ class JasmineTest<T> {
         this.test_func = this.testFunc(this.spec_name, () => {
             var result = this.custom_func(this.test_class_instance);
             expect(result).toEqual(expected_value);
-            this.test_class_instance["destroy"]();
+            if (this.test_class_instance[this.destroy_method]) {
+                this.test_class_instance[this.destroy_method]();
+            }
+            else {
+                throw new Error("“Fatal Error: " + this.destroy_method + " doesn't exists, use setDestroyMethod to set a destroyer”")
+            }
         });
         return this;
     }
