@@ -25,7 +25,6 @@ C.right = null;
 //////////////////////////
 
 function addElemTestFunc(ll:LinkedList):ListElement {
-    ll.init();
     ll.addElem('data1')
         .addElem('data2')
         .addElem('data3');
@@ -33,7 +32,6 @@ function addElemTestFunc(ll:LinkedList):ListElement {
 }
 
 function addElemLeftTestFunc(ll:LinkedList):ListElement {
-    ll.init();
     ll.addElemRight('data1')
         .addElemRight('data2')
         .addElemRight('data3');
@@ -52,13 +50,13 @@ jasmine_test.init("LinkedList SUITE", LinkedList);
 ///////////
 
 jasmine_test
-    .doesTest("addElem")
+    .test("addElem")
     .withcustomTestFunc(addElemTestFunc)
     .result(A)
     .run();
 
 jasmine_test
-    .doesTest("addElemLeft")
+    .test("addElemLeft")
     .withcustomTestFunc(addElemLeftTestFunc)
     .result(A)
     .run();

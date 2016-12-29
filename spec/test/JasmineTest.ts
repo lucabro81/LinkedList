@@ -4,9 +4,8 @@
 
 class JasmineTest<T> {
 
-    public describe_name:string;
-    public test_class_instance:T;
-
+    private describe_name:string;
+    private test_class_instance:T;
     private custom_func:any;
     private test_func:Function;
     private spec_name:string;
@@ -61,28 +60,20 @@ class JasmineTest<T> {
      * @param method_name
      * @returns {JasmineTest}
      */
-    public doesTest(method_name:string):JasmineTest<T> {
+    public test(method_name:string):JasmineTest<T> {
         this.spec_name = method_name + " Test";
         return this;
     }
 
     /**
      *
-     * @param method
+     * @param method_name
      * @returns {JasmineTest}
      */
-    public doesMethod(method:Function):JasmineTest<T> {
-        this.custom_func = method;
+    public method(method_name:string):JasmineTest<T> {
+        this.spec_name = method_name;
+        this.custom_func = this.test_class_instance[method_name];
         return this;
-    }
-
-    /**
-     *
-     * @param spec_name
-     * @returns {JasmineTest<T>}
-     */
-    public withSpecName(spec_name:string):JasmineTest<T> {
-        return this.doesTest(spec_name);
     }
 
     /**
@@ -146,6 +137,49 @@ class JasmineTest<T> {
 
     /**
      *
+     * @returns {JasmineTest}
+     */
+    public resultUndefined():JasmineTest<T> {
+        this.test_func = this.testFunc(this.spec_name, () => {
+            var result = this.custom_func(this.test_class_instance);
+            expect(result).toBeUndefined();
+            this.destroyObject();
+        });
+        return this;
+    }
+
+    /**
+     *
+     * @returns {JasmineTest}
+     */
+    public resultNull():JasmineTest<T> {
+        this.test_func = this.testFunc(this.spec_name, () => {
+            var result = this.custom_func(this.test_class_instance);
+            expect(result).toBeNull();
+            this.destroyObject();
+        });
+        return this;
+    }
+
+    /**
+     *
+     * @returns {JasmineTest}
+     */
+    public resultNan():JasmineTest<T> {
+        var result = this.custom_func(this.test_class_instance);
+        this.test_func = this.expect_method(expect(result).toBeNaN);
+        return this;
+    }
+
+    private expect_method(expect:Function):Function {
+        return this.testFunc(this.spec_name, () => {
+            expect();
+            this.destroyObject();
+        });
+    }
+
+    /**
+     *
      */
     public run():void {
         this.runTest(this.test_func);
@@ -161,15 +195,6 @@ class JasmineTest<T> {
         return ():void => {
             it(method_name, func);
         }
-    }
-
-    /**
-     *
-     * @param method_name
-     * @param expected_statud
-     */
-    public runStatusChangedTest(method_name:string, expected_statud:any):void {
-
     }
 
     /**

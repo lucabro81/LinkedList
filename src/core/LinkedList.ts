@@ -16,9 +16,7 @@ class LinkedList {
     /**
      *
      */
-    public constructor() {
-
-    }
+    public constructor() {}
 
     /**
      *
