@@ -161,6 +161,18 @@ class LinkedList {
         return this.curr_elem;
     }
 
+    public destroy():void {
+
+        while (this.start !== null) {
+            this.removeStart();
+        }
+
+        this.start = null;
+        this.end = null;
+        this.curr_elem = null;
+        this.prev_elem = null;
+    }
+
     /**
      * Is passed elem the first of the list?
      *
@@ -186,7 +198,9 @@ class LinkedList {
      */
     private removeStart():void {
         this.start = this.start.right;
-        this.start.left = null;
+        if (this.start) {
+            this.start.left = null;
+        }
     }
 
     /**
@@ -194,7 +208,9 @@ class LinkedList {
      */
     private removeEnd():void {
         this.end = this.end.left;
-        this.end.right = null;
+        if (this.end) {
+            this.end.right = null;
+        }
     }
 
     /**

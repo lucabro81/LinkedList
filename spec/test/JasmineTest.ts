@@ -77,10 +77,11 @@ class JasmineTest<T> {
      * @param expected_value
      * @returns {JasmineTest}
      */
-    public isEqualTo(expected_value:any):JasmineTest<T> {
+    public result(expected_value:any):JasmineTest<T> {
         this.test_func = this.testFunc(this.spec_name, () => {
-            var result = this.custom_func();
+            var result = this.custom_func(this.test_class_instance);
             expect(result).toEqual(expected_value);
+            this.test_class_instance["destroy"]();
         });
         return this;
     }

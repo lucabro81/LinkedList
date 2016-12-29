@@ -24,9 +24,7 @@ C.right = null;
 // CUSTOM TEST FUNCTION //
 //////////////////////////
 
-var ll:LinkedList = new LinkedList();
-
-function addElemTestFunc():ListElement {
+function addElemTestFunc(ll:LinkedList):ListElement {
     ll.init();
     ll.addElem('data1');
     ll.addElem('data2');
@@ -34,7 +32,7 @@ function addElemTestFunc():ListElement {
     return ll.start;
 }
 
-function addElemLeftTestFunc():ListElement {
+function addElemLeftTestFunc(ll:LinkedList):ListElement {
     ll.init();
     ll.addElemRight('data1');
     ll.addElemRight('data2');
@@ -56,11 +54,11 @@ jasmine_test.init("LinkedList TESTS", LinkedList);
 jasmine_test
     .doesTest("addElem")
     .withcustomTestFunc(addElemTestFunc)
-    .isEqualTo(A)
+    .result(A)
     .run();
 
 jasmine_test
     .doesTest("addElemLeft")
     .withcustomTestFunc(addElemLeftTestFunc)
-    .isEqualTo(A)
+    .result(A)
     .run();
