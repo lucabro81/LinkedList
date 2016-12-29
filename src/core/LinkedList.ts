@@ -15,7 +15,7 @@ class LinkedList {
 
     }
 
-    public initList():void {
+    public init():void {
         this.start = null;
         this.end = null;
     }

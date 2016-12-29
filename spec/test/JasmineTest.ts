@@ -7,6 +7,10 @@ class JasmineTest<T> {
     public describe_name:string;
     public test_class_instance:T;
 
+    private custom_func:any;
+    private test_func:Function;
+    private spec_name:string;
+
     public constructor() {}
 
     /**
@@ -17,20 +21,75 @@ class JasmineTest<T> {
     public init(describe_name:string, c: {new(): T; }) {
         this.describe_name = describe_name;
         this.test_class_instance = this.createObject(c);
+        this.test_class_instance['init']();
     }
 
     /**
      *
      * @param method_name
-     * @param expected_value
+     * @returns {JasmineTest}
      */
-    public runEqualTest(method_name:string, expected_value:string = 'no_value'):void {
-        var func = this.testFunc(method_name,
-            () => {
-                var result = this.test_class_instance[method_name]();
-                expect(result).toEqual(expected_value);
-            });
-        this.runTest(func);
+    public doesTest(method_name:string):JasmineTest<T> {
+        this.spec_name = method_name + " Test";
+        return this;
+    }
+
+    /**
+     *
+     * @param method
+     * @returns {JasmineTest}
+     */
+    public doesMethod(method:Function):JasmineTest<T> {
+        this.custom_func = method;
+        return this;
+    }
+
+    /**
+     *
+     * @param spec_name
+     * @returns {JasmineTest<T>}
+     */
+    public withSpecName(spec_name:string):JasmineTest<T> {
+        return this.doesTest(spec_name);
+    }
+
+    /**
+     *
+     * @param params
+     * @returns {JasmineTest}
+     */
+    public withInput(params:Array<any>):JasmineTest<T> {
+        return this;
+    }
+
+    /**
+     *
+     * @param func
+     * @returns {JasmineTest}
+     */
+    public withcustomTestFunc(func:Function):JasmineTest<T> {
+        this.custom_func = func;
+        return this;
+    }
+
+    /**
+     *
+     * @param expected_value
+     * @returns {JasmineTest}
+     */
+    public isEqualTo(expected_value:any):JasmineTest<T> {
+        this.test_func = this.testFunc(this.spec_name, () => {
+            var result = this.custom_func();
+            expect(result).toEqual(expected_value);
+        });
+        return this;
+    }
+
+    /**
+     *
+     */
+    public run():void {
+        this.runTest(this.test_func);
     }
 
     /**
@@ -39,9 +98,9 @@ class JasmineTest<T> {
      * @param func
      * @returns {function(): void}
      */
-    public testFunc(method_name:string, func:any):any {
+    public testFunc(method_name:string, func:any):Function {
         return ():void => {
-            it(method_name + "test", func);
+            it(method_name, func);
         }
     }
 
