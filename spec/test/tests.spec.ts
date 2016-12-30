@@ -51,12 +51,12 @@ jasmine_test.init("LinkedList SUITE", LinkedList);
 
 jasmine_test
     .test("addElem")
-    .withcustomTestFunc(addElemTestFunc)
+    .withCustomTestFunc(addElemTestFunc)
     .result(A)
     .run();
 
 jasmine_test
     .test("addElemLeft")
-    .withcustomTestFunc(addElemLeftTestFunc)
+    .withCustomTestFunc(addElemLeftTestFunc)
     .result(A)
     .run();

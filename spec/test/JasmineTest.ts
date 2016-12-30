@@ -1,20 +1,23 @@
 /// <reference path="../../typings/index.d.ts" />
 
-// TODO: inferface for class to test, in this way we'll have a safer class initialization
-
 class JasmineTest<T> {
 
     private describe_name:string;
     private test_class_instance:T;
-    private custom_func:any;
+    private custom_func:Function;
+    private method_func:Function;
     private test_func:Function;
     private spec_name:string;
     private destroy_method:string;
     private init_method:string;
+    private params:Array<any>;
 
     public constructor() {
         this.destroy_method = "destroy";
         this.init_method = "init";
+        this.params = [];
+        this.custom_func = null;
+        this.method_func = null;
     }
 
     /**
@@ -26,6 +29,7 @@ class JasmineTest<T> {
         this.describe_name = describe_name;
         this.test_class_instance = this.createObject(c);
 
+        // execution of init method if specified
         if (this.init_method == null) {
             return;
         }
@@ -33,10 +37,9 @@ class JasmineTest<T> {
             this.test_class_instance[this.init_method]();
         }
         else {
-            throw new Error("Fatal Error: " + this.init_method + " doesn't exists, use setInitMethod to set an initializer. " +
-            "If not needed use setInitMethod(null)");
+            throw new Error("Fatal Error: " + this.init_method + " doesn't exists, use setInitMethod " +
+                "to set an initializer. If not needed use setInitMethod(null)");
         }
-
     }
 
     /**
@@ -56,6 +59,7 @@ class JasmineTest<T> {
     }
 
     /**
+     * Specify a test name
      *
      * @param method_name
      * @returns {JasmineTest}
@@ -66,32 +70,49 @@ class JasmineTest<T> {
     }
 
     /**
+     * Specify the method that need to be tested, the test name is the method name
      *
      * @param method_name
      * @returns {JasmineTest}
      */
     public method(method_name:string):JasmineTest<T> {
         this.spec_name = method_name;
-        this.custom_func = this.test_class_instance[method_name];
+
+        if (this.test_class_instance[method_name]) {
+            throw new Error("Fatal Error: " + this.init_method + " doesn't exists in " +
+                "testing class");
+        }
+
+        this.method_func = this.test_class_instance[method_name];
+        this.custom_func = null;
         return this;
     }
 
     /**
+     * Params array for the testing method if needed
      *
      * @param params
      * @returns {JasmineTest}
      */
     public withInput(params:Array<any>):JasmineTest<T> {
+        this.params = params;
         return this;
     }
 
     /**
+     * Custom function to test, need a test name
      *
      * @param func
      * @returns {JasmineTest}
      */
-    public withcustomTestFunc(func:Function):JasmineTest<T> {
-        this.custom_func = func;
+    public withCustomTestFunc(func:Function):JasmineTest<T> {
+        if (this.spec_name !== "") {
+            this.custom_func = func;
+            this.method_func = null;
+        }
+        else {
+            throw new Error("Fatal Error: Test name needed, use test() before");
+        }
         return this;
     }
 
@@ -101,11 +122,7 @@ class JasmineTest<T> {
      * @returns {JasmineTest}
      */
     public result(expected_value:any):JasmineTest<T> {
-        this.test_func = this.testFunc(this.spec_name, () => {
-            var result = this.custom_func(this.test_class_instance);
-            expect(result).toEqual(expected_value);
-            this.destroyObject();
-        });
+        this.test_func = this.expect_method("toEqual", [expected_value]);
         return this;
     }
 
@@ -114,11 +131,7 @@ class JasmineTest<T> {
      * @returns {JasmineTest}
      */
     public resultFalse():JasmineTest<T> {
-        this.test_func = this.testFunc(this.spec_name, () => {
-            var result = this.custom_func(this.test_class_instance);
-            expect(result).toBe(false);
-            this.destroyObject();
-        });
+        this.test_func = this.expect_method("toBe", [false]);
         return this;
     }
 
@@ -127,11 +140,7 @@ class JasmineTest<T> {
      * @returns {JasmineTest}
      */
     public resultTrue():JasmineTest<T> {
-        this.test_func = this.testFunc(this.spec_name, () => {
-            var result = this.custom_func(this.test_class_instance);
-            expect(result).toBe(true);
-            this.destroyObject();
-        });
+        this.test_func = this.expect_method("toBe", [true]);
         return this;
     }
 
@@ -140,11 +149,7 @@ class JasmineTest<T> {
      * @returns {JasmineTest}
      */
     public resultUndefined():JasmineTest<T> {
-        this.test_func = this.testFunc(this.spec_name, () => {
-            var result = this.custom_func(this.test_class_instance);
-            expect(result).toBeUndefined();
-            this.destroyObject();
-        });
+        this.test_func = this.expect_method("toBeUndefined");
         return this;
     }
 
@@ -153,11 +158,7 @@ class JasmineTest<T> {
      * @returns {JasmineTest}
      */
     public resultNull():JasmineTest<T> {
-        this.test_func = this.testFunc(this.spec_name, () => {
-            var result = this.custom_func(this.test_class_instance);
-            expect(result).toBeNull();
-            this.destroyObject();
-        });
+        this.test_func = this.expect_method("toBeNull");
         return this;
     }
 
@@ -166,14 +167,31 @@ class JasmineTest<T> {
      * @returns {JasmineTest}
      */
     public resultNan():JasmineTest<T> {
-        var result = this.custom_func(this.test_class_instance);
-        this.test_func = this.expect_method(expect(result).toBeNaN);
+        this.test_func = this.expect_method("toBeNaN");
         return this;
     }
 
-    private expect_method(expect:Function):Function {
+    /**
+     *
+     * @param expect_name
+     * @param params
+     * @returns {Function}
+     */
+    private expect_method(expect_name:string, params:Array<any> = []):Function {
         return this.testFunc(this.spec_name, () => {
-            expect();
+
+            var result:Function = null;
+
+            if (this.custom_func !== null) {
+                result = this.custom_func(this.test_class_instance);
+            }
+
+            if (this.method_func !== null) {
+                result = this.method_func.apply(this.test_class_instance, this.params);
+            }
+
+            var expect_scope:jasmine.Matchers = expect(result);
+            expect_scope[expect_name].apply(expect_scope, params);
             this.destroyObject();
         });
     }
@@ -194,6 +212,32 @@ class JasmineTest<T> {
     public testFunc(method_name:string, func:any):Function {
         return ():void => {
             it(method_name, func);
+        }
+    }
+
+    /**
+     *
+     */
+    public destroy() {
+        this.destroyArray(this.params);
+        this.describe_name = null;
+        this.test_class_instance[this.describe_name]();
+        this.custom_func = null;
+        this.method_func = null;
+        this.test_func = null;
+        this.spec_name = null;
+        this.destroy_method = null;
+        this.init_method = null;
+    }
+
+    /**
+     *
+     * @param arr
+     */
+    private destroyArray(arr:Array<any>) {
+        var l:number = arr.length;
+        for (var i = l - 1; i >= 0; i++) {
+            arr.pop();
         }
     }
 
