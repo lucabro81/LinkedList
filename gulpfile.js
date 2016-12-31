@@ -22,12 +22,13 @@ function tsToFile(file) {
 }
 
 /**
- * compile ts with CommonJS module flag
+ * compile ts with CommonJS module flag, removing comments from code
  */
 function tsCommonJS(from, to) {
     return gulp.src(from)
         .pipe(ts({
-            module: "CommonJS"
+            module: "CommonJS",
+            removeComments: true
         }))
         .pipe(gulp.dest(to));
 }
@@ -50,14 +51,24 @@ gulp.task('typescript-tests', ['typescript-commonjs'], function() {
     return tsCommonJS('spec/**/*.ts', 'spec/');
 });
 
-// todo: better regex (https://regex101.com/r/xbbNVm/1), take a look to gulp-replace doc
 gulp.task('build-test', ['typescript-tests'], function() {
-    return gulp.src('spec/test/**/*.js')
-        .pipe(replace(/(?:\.\.\/|\.\/|src)/g, './app'))
+    return gulp.src('spec/test/**/*.spec.js')
+        .pipe(replace(/(?:(?:\.\.\/)+src)+/g, '../app')) // capture strings like ../../../src
         .pipe(gulp.dest('spec/test'));
 });
 
-
 gulp.task('build', ['typescript-app', 'typescript-config'], function() {
    console.log("app built");
+});
+
+gulp.task('run-tests', function() {
+    // TODO: todo run-tests task
+});
+
+gulp.task('watch', function() {
+    // TODO: todo watch task
+});
+
+gulp.task('watch-test', function() {
+    // TODO: todo watch-tests task
 });
