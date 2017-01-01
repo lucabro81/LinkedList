@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/lucabro81/LinkedList#readme",
   "dependencies": {
+    "@types/jasmine": "^2.5.40",
+    "@types/requirejs": "^2.1.28",
     "core-js": "^2.4.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",

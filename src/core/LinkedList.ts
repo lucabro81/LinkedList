@@ -43,7 +43,10 @@ class LinkedList {
         var new_elem:ListElement = new ListElement(data);
 
         if (!this.isFirstElem(new_elem)) {
-            new_elem.left = this.prev_elem;
+            /*new_elem.left = this.prev_elem;
+            this.end.right = new_elem;
+            this.end = this.end.right;*/
+            new_elem.left = this.end;
             this.end.right = new_elem;
             this.end = this.end.right;
         }
@@ -63,7 +66,10 @@ class LinkedList {
         var new_elem:ListElement = new ListElement(data);
 
         if (!this.isFirstElem(new_elem)) {
-            new_elem.right = this.prev_elem;
+            //new_elem.right = this.prev_elem;
+            //this.start.left = new_elem;
+            //this.start = this.start.left;
+            new_elem.right = this.start;
             this.start.left = new_elem;
             this.start = this.start.left;
         }
