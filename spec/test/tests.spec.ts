@@ -34,6 +34,12 @@ E1.left = C1; E1.right = null;
 // CUSTOM TEST FUNCTION //
 //////////////////////////
 
+function beforeTest(ll:LinkedList) {
+    ll.addElem('data1')
+        .addElem('data2')
+        .addElem('data4');
+}
+
 function addElemTestFunc(ll:LinkedList):ListElement {
     ll.addElem('data1')
         .addElem('data2')
@@ -111,6 +117,7 @@ tb.init("LinkedList SUITE", LinkedList);
 
     tb.test("Add element")
         .withCustomTestFunc(addElemTestFunc)
+        .after(beforeTest)
         .result(A);
 
     tb.test("Add element to right")
