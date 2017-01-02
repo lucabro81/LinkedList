@@ -57,8 +57,13 @@ gulp.task('build-test', ['typescript-tests'], function() {
         .pipe(gulp.dest('spec/test'));
 });
 
-gulp.task('build', ['typescript-app', 'typescript-config'], function() {
+gulp.task('build-app', ['typescript-app', 'typescript-config'], function() {
    console.log("app built");
+});
+
+gulp.task('build-all', ['build-app', 'build-test'], function() {
+    console.log("app built");
+    console.log("tests built");
 });
 
 gulp.task('run-tests', function() {
@@ -71,4 +76,8 @@ gulp.task('watch', function() {
 
 gulp.task('watch-test', function() {
     // TODO: todo watch-tests task
+});
+
+gulp.task('clean', function() {
+    // TODO: todo clean task
 });

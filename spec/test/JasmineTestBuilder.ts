@@ -1,4 +1,4 @@
-class JasmineTest<T> {
+class JasmineTestBuilder<T> {
 
     private describe_name:string;
     private test_class_instance_arr:Array<T>;
@@ -10,6 +10,7 @@ class JasmineTest<T> {
     private test_index:number;
     private it_method_arr:Array<any>;
     private test_func_arr:Array<any>;
+    private before_func_arr:Array<any>;
     private spec_name_arr:Array<string>;
     private params_arr:Array<Array<any>>;
 
@@ -22,6 +23,7 @@ class JasmineTest<T> {
         this.test_class_instance_arr = [];
         this.it_method_arr = [];
         this.test_func_arr = [];
+        this.before_func_arr = [];
         this.spec_name_arr = [];
         this.params_arr = [];
         this.test_index = 0;
@@ -57,9 +59,9 @@ class JasmineTest<T> {
      * Specify a test name
      *
      * @param method_name
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public test(method_name:string):JasmineTest<T> {
+    public test(method_name:string):JasmineTestBuilder<T> {
         this.spec_name_arr.push(method_name + " TEST");
         return this;
     }
@@ -68,9 +70,9 @@ class JasmineTest<T> {
      * Params array for the testing method if needed
      *
      * @param params
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public withInput(params:Array<any>):JasmineTest<T> {
+    public withInput(params:Array<any>):JasmineTestBuilder<T> {
         this.params_arr.push(params);
         return this;
     }
@@ -78,23 +80,23 @@ class JasmineTest<T> {
     /**
      *
      * @param method_name
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public method(method_name:string):JasmineTest<T> {
+    public method(method_name:string):JasmineTestBuilder<T> {
 
         this.createObject();
 
-        var l:number = this.test_class_instance_arr.length;
+        var last_index:number = this.test_class_instance_arr.length - 1;
 
-        if (this.test_class_instance_arr[l - 1]) {
+        if (this.test_class_instance_arr[last_index]) {
             this.spec_name_arr.push(method_name + " TEST");
             this.test_func_arr.push({
                 type: "method",
-                func: this.test_class_instance_arr[l - 1]
+                func: this.test_class_instance_arr[last_index][method_name]
             });
         }
         else {
-            //TODO: write exception
+            //TODO: write method not found exception
         }
 
         return this;
@@ -104,9 +106,9 @@ class JasmineTest<T> {
      * Custom function to test, need a test name
      *
      * @param func
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public withCustomTestFunc(func:Function):JasmineTest<T> {
+    public withCustomTestFunc(func:Function):JasmineTestBuilder<T> {
 
         this.createObject();
 
@@ -120,55 +122,95 @@ class JasmineTest<T> {
 
     /**
      *
-     * @param expected_value
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public result(expected_value:any):JasmineTest<T> {
+    public withMethod(method_name:string, params:Array<any>):JasmineTestBuilder<T> {
+
+        this.createObject();
+
+        var last_index:number = this.test_class_instance_arr.length - 1;
+
+        if (this.test_class_instance_arr[last_index][method_name]) {
+            this.params_arr.push(params);
+            this.test_func_arr.push({
+                type: "method",
+                func: this.test_class_instance_arr[last_index][method_name]
+            });
+        }
+        else {
+            //TODO: write method not found exception
+        }
+
+        return this;
+    }
+
+    /**
+     *
+     * @returns {JasmineTestBuilder}
+     */
+    public after(func:Function):JasmineTestBuilder<T> {
+
+        var last_index:number = this.test_class_instance_arr.length - 1;
+
+        this.before_func_arr.push({
+            func: func,
+            instance_index: last_index
+        });
+
+        return this;
+    }
+
+    /**
+     *
+     * @param expected_value
+     * @returns {JasmineTestBuilder}
+     */
+    public result(expected_value:any):JasmineTestBuilder<T> {
         this.push_it_method("toEqual", expected_value);
         return this;
     }
 
     /**
      *
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public resultFalse():JasmineTest<T> {
+    public resultFalse():JasmineTestBuilder<T> {
         this.push_it_method("toBe", false);
         return this;
     }
 
     /**
      *
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public resultTrue():JasmineTest<T> {
+    public resultTrue():JasmineTestBuilder<T> {
         this.push_it_method("toBe", true);
         return this;
     }
 
     /**
      *
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public resultUndefined():JasmineTest<T> {
+    public resultUndefined():JasmineTestBuilder<T> {
         this.push_it_method("toBeUndefined", null);
         return this;
     }
 
     /**
      *
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public resultNull():JasmineTest<T> {
+    public resultNull():JasmineTestBuilder<T> {
         this.push_it_method("toBeNull", null);
         return this;
     }
 
     /**
      *
-     * @returns {JasmineTest}
+     * @returns {JasmineTestBuilder}
      */
-    public resultNan():JasmineTest<T> {
+    public resultNan():JasmineTestBuilder<T> {
         this.push_it_method("toBeNaN", null);
         return this;
     }
@@ -178,10 +220,11 @@ class JasmineTest<T> {
      */
     public run():void {
         describe(this.describe_name, () => {
-            for (let i = 0; i < this.it_method_arr.length; i++) {
+            /*for (let i = 0; i < this.it_method_arr.length; i++) {
                 var func:Function = this.it_method_arr[i];
                 func(i);
-            }
+            }*/
+            this.startTests(0);
             //TODO: dispatch event and destroy
         });
     }
@@ -194,11 +237,34 @@ class JasmineTest<T> {
         this.destroyArray(this.test_func_arr);
         this.destroyArray(this.spec_name_arr);
         this.destroyArray(this.params_arr);
+        this.destroyArray(this.before_func_arr);
         this.destroyObject();
         this.destroyArray(this.test_class_instance_arr);
         this.describe_name = null;
         this.destroy_method = null;
         this.init_method = null;
+    }
+
+    /**
+     *
+     * @param index
+     */
+    private startTests(index:number):void {
+        this.it_method_arr[index](index);
+        index++;
+        this.nextTest(index);
+    }
+
+    /**
+     *
+     * @param index
+     */
+    private nextTest(index:number):void {
+        if (this.it_method_arr[index]) {
+            this.it_method_arr[index](index);
+            index++;
+            this.nextTest(index);
+        }
     }
 
     /**
@@ -220,7 +286,15 @@ class JasmineTest<T> {
                     var params:Array<any> = this.params_arr[index];
                     var expect_func:jasmine.Matchers = null;
 
+                    // before execution
+                    if (this.before_func_arr[index]) {
+                        var before_func:Function = this.before_func_arr[index].func;
+                        var instance_index:number = this.before_func_arr[index].instance_index;
+                        before_func(this.test_class_instance_arr[instance_index]);
+                    }
+
                     // TODO: "custom" and "method" better like string consts
+                    // expect execution
                     if (test_type === "custom") {
                         expect_func = expect(test_func(test_instance));
                     }
@@ -295,4 +369,4 @@ class JasmineTest<T> {
 
     }
 
-} export {JasmineTest};
+} export {JasmineTestBuilder};

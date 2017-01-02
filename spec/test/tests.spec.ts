@@ -1,4 +1,4 @@
-import {JasmineTest} from "./JasmineTest";
+import {JasmineTestBuilder} from "./JasmineTestBuilder";
 import {LinkedList} from "../../src/core/LinkedList";
 import {ListElement} from "../../src/core/ListElement";
 
@@ -78,7 +78,7 @@ function removeElemTestFunc(ll:LinkedList):ListElement {
 // INIT JASMINE //
 //////////////////
 
-var jasmine_test:JasmineTest<LinkedList> = new JasmineTest<LinkedList>();
+var tb:JasmineTestBuilder<LinkedList> = new JasmineTestBuilder<LinkedList>();
 
 ///////////
 // TESTS //
@@ -107,26 +107,22 @@ var jasmine_test:JasmineTest<LinkedList> = new JasmineTest<LinkedList>();
     })
 });*/
 
-jasmine_test.init("LinkedList SUITE", LinkedList);
+tb.init("LinkedList SUITE", LinkedList);
 
-    jasmine_test
-        .test("Add element")
+    tb.test("Add element")
         .withCustomTestFunc(addElemTestFunc)
         .result(A);
 
-    jasmine_test
-        .test("Add element to right")
+    tb.test("Add element to right")
         .withCustomTestFunc(addElemRightTestFunc)
         .result(A);
 
-    jasmine_test
-        .test("Add element to left")
+    tb.test("Add element to left")
         .withCustomTestFunc(addElemLeftTestFunc)
         .result(A);
 
-    jasmine_test
-        .test("Remove element")
+    tb.test("Remove element")
         .withCustomTestFunc(removeElemTestFunc)
         .result(A1);
 
-jasmine_test.run();
+tb.run();
