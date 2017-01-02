@@ -288,8 +288,9 @@ class JasmineTestBuilder<T> {
 
                     // before execution
                     if (this.before_func_arr[index]) {
-                        var before_func:Function = this.before_func_arr[index].func;
-                        var instance_index:number = this.before_func_arr[index].instance_index;
+                        var before:any = this.before_func_arr[index];
+                        var before_func:Function = before.func;
+                        var instance_index:number = before.instance_index;
                         before_func(this.test_class_instance_arr[instance_index]);
                     }
 
