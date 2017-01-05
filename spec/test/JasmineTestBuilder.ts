@@ -17,17 +17,7 @@ class JasmineTestBuilder<T> {
     /**
      *
      */
-    public constructor() {
-        this.destroy_method = "destroy";
-        this.init_method = "init";
-        this.test_class_instance_arr = [];
-        this.it_method_arr = [];
-        this.test_func_arr = [];
-        this.before_func_arr = [];
-        this.spec_name_arr = [];
-        this.params_arr = [];
-        this.test_index = 0;
-    }
+    public constructor() {}
 
     /**
      *
@@ -37,6 +27,16 @@ class JasmineTestBuilder<T> {
     public init(describe_name:string, c: {new(): T; }):void {
         this.describe_name = describe_name;
         this.generic_class = c;
+
+        this.destroy_method = "destroy";
+        this.init_method = "init";
+        this.test_class_instance_arr = [];
+        this.it_method_arr = [];
+        this.test_func_arr = [];
+        this.before_func_arr = [];
+        this.spec_name_arr = [];
+        this.params_arr = [];
+        this.test_index = 0;
     }
 
     /**
@@ -220,12 +220,7 @@ class JasmineTestBuilder<T> {
      */
     public run():void {
         describe(this.describe_name, () => {
-            /*for (let i = 0; i < this.it_method_arr.length; i++) {
-                var func:Function = this.it_method_arr[i];
-                func(i);
-            }*/
             this.startTests(0);
-            //TODO: dispatch event and destroy
         });
     }
 
@@ -233,13 +228,27 @@ class JasmineTestBuilder<T> {
      *
      */
     public destroy():void {
+
         this.destroyArray(this.it_method_arr);
+        this.it_method_arr = null;
+
         this.destroyArray(this.test_func_arr);
+        this.test_func_arr = null;
+
         this.destroyArray(this.spec_name_arr);
+        this.spec_name_arr = null;
+
         this.destroyArray(this.params_arr);
+        this.params_arr = null;
+
         this.destroyArray(this.before_func_arr);
+        this.before_func_arr = null;
+
         this.destroyObject();
+
         this.destroyArray(this.test_class_instance_arr);
+        this.test_class_instance_arr = null;
+
         this.describe_name = null;
         this.destroy_method = null;
         this.init_method = null;

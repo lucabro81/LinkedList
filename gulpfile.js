@@ -35,30 +35,14 @@ function tsCommonJS(from, to) {
 
 ////////////////////////////////////////
 
-gulp.task('typescript-app', function() {
-   return tsToFile('app');
-});
-
-gulp.task('typescript-config', function() {
-    return tsToFile('config');
-});
-
-gulp.task('typescript-commonjs', function() {
-    return tsCommonJS('src/**/*.ts', 'spec/app/');
-});
-
-gulp.task('typescript-tests', ['typescript-commonjs'], function() {
-    return tsCommonJS('spec/**/*.ts', 'spec/');
-});
-
-gulp.task('build-test', ['typescript-tests'], function() {
+gulp.task('build-test', ['__typescript-tests'], function() {
     return gulp.src('spec/test/**/*.spec.js')
         .pipe(replace(/(?:(?:\.\.\/)+src)+/g, '../app')) // capture strings like ../../../src
         .pipe(gulp.dest('spec/test'));
 });
 
-gulp.task('build-app', ['typescript-app', 'typescript-config'], function() {
-   console.log("app built");
+gulp.task('build-app', ['__typescript-app', '__typescript-config'], function() {
+    console.log("app built");
 });
 
 gulp.task('build-all', ['build-app', 'build-test'], function() {
@@ -80,4 +64,20 @@ gulp.task('watch-test', function() {
 
 gulp.task('clean', function() {
     // TODO: todo clean task
+});
+
+gulp.task('__typescript-app', function() {
+   return tsToFile('app');
+});
+
+gulp.task('__typescript-config', function() {
+    return tsToFile('config');
+});
+
+gulp.task('__typescript-commonjs', function() {
+    return tsCommonJS('src/**/*.ts', 'spec/app/');
+});
+
+gulp.task('__typescript-tests', ['__typescript-commonjs'], function() {
+    return tsCommonJS('spec/**/*.ts', 'spec/');
 });
