@@ -5,10 +5,6 @@ import {CF} from "../TestAssets/CustomFunction.asset";
 
 var tb:JasmineTestBuilder<LinkedList> = new JasmineTestBuilder<LinkedList>();
 
-///////////
-// TESTS //
-///////////
-
 /*
 describe("LinkedList SUITE", () => {
     it("Add element TEST", () => {
