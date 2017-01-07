@@ -2,7 +2,7 @@
   "name": "linked-list",
   "version": "1.0.0",
   "description": "linked list class for web projects",
-  "main": "dist/js/app.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
