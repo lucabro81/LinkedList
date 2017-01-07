@@ -1,5 +1,7 @@
 import {ListElement} from "./ListElement";
 
+// TODO: insert method
+
 class LinkedList {
 
     private prev_elem:ListElement;
@@ -107,6 +109,7 @@ class LinkedList {
      * @param pos
      */
     public removeElemByPos(pos:number):LinkedList {
+
         if (pos === 0) {
             this.removeStart();
             this.curr_elem = this.start;
@@ -123,6 +126,7 @@ class LinkedList {
                 this.removeElem(current);
                 return;
             }
+            i++;
             current = current.right;
         }
 
@@ -150,9 +154,62 @@ class LinkedList {
 
     /**
      *
+     * @param data
+     * @param pos
+     * @returns {LinkedList}
+     */
+    public insertElem(data:any, pos:number = -1):LinkedList {
+
+        var elem:ListElement = new ListElement(data);
+
+        if (pos == 0 || (pos <= -1 && this.curr_elem.left == null)) {
+            // new start elem
+            this.addElemLeft(data);
+        }
+        else if (pos >= this.length()) {
+            // new end elem
+            this.addElemRight(data);
+        }
+        else if ((pos < this.length()) && (pos > 0)) {
+            // insert at position
+            var i:number = 0;
+            this.toStart();
+            while (i < pos) {
+                this.toNext();
+                i++;
+            }
+            this.insertBeforeCurrent(elem);
+        }
+        else {
+            // insert before current
+            this.insertBeforeCurrent(elem);
+        }
+
+        return this.setCurrentProps();
+    }
+
+    /**
+     *
+     * @returns {number}
+     */
+    public length():number {
+
+        var i:number = 0;
+        var current:ListElement = this.start;
+
+        while (current) {
+            i++;
+            current = current.right;
+        }
+
+        return i;
+    }
+
+    /**
+     *
      * @returns {ListElement}
      */
-    public getStart():LinkedList {
+    public toStart():LinkedList {
         this.curr_elem = this.start;
         return this.setCurrentProps();
     }
@@ -161,7 +218,7 @@ class LinkedList {
      *
       * @returns {ListElement}
      */
-    public getNext():LinkedList {
+    public toNext():LinkedList {
         this.curr_elem = (this.curr_elem.right) ? this.curr_elem.right : this.end;
         return this.setCurrentProps();
     }
@@ -170,7 +227,7 @@ class LinkedList {
      *
      * @returns {ListElement}
      */
-    public getPrev():LinkedList {
+    public toPrev():LinkedList {
         this.curr_elem = (this.curr_elem.left) ? this.curr_elem.left : this.start;
         return this.setCurrentProps();
     }
@@ -179,11 +236,21 @@ class LinkedList {
      *
      * @returns {ListElement}
      */
-    public getEnd():LinkedList {
+    public toEnd():LinkedList {
         this.curr_elem = this.end;
         return this.setCurrentProps();
     }
 
+    public get():ListElement {
+        var elem_to_return:ListElement = new ListElement(this.data);
+        elem_to_return.left = this.left;
+        elem_to_return.right = this.right;
+        return elem_to_return;
+    }
+
+    /**
+     *
+     */
     public destroy():void {
 
         while (this.start !== null) {
@@ -198,21 +265,15 @@ class LinkedList {
         this.right = null;
     }
 
-    private setCurrentProps():LinkedList {
-        this.left = this.curr_elem.left;
-        this.data = this.curr_elem.data;
-        this.right = this.curr_elem.right;
-        return this;
-    }
-
     /**
      * Is passed elem the first of the list?
      *
      * @param elem
      * @returns {boolean}
      */
-    private isStart(elem:ListElement):boolean {
-        return elem === this.start;
+    public isStart(elem:ListElement = null):boolean {
+        var elem_to_test:ListElement = (elem) ? elem : this.curr_elem;
+        return elem_to_test === this.start;
     }
 
     /**
@@ -221,8 +282,36 @@ class LinkedList {
      * @param elem
      * @returns {boolean}
      */
-    private isEnd(elem:ListElement):boolean {
-        return elem === this.start;
+    public isEnd(elem:ListElement = null):boolean {
+        var elem_to_test:ListElement = (elem) ? elem : this.curr_elem;
+        return elem_to_test === this.end;
+    }
+
+    /**
+     *
+     * @param elem
+     */
+    private insertBeforeCurrent(elem:ListElement) {
+        var before_elem:ListElement = this.curr_elem.left;
+        var after_elem:ListElement = this.curr_elem;
+
+        elem.left = before_elem;
+        elem.right = after_elem;
+        before_elem.right = elem;
+        after_elem.left = elem;
+
+        this.curr_elem = elem;
+    }
+
+    /**
+     *
+     * @returns {LinkedList}
+     */
+    private setCurrentProps():LinkedList {
+        this.left = this.curr_elem.left;
+        this.data = this.curr_elem.data;
+        this.right = this.curr_elem.right;
+        return this;
     }
 
     /**
