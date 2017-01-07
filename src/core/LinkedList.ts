@@ -241,6 +241,11 @@ class LinkedList {
         return this.setCurrentProps();
     }
 
+    /**
+     * Return element currently pointed
+     * 
+     * @returns {ListElement}
+     */
     public get():ListElement {
         var elem_to_return:ListElement = new ListElement(this.data);
         elem_to_return.left = this.left;

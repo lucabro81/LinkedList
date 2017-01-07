@@ -36,8 +36,8 @@ function tsCommonJS(from, to) {
 ////////////////////////////////////////
 
 gulp.task('build-test', ['__typescript-tests'], function() {
-    return gulp.src('spec/test/**/*.spec.js')
-        .pipe(replace(/(?:(?:\.\.\/)+src)+/g, '../app')) // capture strings like ../../../src
+    return gulp.src(['spec/test/**/*.spec.js', 'spec/test/**/*.asset.js'])
+        .pipe(replace(/(?:(?:\.\.\/)+src)+/g, '../../app')) // capture strings like ../../../src
         .pipe(gulp.dest('spec/test'));
 });
 
