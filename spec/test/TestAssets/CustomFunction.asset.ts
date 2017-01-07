@@ -182,4 +182,10 @@ class CustomFunction {
         return ll.get();
     }
 
+    public static getLength(ll:LinkedList<ListElement>):number {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
+
+        return list.length();
+    }
+
 } export {CustomFunction as CF};

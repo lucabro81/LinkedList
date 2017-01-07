@@ -84,6 +84,16 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .withCustomTestFunc(CF.fromEndToStart)
         .result(DD.A);
 
+    tb.test("Is list's start?")
+        .withMethod("isStart", [])
+        .after(CF.fromEndToStart)
+        .resultTrue();
+
+    tb.test("Is list's end?")
+        .withMethod("isEnd", [])
+        .after(CF.fromStartToEnd)
+        .resultTrue();
+
     tb.test("Insert element in the middle without pass a position")
         .withCustomTestFunc(CF.insertElement)
         .result(DD.A);
@@ -101,5 +111,9 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .withCustomTestFunc(CF.getCurrent)
         .after(CF.insertElementByPos)
         .result(DD.C);
+
+    tb.test("Verify list length")
+        .withCustomTestFunc(CF.getLength)
+        .result(5);
 
 tb.run();
