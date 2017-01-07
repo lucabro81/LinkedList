@@ -1,9 +1,10 @@
 import {JasmineTestBuilder} from "../JasmineTestBuilder/JasmineTestBuilder";
 import {LinkedList} from "../../../src/core/LinkedList";
+import {ListElement} from "../../../src/core/ListElement";
 import {DD} from "../TestAssets/DummyData.asset";
 import {CF} from "../TestAssets/CustomFunction.asset";
 
-var tb:JasmineTestBuilder<LinkedList> = new JasmineTestBuilder<LinkedList>();
+var tb:JasmineTestBuilder<LinkedList<ListElement>> = new JasmineTestBuilder<LinkedList<ListElement>>();
 
 /*
 describe("LinkedList SUITE", () => {
@@ -33,7 +34,7 @@ describe("LinkedList SUITE", () => {
 DD.initFirstList();
 DD.initSecondList();
 
-tb.init("LinkedList SUITE", LinkedList);
+tb.init("LinkedList SUITE", LinkedList, [ListElement]);
 
     tb.test("Add element")
         .withCustomTestFunc(CF.addElemTestFunc)

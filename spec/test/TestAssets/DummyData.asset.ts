@@ -13,11 +13,11 @@ class DummyData {
     public static E:ListElement = new ListElement("data5");
 
     public static initFirstList() {
-        DummyData.A.left = null; DummyData.A.right = DummyData.B;
-        DummyData.B.left = DummyData.A; DummyData.B.right = DummyData.C;
-        DummyData.C.left = DummyData.B; DummyData.C.right = DummyData.D;
-        DummyData.D.left = DummyData.C; DummyData.D.right = DummyData.E;
-        DummyData.E.left = DummyData.D; DummyData.E.right = null;
+        DummyData.A.prev = null; DummyData.A.next = DummyData.B;
+        DummyData.B.prev = DummyData.A; DummyData.B.next = DummyData.C;
+        DummyData.C.prev = DummyData.B; DummyData.C.next = DummyData.D;
+        DummyData.D.prev = DummyData.C; DummyData.D.next = DummyData.E;
+        DummyData.E.prev = DummyData.D; DummyData.E.next = null;
     }
 
     ////////////////
@@ -29,9 +29,9 @@ class DummyData {
     public static E1:ListElement = new ListElement("data5");
 
     public static initSecondList() {
-        DummyData.A1.left = null; DummyData.A1.right = DummyData.C1;
-        DummyData.C1.left = DummyData.A1; DummyData.C1.right = DummyData.E1;
-        DummyData.E1.left = DummyData.C1; DummyData.E1.right = null;
+        DummyData.A1.prev = null; DummyData.A1.next = DummyData.C1;
+        DummyData.C1.prev = DummyData.A1; DummyData.C1.next = DummyData.E1;
+        DummyData.E1.prev = DummyData.C1; DummyData.E1.next = null;
     }
 
 } export{DummyData as DD};

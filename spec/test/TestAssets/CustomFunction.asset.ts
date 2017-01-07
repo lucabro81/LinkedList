@@ -3,7 +3,7 @@ import {ListElement} from "../../../src/core/ListElement";
 
 class CustomFunction {
 
-    public static createList(ll:LinkedList):LinkedList {
+    public static createList(ll:LinkedList<ListElement>):LinkedList<ListElement> {
         ll.addElem('data1')
             .addElem('data2')
             .addElem('data3')
@@ -12,13 +12,13 @@ class CustomFunction {
         return ll;
     }
     
-    /*public static beforeTest(ll:LinkedList) {
+    /*public static beforeTest(ll:LinkedList<ListElement>) {
          ll.addElem('data1')
          .addElem('data2')
          .addElem('data4');
      }*/
     
-    public static addElemTestFunc(ll:LinkedList):ListElement {
+    public static addElemTestFunc(ll:LinkedList<ListElement>):ListElement {
         ll.addElem('data1')
             .addElem('data2')
             .addElem('data3')
@@ -27,7 +27,7 @@ class CustomFunction {
         return ll.start;
     }
     
-    public static addElemRightTestFunc(ll:LinkedList):ListElement {
+    public static addElemRightTestFunc(ll:LinkedList<ListElement>):ListElement {
         ll.addElemRight('data1')
             .addElemRight('data2')
             .addElemRight('data3')
@@ -36,7 +36,7 @@ class CustomFunction {
         return ll.start;
     }
     
-    public static addElemLeftTestFunc(ll:LinkedList):ListElement {
+    public static addElemLeftTestFunc(ll:LinkedList<ListElement>):ListElement {
         ll.addElemLeft('data5')
             .addElemLeft('data4')
             .addElemLeft('data3')
@@ -45,8 +45,8 @@ class CustomFunction {
         return ll.start;
     }
     
-    public static removeElemTestFunc(ll:LinkedList):ListElement {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static removeElemTestFunc(ll:LinkedList<ListElement>):ListElement {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
     
         var elem1:ListElement = list.toStart()
             .toNext()
@@ -64,8 +64,8 @@ class CustomFunction {
         return list.start;
     }
     
-    public static removeElemByPosTestFunc(ll:LinkedList):ListElement {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static removeElemByPosTestFunc(ll:LinkedList<ListElement>):ListElement {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
     
         list.removeElemByPos(1);
         list.removeElemByPos(2);
@@ -73,8 +73,8 @@ class CustomFunction {
         return list.start;
     }
     
-    public static removeElemByDataTestFunc(ll:LinkedList):ListElement {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static removeElemByDataTestFunc(ll:LinkedList<ListElement>):ListElement {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
     
         list.removeElemByData("data2");
         list.removeElemByData("data4");
@@ -82,18 +82,18 @@ class CustomFunction {
         return list.start;
     }
     
-    public static getStart(ll:LinkedList):ListElement {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static getStart(ll:LinkedList<ListElement>):ListElement {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
         return list.toStart().get();
     }
     
-    public static getEnd(ll:LinkedList):ListElement {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static getEnd(ll:LinkedList<ListElement>):ListElement {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
         return list.toEnd().get();
     }
     
-    public static nextTest(ll:LinkedList):any {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static nextTest(ll:LinkedList<ListElement>):any {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
         var elem1:ListElement = list.toStart()
             .toNext()
             .get();
@@ -111,8 +111,8 @@ class CustomFunction {
         return {"second":elem1, "third":elem2, "fifth":elem3};
     }
     
-    public static prevTest(ll:LinkedList):any {
-        var list:LinkedList = CustomFunction.createList(ll);
+    public static prevTest(ll:LinkedList<ListElement>):any {
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
         var elem1:ListElement = list.toEnd()
             .toPrev()
             .get();
@@ -130,9 +130,9 @@ class CustomFunction {
         return {"fifth":elem1, "fourth":elem2, "first":elem3};
     }
     
-    public static fromStartToEnd(ll:LinkedList):ListElement {
+    public static fromStartToEnd(ll:LinkedList<ListElement>):ListElement {
     
-        var list:LinkedList = CustomFunction.createList(ll);
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
     
         list.toStart();
     
@@ -143,9 +143,9 @@ class CustomFunction {
         return list.get();
     }
     
-    public static fromEndToStart(ll:LinkedList):ListElement {
+    public static fromEndToStart(ll:LinkedList<ListElement>):ListElement {
     
-        var list:LinkedList = CustomFunction.createList(ll);
+        var list:LinkedList<ListElement> = CustomFunction.createList(ll);
     
         list.toEnd();
     
@@ -156,7 +156,7 @@ class CustomFunction {
         return list.get();
     }
     
-    public static insertElement(ll:LinkedList):ListElement {
+    public static insertElement(ll:LinkedList<ListElement>):ListElement {
         ll.addElem('data1')
             .addElem('data2')
             .addElem('data4')
@@ -167,7 +167,7 @@ class CustomFunction {
         return ll.start;
     }
     
-    public static insertElementByPos(ll:LinkedList):ListElement {
+    public static insertElementByPos(ll:LinkedList<ListElement>):ListElement {
         ll.addElem('data1')
             .addElem('data2')
             .addElem('data4')
@@ -178,7 +178,7 @@ class CustomFunction {
         return ll.start;
     }
 
-    public static getCurrent(ll:LinkedList):ListElement {
+    public static getCurrent(ll:LinkedList<ListElement>):ListElement {
         return ll.get();
     }
 

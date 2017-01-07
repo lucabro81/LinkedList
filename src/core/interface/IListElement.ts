@@ -1,5 +1,5 @@
 interface IListElement {
-    left:any;
-    right:any;
+    prev:any;
+    next:any;
     data:any;
 } export {IListElement}

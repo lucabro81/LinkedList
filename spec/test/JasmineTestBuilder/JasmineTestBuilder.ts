@@ -6,6 +6,7 @@ class JasmineTestBuilder<T> {
     private destroy_method:string;
     private init_method:string;
     private generic_class:{new():T;};
+    private init_params:Array<any>;
 
     private test_index:number;
     private it_method_arr:Array<any>;
@@ -23,10 +24,15 @@ class JasmineTestBuilder<T> {
      *
      * @param describe_name
      * @param c
+     * @param init_params
      */
-    public init(describe_name:string, c: {new(): T; }):void {
+    public init(describe_name:string,
+                c: {new(): T; },
+                init_params:Array<any> = []):void {
         this.describe_name = describe_name;
         this.generic_class = c;
+
+        this.init_params = init_params;
 
         this.destroy_method = "destroy";
         this.init_method = "init";
@@ -347,7 +353,7 @@ class JasmineTestBuilder<T> {
             return;
         }
         else if (last_instance[this.init_method]) {
-            last_instance[this.init_method]();
+            last_instance[this.init_method].apply(last_instance, this.init_params);
         }
         else {
             throw new Error("Fatal Error: " + this.init_method +
