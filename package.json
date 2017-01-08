@@ -1,10 +1,14 @@
 {
-  "name": "linked-list",
-  "version": "1.0.0",
+  "name": "lucabro-linked-list",
+  "version": "1.0.6",
   "description": "linked list class for web projects",
-  "main": "index.js",
+  "main": "package/LinkedList.js",
+  "types": "package/LinkedList.d.ts",
+  "files": [
+    "package/"
+  ],
   "directories": {
-    "test": "test"
+    "test": "spec"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,9 +27,12 @@
     "url": "https://github.com/lucabro81/LinkedList/issues"
   },
   "homepage": "https://github.com/lucabro81/LinkedList#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@types/jasmine": "^2.5.40",
     "@types/requirejs": "^2.1.28",
+    "gulp-replace": "^0.5.4",
+    "jasmine": "^2.5.2",
     "core-js": "^2.4.1",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
@@ -37,9 +44,5 @@
     "typescript": "^2.1.4",
     "typings": "^2.1.0",
     "yargs": "^6.5.0"
-  },
-  "devDependencies": {
-    "gulp-replace": "^0.5.4",
-    "jasmine": "^2.5.2"
   }
 }

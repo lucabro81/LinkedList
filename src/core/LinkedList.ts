@@ -1,5 +1,11 @@
 import {ListElement} from "./ListElement";
 
+// TODO: concat
+// TODO: array to list and list to array
+// TODO: merge?
+// TODO: orderby
+// TODO: init with elems
+
 class LinkedList<T extends ListElement>{
 
     private prev_elem:T;
