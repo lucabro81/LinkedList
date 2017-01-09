@@ -248,14 +248,15 @@ class LinkedList<T extends ListElement>{
     }
 
     /**
-     *
+     * TODO: return a new elem insted of current_elem
      * @returns {T}
      */
     public get():T {
-        var elem_to_return:T = new this.elem_class(this.data);
-        elem_to_return.prev = this.prev;
-        elem_to_return.next = this.next;
-        return elem_to_return;
+        //var elem_to_return:T = new this.elem_class(this.data);
+        //elem_to_return.prev = this.prev;
+        //elem_to_return.next = this.next;
+        //return elem_to_return;
+        return (this.curr_elem) ? this.curr_elem : this.prev_elem;
     }
 
     /**
