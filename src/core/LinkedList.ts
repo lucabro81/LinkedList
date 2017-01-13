@@ -11,6 +11,7 @@ class LinkedList<T extends ListElement>{
     private prev_elem:T;
     private curr_elem:T;
     private elem_class:{new(data:any):T;};
+    private init_data:Array<any>;
 
     public start:T;
     public end:T;
@@ -28,10 +29,13 @@ class LinkedList<T extends ListElement>{
     /**
      *
      */
-    public init(c: {new(data:any): T; }):void {
+    public init(c: {new(data:any): T; }, init_data:Array = []):void {
         this.start = null;
         this.end = null;
         this.elem_class = c;
+        this.init_data = init_data;
+
+        this.setUpList();
     }
 
     /**
@@ -296,6 +300,16 @@ class LinkedList<T extends ListElement>{
     public isEnd(elem:T = null):boolean {
         var elem_to_test:T = (elem) ? elem : this.curr_elem;
         return elem_to_test === this.end;
+    }
+
+    /**
+     *
+     */
+    private setUpList():void {
+        for (let i = 0; i < this.init_data.length; i++) {
+            let data:any = this.init_data[i];
+            this.addElem(data);
+        }
     }
 
     /**
