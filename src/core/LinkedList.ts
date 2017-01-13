@@ -1,7 +1,7 @@
 import {ListElement} from "./ListElement";
 
 // TODO: concat
-// TODO: array to list and list to array
+// TODO: test list to array
 // TODO: merge?
 // TODO: orderby
 // TODO: test init with elems
