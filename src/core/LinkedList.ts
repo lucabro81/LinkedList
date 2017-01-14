@@ -27,6 +27,10 @@ class LinkedList<T extends ListElement>{
      */
     public constructor() {}
 
+    ////////////////////////////////////////////////
+    //////////////////// PUBLIC ////////////////////
+    ////////////////////////////////////////////////
+
     /**
      *
      */
@@ -349,6 +353,67 @@ class LinkedList<T extends ListElement>{
         }
 
         return arr_to_return;
+    }
+
+    /**
+     * TODO: destroy sub lists
+     *
+     * @param sort_func
+     * @param list
+     * @returns {any}
+     */
+    public rSort(sort_func:Function, list:LinkedList<T>):LinkedList<T> {
+
+        var l:number = this.length();
+
+        if (this.length() <= 1) {
+            return this;
+        }
+
+        var sub_list_left:LinkedList<T> = new LinkedList<T>();
+        var sub_list_right:LinkedList<T> = new LinkedList<T>();
+        var i:number = 0;
+        var current:T = this.start;
+
+        sub_list_left.init(this.elem_class);
+        sub_list_right.init(this.elem_class);
+
+        // TODO: try to refactor using pointers and moving functions
+        while (current) {
+            if (i <= l/2) {
+                sub_list_left.addElem(current.data);
+            }
+            else {
+                sub_list_right.addElem(current.data);
+            }
+            current = current.next;
+            i++;
+        }
+
+        sub_list_left = this.rSort(null, sub_list_left);
+        sub_list_right = this.rSort(null, sub_list_right);
+
+        return this.ordFunction(sub_list_left, sub_list_right);
+    }
+
+    /**
+     * TODO: merge sort without recoursion
+     * TODO: destroy sub lists
+     *
+     * @param sort_func
+     * @returns {LinkedList}
+     */
+    public sort(sort_func:Function):LinkedList<T> {
+        return this;
+    }
+
+    /////////////////////////////////////////////////
+    //////////////////// PRIVATE ////////////////////
+    /////////////////////////////////////////////////
+
+    private ordFunction(sub_list_left:LinkedList<T>,
+                        sub_list_right:LinkedList<T>):LinkedList<T> {
+        return this;
     }
 
     /**
