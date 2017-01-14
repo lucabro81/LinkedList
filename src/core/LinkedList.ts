@@ -1,11 +1,11 @@
 import {ListElement} from "./ListElement";
 
-// TODO: concat
+// TODO: test concat
 // TODO: test list to array
 // TODO: merge?
 // TODO: orderby
 // TODO: test init with elems
-// TODO: clone
+// TODO: test clone
 
 class LinkedList<T extends ListElement>{
 
@@ -304,7 +304,17 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList}
      */
     public clone():LinkedList<T> {
-        return this
+
+        // creation
+        var ll:LinkedList<T> = new LinkedList<T>();
+        ll.init(this.elem_class, this.toArray());
+
+        // setting state
+        while(ll.get() != this.get()) {
+            ll.toNext();
+        }
+
+        return ll;
     }
 
     /**
@@ -312,7 +322,15 @@ class LinkedList<T extends ListElement>{
      * @param list_to_append
      * @returns {LinkedList}
      */
-    public concat(list_to_append:LinkedList<T>):LinkedList<T> {
+    public concat(list_to_append:LinkedList):LinkedList<T> {
+
+        var current:T = list_to_append.start;
+
+        while(current) {
+            this.addElem(current.data);
+            current = current.next;
+        }
+
         return this;
     }
 
@@ -335,12 +353,25 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
+     * @param arr
+     */
+    private destroyArray(arr:Array<any>) {
+        var l:number = arr.length;
+        for (var i = l - 1; i >= 0; i++) {
+            arr.pop();
+        }
+    }
+
+    /**
+     *
      */
     private setUpList():void {
         for (let i = 0; i < this.init_data.length; i++) {
             let data:any = this.init_data[i];
             this.addElem(data);
         }
+        this.destroyArray(this.init_data);
+        this.init_data = [];
     }
 
     /**
