@@ -13,6 +13,7 @@ class LinkedList<T extends ListElement>{
     private curr_elem:T;
     private elem_class:{new(data:any):T;};
     private init_data:Array<any>;
+    private sort_func:Function;
 
     public start:T;
     public end:T;
@@ -37,6 +38,7 @@ class LinkedList<T extends ListElement>{
     public init(c: {new(data:any): T; }, init_data:Array = []):void {
         this.start = null;
         this.end = null;
+        this.sort_func = null;
         this.elem_class = c;
         this.init_data = init_data;
 
@@ -273,12 +275,15 @@ class LinkedList<T extends ListElement>{
             this.removeStart();
         }
 
+        this.destroyArray(this.init_data);
+
         this.end = null;
         this.curr_elem = null;
         this.prev_elem = null;
         this.prev = null;
         this.data = null;
         this.next = null;
+        this.sort_func = null;
     }
 
     /**
@@ -356,13 +361,35 @@ class LinkedList<T extends ListElement>{
     }
 
     /**
+     *
+     * @param sort_func
+     */
+    public rSort(sort_func:Function) {
+        this.sort_func = sort_func;
+        this.rMergeSort(null);
+    }
+
+    /**
+     *
+     * @param sort_func
+     */
+    public sort(sort_func:Function) {
+        this.sort_func = sort_func;
+        this.mergeSort(null);
+    }
+
+    /////////////////////////////////////////////////
+    //////////////////// PRIVATE ////////////////////
+    /////////////////////////////////////////////////
+
+    /**
      * TODO: destroy sub lists
      *
      * @param sort_func
      * @param list
      * @returns {any}
      */
-    public rSort(sort_func:Function, list:LinkedList<T>):LinkedList<T> {
+    private rMergeSort(list:LinkedList<T>):LinkedList<T> {
 
         var l:number = this.length();
 
@@ -390,30 +417,65 @@ class LinkedList<T extends ListElement>{
             i++;
         }
 
-        sub_list_left = this.rSort(null, sub_list_left);
-        sub_list_right = this.rSort(null, sub_list_right);
+        sub_list_left = this.rMergeSort(sub_list_left);
+        sub_list_right = this.rMergeSort(sub_list_right);
 
-        return this.ordFunction(sub_list_left, sub_list_right);
+        return this.merge(sub_list_left, sub_list_right);
     }
 
     /**
      * TODO: merge sort without recoursion
      * TODO: destroy sub lists
      *
-     * @param sort_func
+     * @param list
      * @returns {LinkedList}
      */
-    public sort(sort_func:Function):LinkedList<T> {
+    private mergeSort(list:LinkedList<T>):LinkedList<T> {
         return this;
     }
 
-    /////////////////////////////////////////////////
-    //////////////////// PRIVATE ////////////////////
-    /////////////////////////////////////////////////
+    /**
+     *
+     * @param sub_list_left
+     * @param sub_list_right
+     * @returns {LinkedList}
+     */
+    private merge(sub_list_left:LinkedList<T>,
+                  sub_list_right:LinkedList<T>):LinkedList<T> {
 
-    private ordFunction(sub_list_left:LinkedList<T>,
-                        sub_list_right:LinkedList<T>):LinkedList<T> {
-        return this;
+        var sub_list_result:LinkedList<T> = new LinkedList<T>();
+        sub_list_result.init(this.elem_class);
+
+        var current_left:T = sub_list_left.start;
+        var current_right:T = sub_list_right.start;
+
+        while (current_left != null && current_right != null) {
+            if (sub_list_left.start.data <= sub_list_right.start.data) {
+                sub_list_result.addElem(current_left.data);
+                sub_list_left.removeElem(current_left);
+            }
+            else {
+                sub_list_result.addElem(current_right.data);
+                sub_list_right.removeElem(current_right);
+            }
+
+            current_left = sub_list_left.start;
+            current_right = sub_list_right.start;
+        }
+
+        current_left = sub_list_left.start;
+        while (current_left != null) {
+            sub_list_result.addElem(current_left.data);
+            sub_list_left.removeElem(current_left);
+        }
+
+        current_right = sub_list_right.start;
+        while (current_right != null) {
+            sub_list_result.addElem(current_right.data);
+            sub_list_right.removeElem(current_right);
+        }
+
+        return sub_list_result;
     }
 
     /**
