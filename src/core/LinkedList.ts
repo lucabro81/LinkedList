@@ -363,19 +363,21 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @param sort_func
+     * @param list
      */
-    public rSort(sort_func:Function) {
+    public rSort(sort_func:Function, list:LinkedList<T> = null) {
         this.sort_func = sort_func;
-        this.rMergeSort(null);
+        this.rMergeSort(list);
     }
 
     /**
      *
      * @param sort_func
+     * @param list
      */
-    public sort(sort_func:Function) {
+    public sort(sort_func:Function, list:LinkedList<T> = null) {
         this.sort_func = sort_func;
-        this.mergeSort(null);
+        this.mergeSort(list);
     }
 
     /////////////////////////////////////////////////
@@ -385,25 +387,33 @@ class LinkedList<T extends ListElement>{
     /**
      * TODO: destroy sub lists
      *
-     * @param sort_func
-     * @param list
+     * @param ll
      * @returns {any}
      */
-    private rMergeSort(list:LinkedList<T>):LinkedList<T> {
+    private rMergeSort(ll:LinkedList<T>):LinkedList<T> {
 
-        var l:number = this.length();
+        var list:LinkedList<T>;
 
-        if (this.length() <= 1) {
+        if (ll) {
+            list = ll;
+        }
+        else {
+            list = this;
+        }
+
+        var l:number = list.length();
+
+        if (list.length() <= 1) {
             return this;
         }
 
         var sub_list_left:LinkedList<T> = new LinkedList<T>();
         var sub_list_right:LinkedList<T> = new LinkedList<T>();
         var i:number = 0;
-        var current:T = this.start;
+        var current:T = list.start;
 
-        sub_list_left.init(this.elem_class);
-        sub_list_right.init(this.elem_class);
+        sub_list_left.init(list.elem_class);
+        sub_list_right.init(list.elem_class);
 
         // TODO: try to refactor using pointers and moving functions
         while (current) {
