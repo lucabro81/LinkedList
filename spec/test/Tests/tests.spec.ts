@@ -116,4 +116,7 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .withCustomTestFunc(CF.getLength)
         .result(5);
 
+    tb.test("Verify list ordering")
+        .withMethod("rSort", [])
+
 tb.run();

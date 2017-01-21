@@ -67,8 +67,8 @@ class JasmineTestBuilder<T> {
      * @param method_name
      * @returns {JasmineTestBuilder}
      */
-    public test(method_name:string):JasmineTestBuilder<T> {
-        this.spec_name_arr.push(method_name + " TEST");
+    public test(test_name:string):JasmineTestBuilder<T> {
+        this.spec_name_arr.push(test_name + " TEST");
         return this;
     }
 
