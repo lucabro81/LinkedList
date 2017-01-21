@@ -385,7 +385,7 @@ class LinkedList<T extends ListElement>{
     /////////////////////////////////////////////////
 
     /**
-     * TODO: destroy sub lists
+     * TODO: destroy sub lists?
      *
      * @param ll
      * @returns {any}
@@ -503,10 +503,14 @@ class LinkedList<T extends ListElement>{
      *
      */
     private setUpList():void {
-        for (let i = 0; i < this.init_data.length; i++) {
+
+        var l:number = this.init_data.length;
+
+        for (let i = 0; i < l; i++) {
             let data:any = this.init_data[i];
             this.addElem(data);
         }
+        
         this.destroyArray(this.init_data);
         this.init_data = [];
     }
