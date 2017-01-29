@@ -367,6 +367,8 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
+     * TODO: pass a function
+     *
      * @param sort_func
      * @param list
      */
@@ -478,14 +480,12 @@ class LinkedList<T extends ListElement>{
             current_right = sub_list_right.start;
         }
 
-        current_left = sub_list_left.start;
         while (current_left != null) {
             sub_list_result.addElem(current_left.data);
             sub_list_left.removeElem(current_left);
             current_left = sub_list_left.start;
         }
 
-        current_right = sub_list_right.start;
         while (current_right != null) {
             sub_list_result.addElem(current_right.data);
             sub_list_right.removeElem(current_right);
