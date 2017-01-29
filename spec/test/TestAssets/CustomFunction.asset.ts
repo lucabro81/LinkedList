@@ -188,4 +188,16 @@ class CustomFunction {
         return list.length();
     }
 
+    public static orderList(ll:LinkedList<ListElement>):ListElement {
+
+        ll.addElem(4)
+            .addElem(6)
+            .addElem(2)
+            .addElem(5)
+            .addElem(1)
+            .addElem(8);
+
+        return ll.rSort(null).start;
+    }
+
 } export {CustomFunction as CF};

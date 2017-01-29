@@ -35,7 +35,7 @@ class LinkedList<T extends ListElement>{
     /**
      *
      */
-    public init(c: {new(data:any): T; }, init_data:Array = []):void {
+    public init(c: {new(data:any): T; }, init_data:Array<any> = []):void {
         this.start = null;
         this.end = null;
         this.sort_func = null;
@@ -111,8 +111,13 @@ class LinkedList<T extends ListElement>{
             var prev_elem:T = elem.prev;
             var next_elem:T = elem.next;
 
-            prev_elem.next = next_elem;
-            next_elem.prev = prev_elem;
+            if (prev_elem) {
+                prev_elem.next = next_elem;
+            }
+            if (next_elem) {
+                next_elem.prev = prev_elem;
+            }
+
             this.curr_elem = next_elem;
         }
 
@@ -331,7 +336,7 @@ class LinkedList<T extends ListElement>{
      * @param list_to_append
      * @returns {LinkedList}
      */
-    public concat(list_to_append:LinkedList):LinkedList<T> {
+    public concat(list_to_append:LinkedList<T>):LinkedList<T> {
 
         var current:T = list_to_append.start;
 
@@ -365,9 +370,9 @@ class LinkedList<T extends ListElement>{
      * @param sort_func
      * @param list
      */
-    public rSort(sort_func:Function, list:LinkedList<T> = null) {
+    public rSort(sort_func:Function, list:LinkedList<T> = null):LinkedList<T> {
         this.sort_func = sort_func;
-        this.rMergeSort(list);
+        return this.rMergeSort(list);
     }
 
     /**
@@ -375,9 +380,9 @@ class LinkedList<T extends ListElement>{
      * @param sort_func
      * @param list
      */
-    public sort(sort_func:Function, list:LinkedList<T> = null) {
+    public sort(sort_func:Function, list:LinkedList<T> = null):LinkedList<T> {
         this.sort_func = sort_func;
-        this.mergeSort(list);
+        return this.mergeSort(list);
     }
 
     /////////////////////////////////////////////////
@@ -403,8 +408,8 @@ class LinkedList<T extends ListElement>{
 
         var l:number = list.length();
 
-        if (list.length() <= 1) {
-            return this;
+        if (l <= 1) {
+            return list;
         }
 
         var sub_list_left:LinkedList<T> = new LinkedList<T>();
@@ -412,12 +417,12 @@ class LinkedList<T extends ListElement>{
         var i:number = 0;
         var current:T = list.start;
 
-        sub_list_left.init(list.elem_class);
-        sub_list_right.init(list.elem_class);
+        sub_list_left.init(this.elem_class);
+        sub_list_right.init(this.elem_class);
 
         // TODO: try to refactor using pointers and moving functions
         while (current) {
-            if (i <= l/2) {
+            if (i < l/2) {
                 sub_list_left.addElem(current.data);
             }
             else {
@@ -477,12 +482,14 @@ class LinkedList<T extends ListElement>{
         while (current_left != null) {
             sub_list_result.addElem(current_left.data);
             sub_list_left.removeElem(current_left);
+            current_left = sub_list_left.start;
         }
 
         current_right = sub_list_right.start;
         while (current_right != null) {
             sub_list_result.addElem(current_right.data);
             sub_list_right.removeElem(current_right);
+            current_right = sub_list_right.start;
         }
 
         return sub_list_result;
@@ -536,9 +543,9 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList}
      */
     private setCurrentProps():LinkedList<T> {
-        this.prev = this.curr_elem.prev;
-        this.data = this.curr_elem.data;
-        this.next = this.curr_elem.next;
+        this.prev = (this.curr_elem) ? this.curr_elem.prev : null;
+        this.data = (this.curr_elem) ? this.curr_elem.data : null;
+        this.next = (this.curr_elem) ? this.curr_elem.next : null;
         return this;
     }
 

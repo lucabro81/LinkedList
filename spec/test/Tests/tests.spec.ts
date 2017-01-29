@@ -33,6 +33,7 @@ describe("LinkedList SUITE", () => {
 
 DD.initFirstList();
 DD.initSecondList();
+DD.initDummyOrderedLinkedListInt();
 
 tb.init("LinkedList SUITE", LinkedList, [ListElement]);
 
@@ -117,6 +118,8 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .result(5);
 
     tb.test("Verify list ordering")
-        .withMethod("rSort", [])
+        //.withMethod("rSort", [null, DD.ShuffledList])
+        .withCustomTestFunc(CF.orderList)
+        .result(DD.A2);
 
 tb.run();
