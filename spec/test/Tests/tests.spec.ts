@@ -33,13 +33,12 @@ describe("LinkedList SUITE", () => {
 
 DD.initFirstList();
 DD.initSecondList();
-DD.initDummyOrderedLinkedListInt();
 
 tb.init("LinkedList SUITE", LinkedList, [ListElement]);
 
     tb.test("Add element")
-        .withCustomTestFunc(CF.addElemTestFunc)
-        .result(DD.A);
+            .withCustomTestFunc(CF.addElemTestFunc)
+            .result(DD.A);
 
     tb.test("Add element to right")
         .withCustomTestFunc(CF.addElemRightTestFunc)
@@ -118,8 +117,7 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .result(5);
 
     tb.test("Verify list ordering")
-        //.withMethod("rSort", [null, DD.ShuffledList])
-        .withCustomTestFunc(CF.orderList)
-        .result(DD.A2);
+        .withMethod("rSort", [null, DD.shuffledList])
+        .result(DD.orderedList);
 
 tb.run();

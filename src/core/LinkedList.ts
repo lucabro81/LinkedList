@@ -501,7 +501,7 @@ class LinkedList<T extends ListElement>{
      */
     private destroyArray(arr:Array<any>) {
         var l:number = arr.length;
-        for (var i = l - 1; i >= 0; i++) {
+        for (var i = l - 1; i >= 0; i--) {
             arr.pop();
         }
     }

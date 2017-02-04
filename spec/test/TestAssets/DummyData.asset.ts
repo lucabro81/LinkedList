@@ -38,14 +38,20 @@ class DummyData {
     ////////////////
     
     // TODO: for now only with int data, wait for the func param i
-    /*public static initDummyShuffledLinkedListInt():LinkedList<ListElement> {
-        var list:LinkedList<ListElement> = new LinkedList<ListElement>();
-        list.init(ListElement, [4, 6, 2, 5, 1, 8]);
-        return list;
-    }*/
-    
-    //public static ShuffledList:LinkedList<ListElement> = DummyData.initDummyShuffledLinkedListInt();
-    
+    public static initDummyShuffledLinkedListInt():LinkedList<ListElement> {
+        var l1:LinkedList<ListElement> = new LinkedList<ListElement>();
+        l1.init(ListElement, [4, 6, 2, 5, 1, 8]);
+        return l1;
+    }
+    public static initDummyOrderedLinkedListInt():LinkedList<ListElement> {
+        var l2:LinkedList<ListElement> = new LinkedList<ListElement>();
+        l2.init(ListElement, [1, 2, 4, 5, 6, 8]);
+        return l2;
+    }
+    //
+    public static shuffledList:LinkedList<ListElement> = DummyData.initDummyShuffledLinkedListInt();
+    public static orderedList:LinkedList<ListElement> = DummyData.initDummyOrderedLinkedListInt();
+
     public static A2:ListElement = new ListElement(1);
     public static B2:ListElement = new ListElement(2);
     public static C2:ListElement = new ListElement(4);
@@ -53,13 +59,13 @@ class DummyData {
     public static E2:ListElement = new ListElement(6);
     public static F2:ListElement = new ListElement(8);
 
-    public static initDummyOrderedLinkedListInt():void {
+    /*public static initDummyOrderedLinkedListInt():void {
         DummyData.A2.prev = null; DummyData.A2.next = DummyData.B2;
         DummyData.B2.prev = DummyData.A2; DummyData.B2.next = DummyData.C2;
         DummyData.C2.prev = DummyData.B2; DummyData.C2.next = DummyData.D2;
         DummyData.D2.prev = DummyData.C2; DummyData.D2.next = DummyData.E2;
         DummyData.E2.prev = DummyData.D2; DummyData.E2.next = DummyData.F2;
         DummyData.F2.prev = DummyData.E2; DummyData.F2.next = null;
-    }
+    }*/
 
 } export{DummyData as DD};

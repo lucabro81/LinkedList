@@ -68,7 +68,7 @@ class JasmineTestBuilder<T> {
      * @returns {JasmineTestBuilder}
      */
     public test(test_name:string):JasmineTestBuilder<T> {
-        this.spec_name_arr.push(test_name + " TEST");
+        this.spec_name_arr[this.test_index] = test_name + " TEST";
         return this;
     }
 
@@ -79,7 +79,7 @@ class JasmineTestBuilder<T> {
      * @returns {JasmineTestBuilder}
      */
     public withInput(params:Array<any>):JasmineTestBuilder<T> {
-        this.params_arr.push(params);
+        this.params_arr[this.test_index] = params;
         return this;
     }
 
@@ -95,11 +95,11 @@ class JasmineTestBuilder<T> {
         var last_index:number = this.test_class_instance_arr.length - 1;
 
         if (this.test_class_instance_arr[last_index]) {
-            this.spec_name_arr.push(method_name + " TEST");
-            this.test_func_arr.push({
+            this.spec_name_arr[this.test_index] = method_name + " TEST";
+            this.test_func_arr[this.test_index] = {
                 type: "method",
                 func: this.test_class_instance_arr[last_index][method_name]
-            });
+            };
         }
         else {
             //TODO: write method not found exception
@@ -118,10 +118,10 @@ class JasmineTestBuilder<T> {
 
         this.createObject();
 
-        this.test_func_arr.push({
+        this.test_func_arr[this.test_index] = {
             type: "custom",
             func: func
-        });
+        };
 
         return this;
     }
@@ -138,11 +138,11 @@ class JasmineTestBuilder<T> {
         var last_index:number = this.test_class_instance_arr.length - 1;
 
         if (this.test_class_instance_arr[last_index][method_name]) {
-            this.params_arr.push(params);
-            this.test_func_arr.push({
+            this.params_arr[this.test_index] = params;
+            this.test_func_arr[this.test_index] = {
                 type: "method",
                 func: this.test_class_instance_arr[last_index][method_name]
-            });
+            };
         }
         else {
             //TODO: write method not found exception
@@ -159,10 +159,11 @@ class JasmineTestBuilder<T> {
 
         var last_index:number = this.test_class_instance_arr.length - 1;
 
-        this.before_func_arr.push({
+        // this.before_func_arr.push({
+        this.before_func_arr[this.test_index] = {
             func: func,
             instance_index: last_index
-        });
+        };
 
         return this;
     }
@@ -174,6 +175,7 @@ class JasmineTestBuilder<T> {
      */
     public result(expected_value:any):JasmineTestBuilder<T> {
         this.push_it_method("toEqual", expected_value);
+        this.test_index++;
         return this;
     }
 
@@ -183,6 +185,7 @@ class JasmineTestBuilder<T> {
      */
     public resultFalse():JasmineTestBuilder<T> {
         this.push_it_method("toBe", false);
+        this.test_index++;
         return this;
     }
 
@@ -192,6 +195,7 @@ class JasmineTestBuilder<T> {
      */
     public resultTrue():JasmineTestBuilder<T> {
         this.push_it_method("toBe", true);
+        this.test_index++;
         return this;
     }
 
@@ -201,6 +205,7 @@ class JasmineTestBuilder<T> {
      */
     public resultUndefined():JasmineTestBuilder<T> {
         this.push_it_method("toBeUndefined", null);
+        this.test_index++;
         return this;
     }
 
@@ -210,6 +215,7 @@ class JasmineTestBuilder<T> {
      */
     public resultNull():JasmineTestBuilder<T> {
         this.push_it_method("toBeNull", null);
+        this.test_index++;
         return this;
     }
 
@@ -219,6 +225,7 @@ class JasmineTestBuilder<T> {
      */
     public resultNan():JasmineTestBuilder<T> {
         this.push_it_method("toBeNaN", null);
+        this.test_index++;
         return this;
     }
 
