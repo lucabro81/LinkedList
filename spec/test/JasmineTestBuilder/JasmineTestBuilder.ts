@@ -9,6 +9,7 @@ class JasmineTestBuilder<T> {
     private init_params:Array<any>;
 
     private test_index:number;
+    private chained_test_index:number;
     private it_method_arr:Array<any>;
     private test_func_arr:Array<any>;
     private before_func_arr:Array<any>;
@@ -43,6 +44,7 @@ class JasmineTestBuilder<T> {
         this.spec_name_arr = [];
         this.params_arr = [];
         this.test_index = 0;
+        this.chained_test_index = 0;
     }
 
     /**
@@ -127,27 +129,39 @@ class JasmineTestBuilder<T> {
     }
 
     /**
+     *
+     * @param prop_name
+     */
+    public withProp(prop_name:string):JasmineTestBuilder<T> {
+        return this;
+    }
+
+    /**
      * TODO: mejo se je dai 'n occhio che non funziona una fava con il sort....
      *
      * @returns {JasmineTestBuilder}
      */
     public withMethod(method_name:string, params:Array<any>):JasmineTestBuilder<T> {
-
         this.createObject();
+        this.pushTestInstanceMethod(method_name, params);
+        return this;
+    }
 
-        var last_index:number = this.test_class_instance_arr.length - 1;
+    /**
+     *
+     * @param prop_name
+     */
+    public andProp(prop_name:string):JasmineTestBuilder<T> {
+        return this;
+    }
 
-        if (this.test_class_instance_arr[last_index][method_name]) {
-            this.params_arr[this.test_index] = params;
-            this.test_func_arr[this.test_index] = {
-                type: "method",
-                func: this.test_class_instance_arr[last_index][method_name]
-            };
-        }
-        else {
-            //TODO: write method not found exception
-        }
-
+    /**
+     *
+     * @param method_name
+     * @param params
+     */
+    public andMethod(method_name:string, params:Array<any>):JasmineTestBuilder<T> {
+        this.pushTestInstanceMethod(method_name, params);
         return this;
     }
 
@@ -175,6 +189,7 @@ class JasmineTestBuilder<T> {
      */
     public result(expected_value:any):JasmineTestBuilder<T> {
         this.push_it_method("toEqual", expected_value);
+        this.chained_test_index = 0;
         this.test_index++;
         return this;
     }
@@ -185,6 +200,7 @@ class JasmineTestBuilder<T> {
      */
     public resultFalse():JasmineTestBuilder<T> {
         this.push_it_method("toBe", false);
+        this.chained_test_index = 0;
         this.test_index++;
         return this;
     }
@@ -195,6 +211,7 @@ class JasmineTestBuilder<T> {
      */
     public resultTrue():JasmineTestBuilder<T> {
         this.push_it_method("toBe", true);
+        this.chained_test_index = 0;
         this.test_index++;
         return this;
     }
@@ -205,6 +222,7 @@ class JasmineTestBuilder<T> {
      */
     public resultUndefined():JasmineTestBuilder<T> {
         this.push_it_method("toBeUndefined", null);
+        this.chained_test_index = 0;
         this.test_index++;
         return this;
     }
@@ -215,6 +233,7 @@ class JasmineTestBuilder<T> {
      */
     public resultNull():JasmineTestBuilder<T> {
         this.push_it_method("toBeNull", null);
+        this.chained_test_index = 0;
         this.test_index++;
         return this;
     }
@@ -225,6 +244,7 @@ class JasmineTestBuilder<T> {
      */
     public resultNan():JasmineTestBuilder<T> {
         this.push_it_method("toBeNaN", null);
+        this.chained_test_index = 0;
         this.test_index++;
         return this;
     }
@@ -270,6 +290,27 @@ class JasmineTestBuilder<T> {
 
     /**
      *
+     * @param method_name
+     * @param params
+     */
+    private pushTestInstanceMethod(method_name:string, params:Array<any>):void {
+
+        var last_index:number = this.test_class_instance_arr.length - 1;
+
+        if (this.test_class_instance_arr[last_index][method_name]) {
+            this.params_arr[this.test_index][this.chained_test_index] = params;
+            this.test_func_arr[this.test_index][this.chained_test_index] = {
+                type: "method",
+                func: this.test_class_instance_arr[last_index][method_name]
+            };
+        }
+        else {
+            //TODO: write method not found exception
+        }
+    }
+
+    /**
+     *
      * @param index
      */
     private startTests(index:number):void {
@@ -303,34 +344,61 @@ class JasmineTestBuilder<T> {
 
                 it(spec_name, () => {
 
-                    var test_func:any = this.test_func_arr[index].func;
-                    var test_type:any = this.test_func_arr[index].type;
-                    var test_instance:T = this.test_class_instance_arr[index];
-                    var params:Array<any> = this.params_arr[index];
+                    // var test_func:any = this.test_func_arr[index].func;
+                    // var test_type:any = this.test_func_arr[index].type;
+                    // var test_instance:T = this.test_class_instance_arr[index];
+                    // var params:Array<any> = this.params_arr[index];
                     var expect_func:jasmine.Matchers = null;
 
                     // before execution
-                    if (this.before_func_arr[index]) {
-                        var before:any = this.before_func_arr[index];
-                        var before_func:Function = before.func;
-                        var instance_index:number = before.instance_index;
-                        before_func(this.test_class_instance_arr[instance_index]);
-                    }
+                    // if (this.before_func_arr[index]) {
+                    //     var before:any = this.before_func_arr[index];
+                    //     var before_func:Function = before.func;
+                    //     var instance_index:number = before.instance_index;
+                    //     before_func(this.test_class_instance_arr[instance_index]);
+                    // }
 
                     // TODO: "custom" and "method" better like string consts
                     // expect execution
-                    if (test_type === "custom") {
-                        expect_func = expect(test_func(test_instance));
-                    }
-                    else {
-                        expect_func = expect(test_func.apply(test_instance, params));
-                    }
+                    // if (test_type === "custom") {
+                    //     expect_func = expect(test_func(test_instance));
+                    // }
+                    // else {
+                    //     expect_func = expect(test_func.apply(test_instance, params));
+                    // }
+
+                    expect_func = this.methodListToTest(index);
 
                     //TODO: expected value and second params
                     expect_func[expect_name](expected_value);
                 });
             }
         );
+    }
+
+    /**
+     *
+     * @param index
+     */
+    private methodListToTest(index:number):T {
+
+        var test_instance:T = this.test_class_instance_arr[index];
+
+        for(let i = 0; i<=this.chained_test_index; i++) {
+
+            var test_func:any = this.test_func_arr[index][i].func;
+            var test_type:any = this.test_func_arr[index][i].type;
+            var params:Array<any> = this.params_arr[index][i];
+
+            if (test_type === "custom") {
+                test_instance = test_func(test_instance);
+            }
+            else {
+                test_instance = test_func.apply(test_instance, params);
+            }
+        }
+
+        return test_instance;
     }
 
     /**

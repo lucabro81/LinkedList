@@ -37,8 +37,8 @@ DD.initSecondList();
 tb.init("LinkedList SUITE", LinkedList, [ListElement]);
 
     tb.test("Add element")
-            .withCustomTestFunc(CF.addElemTestFunc)
-            .result(DD.A);
+        .withCustomTestFunc(CF.addElemTestFunc)
+        .result(DD.A);
 
     tb.test("Add element to right")
         .withCustomTestFunc(CF.addElemRightTestFunc)
@@ -84,15 +84,15 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .withCustomTestFunc(CF.fromEndToStart)
         .result(DD.A);
 
-    tb.test("Is list's start?")
-        .withMethod("isStart", [])
-        .after(CF.fromEndToStart)
-        .resultTrue();
+    // tb.test("Is list's start?")
+    //     .withMethod("isStart", [])
+    //     .after(CF.fromEndToStart)
+    //     .resultTrue();
 
-    tb.test("Is list's end?")
-        .withMethod("isEnd", [])
-        .after(CF.fromStartToEnd)
-        .resultTrue();
+    // tb.test("Is list's end?")
+    //     .withMethod("isEnd", [])
+    //     .after(CF.fromStartToEnd)
+    //     .resultTrue();
 
     tb.test("Insert element in the middle without pass a position")
         .withCustomTestFunc(CF.insertElement)
@@ -102,15 +102,15 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
         .withCustomTestFunc(CF.insertElementByPos)
         .result(DD.A);
 
-    tb.test("Verify current after simple insertion")
-        .withCustomTestFunc(CF.getCurrent)
-        .after(CF.insertElement)
-        .result(DD.C);
-
-    tb.test("Verify current after insertion with position")
-        .withCustomTestFunc(CF.getCurrent)
-        .after(CF.insertElementByPos)
-        .result(DD.C);
+    // tb.test("Verify current after simple insertion")
+    //     .withCustomTestFunc(CF.getCurrent)
+    //     .after(CF.insertElement)
+    //     .result(DD.C);
+    //
+    // tb.test("Verify current after insertion with position")
+    //     .withCustomTestFunc(CF.getCurrent)
+    //     .after(CF.insertElementByPos)
+    //     .result(DD.C);
 
     tb.test("Verify list length")
         .withCustomTestFunc(CF.getLength)
