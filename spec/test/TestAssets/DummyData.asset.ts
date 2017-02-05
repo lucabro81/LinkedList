@@ -48,9 +48,34 @@ class DummyData {
         l2.init(ListElement, [1, 2, 4, 5, 6, 8]);
         return l2;
     }
+    public static list2DataElemsLeft(take_instance:boolean = false):LinkedList<ListElement> {
+        if (take_instance) {
+            return DummyData.list2DataElemsLeft_instance;
+        }
+        var l3:LinkedList<ListElement> = new LinkedList<ListElement>();
+        l3.init(ListElement, ["data2", "data3"]);
+        return l3;
+    }
+    public static list3DataElemsRight(take_instance:boolean = false):LinkedList<ListElement> {
+        if (take_instance) {
+            return DummyData.list2DataElemsLeft_instance;
+        }
+        var l3:LinkedList<ListElement> = new LinkedList<ListElement>();
+        l3.init(ListElement, ["data1", "data2", "data3"]);
+        return l3;
+    }
+    public static list4DataElemsRight():LinkedList<ListElement> {
+        var l4:LinkedList<ListElement> = new LinkedList<ListElement>();
+        l4.init(ListElement, ["data1", "data2", "data3", "data4"]);
+        return l4;
+    }
     //
     public static shuffledList:LinkedList<ListElement> = DummyData.initDummyShuffledLinkedListInt();
     public static orderedList:LinkedList<ListElement> = DummyData.initDummyOrderedLinkedListInt();
+    private static list2DataElemsLeft_instance:LinkedList<ListElement> = DummyData.list2DataElemsLeft();
+    private static list3DataElemsRight_instance:LinkedList<ListElement> = DummyData.list3DataElemsRight();
+    // public static list3DataElems:LinkedList<ListElement> = DummyData.list3DataElems();
+    // public static list4DataElems:LinkedList<ListElement> = DummyData.init4DataElemsLinkedList();
 
     public static A2:ListElement = new ListElement(1);
     public static B2:ListElement = new ListElement(2);

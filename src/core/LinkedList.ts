@@ -48,29 +48,35 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @param data
+     * @param ll
+     * @returns {LinkedList<T>}
      */
-    public addElem(data:any):LinkedList<T> {
-        return this.addElemRight(data);
+    public addElem(data:any, ll:LinkedList<T> = null):LinkedList<T> {
+        return this.addElemRight(data, ll);
     }
 
     /**
      *
      * @param data
+     * @param ll
+     * @returns {LinkedList<T>}
      */
-    public addElemRight(data:any):LinkedList<T> {
+    public addElemRight(data:any, ll:LinkedList<T> = null):LinkedList<T> {
 
-        var new_elem:T = new this.elem_class(data);
+        var list: LinkedList<T> = this.getContext(ll);
 
-        if (!this.isFirstElem(new_elem)) {
-            new_elem.prev = this.end;
-            this.end.next = new_elem;
-            this.end = this.end.next;
+        var new_elem: T = new list.elem_class(data);
+
+        if (!list.isFirstElem(new_elem)) {
+            new_elem.prev = list.end;
+            list.end.next = new_elem;
+            list.end = list.end.next;
         }
 
-        this.curr_elem = this.end;
-        this.prev_elem = this.end;
+        list.curr_elem = list.end;
+        list.prev_elem = list.end;
 
-        return this.setCurrentProps();
+        return list.setCurrentProps();
     }
 
     /**
@@ -390,6 +396,19 @@ class LinkedList<T extends ListElement>{
     /////////////////////////////////////////////////
     //////////////////// PRIVATE ////////////////////
     /////////////////////////////////////////////////
+
+    private getContext(ll:LinkedList<T>):LinkedList<T> {
+        var list:LinkedList<T>;
+
+        if (ll) {
+            list = ll;
+        }
+        else {
+            list = this;
+        }
+
+        return list
+    }
 
     /**
      * TODO: destroy sub lists?

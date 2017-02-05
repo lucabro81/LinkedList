@@ -36,53 +36,59 @@ DD.initSecondList();
 
 tb.init("LinkedList SUITE", LinkedList, [ListElement]);
 
+    // tb.test("Add element")
+    //     .withCustomTestFunc(CF.addElemTestFunc)
+    //     .result(DD.A);
+
     tb.test("Add element")
-        .withCustomTestFunc(CF.addElemTestFunc)
-        .result(DD.A);
+        .withMethod("addElem", ["data4", DD.list3DataElemsRight()])
+        .andProp("start")
+        .result(DD.list4DataElemsRight().start);
 
     tb.test("Add element to right")
-        .withCustomTestFunc(CF.addElemRightTestFunc)
-        .result(DD.A);
+        .withMethod("addElemRight", ["data4", DD.list3DataElemsRight()])
+        .andProp("start")
+        .result(DD.list4DataElemsRight().start);
 
-    tb.test("Add element to left")
-        .withCustomTestFunc(CF.addElemLeftTestFunc)
-        .result(DD.A);
-
-    tb.test("Get first element")
-        .withCustomTestFunc(CF.getStart)
-        .result(DD.A);
-
-    tb.test("Get last element")
-        .withCustomTestFunc(CF.getEnd)
-        .result(DD.E);
-
-    tb.test("Remove element")
-        .withCustomTestFunc(CF.removeElemTestFunc)
-        .result(DD.A1);
-
-    tb.test("Remove element by position")
-        .withCustomTestFunc(CF.removeElemByPosTestFunc)
-        .result(DD.A1);
-
-    tb.test("Remove element by data")
-        .withCustomTestFunc(CF.removeElemByDataTestFunc)
-        .result(DD.A1);
-
-    tb.test("Try next")
-        .withCustomTestFunc(CF.nextTest)
-        .result({"second":DD.B, "third":DD.C, "fifth":DD.E});
-
-    tb.test("Try prev")
-        .withCustomTestFunc(CF.prevTest)
-        .result({"fifth":DD.D, "fourth":DD.C, "first":DD.A});
-
-    tb.test("Try list from start to end")
-        .withCustomTestFunc(CF.fromStartToEnd)
-        .result(DD.E);
-
-    tb.test("Try list from end to start")
-        .withCustomTestFunc(CF.fromEndToStart)
-        .result(DD.A);
+    // tb.test("Add element to left")
+    //     .withCustomTestFunc(CF.addElemLeftTestFunc)
+    //     .result(DD.A);
+    //
+    // tb.test("Get first element")
+    //     .withCustomTestFunc(CF.getStart)
+    //     .result(DD.A);
+    //
+    // tb.test("Get last element")
+    //     .withCustomTestFunc(CF.getEnd)
+    //     .result(DD.E);
+    //
+    // tb.test("Remove element")
+    //     .withCustomTestFunc(CF.removeElemTestFunc)
+    //     .result(DD.A1);
+    //
+    // tb.test("Remove element by position")
+    //     .withCustomTestFunc(CF.removeElemByPosTestFunc)
+    //     .result(DD.A1);
+    //
+    // tb.test("Remove element by data")
+    //     .withCustomTestFunc(CF.removeElemByDataTestFunc)
+    //     .result(DD.A1);
+    //
+    // tb.test("Try next")
+    //     .withCustomTestFunc(CF.nextTest)
+    //     .result({"second":DD.B, "third":DD.C, "fifth":DD.E});
+    //
+    // tb.test("Try prev")
+    //     .withCustomTestFunc(CF.prevTest)
+    //     .result({"fifth":DD.D, "fourth":DD.C, "first":DD.A});
+    //
+    // tb.test("Try list from start to end")
+    //     .withCustomTestFunc(CF.fromStartToEnd)
+    //     .result(DD.E);
+    //
+    // tb.test("Try list from end to start")
+    //     .withCustomTestFunc(CF.fromEndToStart)
+    //     .result(DD.A);
 
     // tb.test("Is list's start?")
     //     .withMethod("isStart", [])
@@ -94,13 +100,13 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
     //     .after(CF.fromStartToEnd)
     //     .resultTrue();
 
-    tb.test("Insert element in the middle without pass a position")
-        .withCustomTestFunc(CF.insertElement)
-        .result(DD.A);
-
-    tb.test("Insert element passing a middle position")
-        .withCustomTestFunc(CF.insertElementByPos)
-        .result(DD.A);
+    // tb.test("Insert element in the middle without pass a position")
+    //     .withCustomTestFunc(CF.insertElement)
+    //     .result(DD.A);
+    //
+    // tb.test("Insert element passing a middle position")
+    //     .withCustomTestFunc(CF.insertElementByPos)
+    //     .result(DD.A);
 
     // tb.test("Verify current after simple insertion")
     //     .withCustomTestFunc(CF.getCurrent)
@@ -112,12 +118,12 @@ tb.init("LinkedList SUITE", LinkedList, [ListElement]);
     //     .after(CF.insertElementByPos)
     //     .result(DD.C);
 
-    tb.test("Verify list length")
-        .withCustomTestFunc(CF.getLength)
-        .result(5);
-
-    tb.test("Verify list ordering")
-        .withMethod("rSort", [null, DD.shuffledList])
-        .result(DD.orderedList);
+    // tb.test("Verify list length")
+    //     .withCustomTestFunc(CF.getLength)
+    //     .result(5);
+    //
+    // tb.test("Verify list ordering")
+    //     .withMethod("rSort", [null, DD.shuffledList])
+    //     .result(DD.orderedList);
 
 tb.run();
