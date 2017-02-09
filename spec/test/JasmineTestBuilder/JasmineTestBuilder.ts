@@ -17,10 +17,15 @@ class JasmineTestBuilder<T> {
     private spec_name_arr:Array<string>;
     private params_arr:Array<Array<any>>;
 
+
     /**
-     *
+     * @constructor
      */
     public constructor() {}
+
+////////////////////////////////
+//////////// PUBLIC ////////////
+////////////////////////////////
 
     /**
      *
@@ -108,7 +113,8 @@ class JasmineTestBuilder<T> {
             };
         }
         else {
-            //TODO: write method not found exception
+            throw new Error("Fatal Error: " + method_name +
+                " doesn't exists, check your project for the correct method name");
         }
 
         return this;
@@ -133,6 +139,7 @@ class JasmineTestBuilder<T> {
     }
 
     /**
+     * Property to test
      *
      * @param prop_name
      */
@@ -152,6 +159,7 @@ class JasmineTestBuilder<T> {
     }
 
     /**
+     * Property to test, chain with a previous method or prop to test
      *
      * @param prop_name
      */
@@ -162,6 +170,8 @@ class JasmineTestBuilder<T> {
 
     /**
      *
+     * Method to test, chain with a previous method or prop to test
+     *
      * @param method_name
      * @param params
      */
@@ -171,7 +181,7 @@ class JasmineTestBuilder<T> {
     }
 
     /**
-     *
+     * @deprecated
      * @returns {JasmineTestBuilder}
      */
     public after(func:Function):JasmineTestBuilder<T> {
@@ -253,7 +263,7 @@ class JasmineTestBuilder<T> {
     }
 
     /**
-     *
+     * Run all tests one after one
      */
     public run():void {
         describe(this.describe_name, () => {
@@ -294,7 +304,12 @@ class JasmineTestBuilder<T> {
         this.init_method = null;
     }
 
+/////////////////////////////////
+//////////// PRIVATE ////////////
+/////////////////////////////////
+
     /**
+     * Collect method to test in the array test_func_arr with type "method"
      *
      * @param method_name
      * @param params
@@ -311,12 +326,18 @@ class JasmineTestBuilder<T> {
             };
         }
         else {
-            //TODO: write method not found exception
+            throw new Error("Fatal Error: " + method_name +
+                " doesn't exists, check your project for the correct method name");
         }
 
         this.chained_test_index++;
     }
 
+    /**
+     * Collect properties to test in the array test_func_arr with type "prop"
+     *
+     * @param prop_name
+     */
     private pushTestInstanceProp(prop_name:string):void {
         var last_index:number = this.test_class_instance_arr.length - 1;
 
@@ -327,7 +348,8 @@ class JasmineTestBuilder<T> {
             };
         }
         else {
-            //TODO: write method not found exception
+            throw new Error("Fatal Error: " + prop_name +
+                " doesn't exists, check your project for the correct property name");
         }
 
         this.chained_test_index++;
@@ -356,6 +378,7 @@ class JasmineTestBuilder<T> {
     }
 
     /**
+     * Collect all the Jasmine's it functions
      *
      * @param expect_name
      * @param expected_value
@@ -380,6 +403,8 @@ class JasmineTestBuilder<T> {
     }
 
     /**
+     * Compose sequence of methods and props to run to obtain the desidered value usend in the expect()
+     * Jasmine's function
      *
      * @param index
      */
@@ -413,9 +438,7 @@ class JasmineTestBuilder<T> {
         this.chained_test_index = 0;
         this.test_index++;
         this.params_arr[this.test_index] = [];
-        this.test_func_arr[this.test_index] = []
-
-        console.log("this.params_arr", this.params_arr);
+        this.test_func_arr[this.test_index] = [];
 
         return test_instance;
     }
@@ -432,9 +455,9 @@ class JasmineTestBuilder<T> {
     }
 
     /**
-     *
+     * Create the test instance of the class passed in the init method
      */
-    private createObject() {
+    private createObject():void {
 
         var test_class_instance = new this.generic_class();
 
