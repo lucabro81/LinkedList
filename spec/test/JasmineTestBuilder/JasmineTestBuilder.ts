@@ -9,7 +9,8 @@ class JasmineTestBuilder<T> {
     private init_params:Array<any>;
 
     private test_index:number;
-    private chained_test_index:number;
+    //private chained_test_index:number;
+    private chained_test_index_arr:Array<number>;
     private it_method_arr:Array<any>;
     private test_func_arr:Array<any>;
     private prop_arr:Array<any>;
@@ -51,9 +52,12 @@ class JasmineTestBuilder<T> {
         this.params_arr = [];
         this.prop_arr = [];
         this.test_index = 0;
-        this.chained_test_index = 0;
+        //this.chained_test_index = 0;
+        this.chained_test_index_arr = [];
+
         this.params_arr[this.test_index] = [];
         this.test_func_arr[this.test_index] = [];
+        this.chained_test_index_arr[this.test_index] = 0;
     }
 
     /**
@@ -213,8 +217,8 @@ class JasmineTestBuilder<T> {
      */
     public resultFalse():JasmineTestBuilder<T> {
         this.push_it_method("toBe", false);
-        this.chained_test_index = 0;
-        this.test_index++;
+        //this.chained_test_index = 0;
+        //this.test_index++;
         return this;
     }
 
@@ -224,8 +228,8 @@ class JasmineTestBuilder<T> {
      */
     public resultTrue():JasmineTestBuilder<T> {
         this.push_it_method("toBe", true);
-        this.chained_test_index = 0;
-        this.test_index++;
+        //this.chained_test_index = 0;
+        //this.test_index++;
         return this;
     }
 
@@ -235,8 +239,8 @@ class JasmineTestBuilder<T> {
      */
     public resultUndefined():JasmineTestBuilder<T> {
         this.push_it_method("toBeUndefined", null);
-        this.chained_test_index = 0;
-        this.test_index++;
+        //this.chained_test_index = 0;
+        //this.test_index++;
         return this;
     }
 
@@ -246,8 +250,8 @@ class JasmineTestBuilder<T> {
      */
     public resultNull():JasmineTestBuilder<T> {
         this.push_it_method("toBeNull", null);
-        this.chained_test_index = 0;
-        this.test_index++;
+        //this.chained_test_index = 0;
+        //this.test_index++;
         return this;
     }
 
@@ -257,8 +261,8 @@ class JasmineTestBuilder<T> {
      */
     public resultNan():JasmineTestBuilder<T> {
         this.push_it_method("toBeNaN", null);
-        this.chained_test_index = 0;
-        this.test_index++;
+        //this.chained_test_index = 0;
+        //this.test_index++;
         return this;
     }
 
@@ -319,8 +323,8 @@ class JasmineTestBuilder<T> {
         var last_index:number = this.test_class_instance_arr.length - 1;
 
         if (this.test_class_instance_arr[last_index][method_name]) {
-            this.params_arr[this.test_index][this.chained_test_index] = params;
-            this.test_func_arr[this.test_index][this.chained_test_index] = {
+            this.params_arr[this.test_index][this.chained_test_index_arr[this.test_index]] = params;
+            this.test_func_arr[this.test_index][this.chained_test_index_arr[this.test_index]] = {
                 type: "method",
                 func: this.test_class_instance_arr[last_index][method_name]
             };
@@ -330,7 +334,7 @@ class JasmineTestBuilder<T> {
                 " doesn't exists, check your project for the correct method name");
         }
 
-        this.chained_test_index++;
+        this.chained_test_index_arr[this.test_index]++;
     }
 
     /**
@@ -342,7 +346,7 @@ class JasmineTestBuilder<T> {
         var last_index:number = this.test_class_instance_arr.length - 1;
 
         if (this.test_class_instance_arr[last_index].hasOwnProperty(prop_name)) {
-            this.test_func_arr[this.test_index][this.chained_test_index] = {
+            this.test_func_arr[this.test_index][this.chained_test_index_arr[this.test_index]] = {
                 type: "prop",
                 prop: prop_name
             };
@@ -352,7 +356,7 @@ class JasmineTestBuilder<T> {
                 " doesn't exists, check your project for the correct property name");
         }
 
-        this.chained_test_index++;
+        this.chained_test_index_arr[this.test_index]++;
     }
 
     /**
@@ -400,6 +404,12 @@ class JasmineTestBuilder<T> {
                 });
             }
         );
+
+        this.test_index++;
+        this.params_arr[this.test_index] = [];
+        this.test_func_arr[this.test_index] = [];
+        this.chained_test_index_arr[this.test_index] = 0;
+
     }
 
     /**
@@ -410,9 +420,14 @@ class JasmineTestBuilder<T> {
      */
     private methodListToTest(index:number):T {
 
+        /*console.log("\n\nindex", index);
+        console.log("this.chained_test_index", this.chained_test_index_arr[index]);
+        console.log("this.test_index", this.test_index);
+        console.log("this.test_func_arr", this.test_func_arr);*/
+
         var test_instance:T = this.test_class_instance_arr[index];
 
-        for(let i = 0; i < this.chained_test_index; i++) {
+        for(let i = 0; i < this.chained_test_index_arr[index]; i++) {
 
             // TODO: def type of the follow
             var test_func_elem:any = this.test_func_arr[index][i];
@@ -434,11 +449,6 @@ class JasmineTestBuilder<T> {
                 }
             }
         }
-
-        this.chained_test_index = 0;
-        this.test_index++;
-        this.params_arr[this.test_index] = [];
-        this.test_func_arr[this.test_index] = [];
 
         return test_instance;
     }

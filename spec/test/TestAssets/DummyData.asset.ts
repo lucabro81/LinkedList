@@ -69,11 +69,21 @@ class DummyData {
         l4.init(ListElement, ["data1", "data2", "data3", "data4"]);
         return l4;
     }
+    public static listFromArrayData(data_arr:Array<any>, take_instance:boolean = false):LinkedList<ListElement> {
+        var ll:LinkedList<ListElement> = new LinkedList<ListElement>();
+        if (take_instance) {
+            return DummyData.list2DataElemsLeft_instance;
+        }
+        ll.init(ListElement, data_arr);
+        DummyData.listFromArrayData_instance = ll;
+        return ll;
+    }
     //
     public static shuffledList:LinkedList<ListElement> = DummyData.initDummyShuffledLinkedListInt();
     public static orderedList:LinkedList<ListElement> = DummyData.initDummyOrderedLinkedListInt();
     private static list2DataElemsLeft_instance:LinkedList<ListElement> = DummyData.list2DataElemsLeft();
     private static list3DataElemsRight_instance:LinkedList<ListElement> = DummyData.list3DataElemsRight();
+    private static listFromArrayData_instance:LinkedList<ListElement>;
     // public static list3DataElems:LinkedList<ListElement> = DummyData.list3DataElems();
     // public static list4DataElems:LinkedList<ListElement> = DummyData.init4DataElemsLinkedList();
 

@@ -38,6 +38,12 @@ class LinkedList<T extends ListElement>{
     public init(c: {new(data:any): T; }, init_data:Array<any> = []):void {
         this.start = null;
         this.end = null;
+        this.prev_elem = null;
+        this.curr_elem = null;
+
+        this.prev = null;
+        this.data = null;
+        this.next = null;
         this.sort_func = null;
         this.elem_class = c;
         this.init_data = init_data;
@@ -82,21 +88,25 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @param data
+     * @param ll
+     * @returns {LinkedList<T>}
      */
-    public addElemLeft(data:any):LinkedList<T> {
+    public addElemLeft(data:any, ll:LinkedList<T> = null):LinkedList<T> {
 
-        var new_elem:T = new this.elem_class(data);
+        var list: LinkedList<T> = this.getContext(ll);
 
-        if (!this.isFirstElem(new_elem)) {
-            new_elem.next = this.start;
-            this.start.prev = new_elem;
-            this.start = this.start.prev;
+        var new_elem:T = new list.elem_class(data);
+
+        if (!list.isFirstElem(new_elem)) {
+            new_elem.next = list.start;
+            list.start.prev = new_elem;
+            list.start = list.start.prev;
         }
 
-        this.curr_elem = this.start;
-        this.prev_elem = this.start;
+        list.curr_elem = list.start;
+        list.prev_elem = list.start;
 
-        return this.setCurrentProps();
+        return list.setCurrentProps();
     }
 
     /**
@@ -237,36 +247,40 @@ class LinkedList<T extends ListElement>{
      *
      * @returns {LinkedList<T>}
      */
-    public toStart():LinkedList<T> {
-        this.curr_elem = this.start;
-        return this.setCurrentProps();
+    public toStart(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = list.start;
+        return list.setCurrentProps();
     }
 
     /**
      *
       * @returns {LinkedList<T>}
      */
-    public toNext():LinkedList<T> {
-        this.curr_elem = (this.curr_elem.next) ? this.curr_elem.next : this.end;
-        return this.setCurrentProps();
+    public toNext(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = (list.curr_elem.next) ? list.curr_elem.next : list.end;
+        return list.setCurrentProps();
     }
 
     /**
      *
      * @returns {LinkedList<T>}
      */
-    public toPrev():LinkedList<T> {
-        this.curr_elem = (this.curr_elem.prev) ? this.curr_elem.prev : this.start;
-        return this.setCurrentProps();
+    public toPrev(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = (list.curr_elem.prev) ? list.curr_elem.prev : list.start;
+        return list.setCurrentProps();
     }
 
     /**
      * 
      * @returns {LinkedList<T>}
      */
-    public toEnd():LinkedList<T> {
-        this.curr_elem = this.end;
-        return this.setCurrentProps();
+    public toEnd(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = list.end;
+        return list.setCurrentProps();
     }
 
     /**

@@ -36,31 +36,32 @@ DD.initSecondList();
 
 tb.init("LinkedList SUITE", LinkedList, [ListElement]);
 
-    // tb.test("Add element")
-    //     .withCustomTestFunc(CF.addElemTestFunc)
-    //     .result(DD.A);
-
     tb.test("Add element")
-        .withMethod("addElem", ["data4", DD.list3DataElemsRight()])
+        .withMethod("addElem", ["data4", DD.listFromArrayData(["data1","data2","data3"])])
         .andProp("start")
-        .result(DD.list4DataElemsRight().start);
+        .result(DD.listFromArrayData(["data1","data2","data3","data4"]).start);
 
     tb.test("Add element to right")
-        .withMethod("addElemRight", ["data4", DD.list3DataElemsRight()])
+        .withMethod("addElemRight", ["data4", DD.listFromArrayData(["data1","data2","data3"])])
         .andProp("start")
-        .result(DD.list4DataElemsRight().start);
+        .result(DD.listFromArrayData(["data1","data2","data3","data4"]).start);
 
-    // tb.test("Add element to left")
-    //     .withCustomTestFunc(CF.addElemLeftTestFunc)
-    //     .result(DD.A);
-    //
-    // tb.test("Get first element")
-    //     .withCustomTestFunc(CF.getStart)
-    //     .result(DD.A);
-    //
-    // tb.test("Get last element")
-    //     .withCustomTestFunc(CF.getEnd)
-    //     .result(DD.E);
+    tb.test("Add element to left")
+        .withMethod("addElemLeft", ["data1", DD.listFromArrayData(["data2","data3","data4"])])
+        .andProp("start")
+        .result(DD.listFromArrayData(["data1","data2","data3","data4"]).start);
+
+    tb.test("Get first element")
+        .withMethod("toStart", [DD.listFromArrayData(["data2","data3","data4"])])
+        .andMethod("get", [DD.listFromArrayData([], true)])
+        .andProp("data")
+        .result("data2");
+
+    tb.test("Get last element")
+        .withMethod("toEnd", [DD.listFromArrayData(["data2","data3","data4"])])
+        .andMethod("get", [DD.listFromArrayData([], true)])
+        .andProp("data")
+        .result("data4");
     //
     // tb.test("Remove element")
     //     .withCustomTestFunc(CF.removeElemTestFunc)
