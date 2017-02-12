@@ -12,7 +12,6 @@ class LinkedList<T extends ListElement>{
     private prev_elem:T;
     private curr_elem:T;
     private elem_class:{new(data:any):T;};
-    private init_data:Array<any>;
     private sort_func:Function;
 
     public start:T;
@@ -44,11 +43,10 @@ class LinkedList<T extends ListElement>{
         this.prev = null;
         this.data = null;
         this.next = null;
-        this.sort_func = null;
+        this.sort_func = this.defaultSortFunc();
         this.elem_class = c;
-        this.init_data = init_data;
 
-        this.setUpList();
+        this.setUpList(init_data);
     }
 
     /**
@@ -69,20 +67,20 @@ class LinkedList<T extends ListElement>{
      */
     public addElemRight(data:any, ll:LinkedList<T> = null):LinkedList<T> {
 
-        var list: LinkedList<T> = this.getContext(ll);
+        //var list: LinkedList<T> = this.getContext(ll);
 
-        var new_elem: T = new list.elem_class(data);
+        var new_elem: T = new this.elem_class(data);
 
-        if (!list.isFirstElem(new_elem)) {
-            new_elem.prev = list.end;
-            list.end.next = new_elem;
-            list.end = list.end.next;
+        if (!this.isFirstElem(new_elem)) {
+            new_elem.prev = this.end;
+            this.end.next = new_elem;
+            this.end = this.end.next;
         }
 
-        list.curr_elem = list.end;
-        list.prev_elem = list.end;
+        this.curr_elem = this.end;
+        this.prev_elem = this.end;
 
-        return list.setCurrentProps();
+        return this.setCurrentProps();
     }
 
     /**
@@ -113,7 +111,11 @@ class LinkedList<T extends ListElement>{
      *
      * @param elem
      */
-    public removeElem(elem:T):LinkedList<T> {
+    public removeElem(elem:T = null):LinkedList<T> {
+
+        if (elem === null) {
+            elem = this.curr_elem;
+        }
 
         if (this.isStart(elem)) {
             this.removeStart();
@@ -162,7 +164,7 @@ class LinkedList<T extends ListElement>{
             if (i === pos) {
                 this.curr_elem = current.prev;
                 this.removeElem(current);
-                return;
+                break;
             }
             i++;
             current = current.next;
@@ -182,7 +184,7 @@ class LinkedList<T extends ListElement>{
             if (current.data === data) {
                 this.curr_elem = current.prev;
                 this.removeElem(current);
-                return;
+                break;
             }
             current = current.next;
         }
@@ -200,7 +202,7 @@ class LinkedList<T extends ListElement>{
 
         var elem:T = new this.elem_class(data);
 
-        if (pos == 0 || (pos <= -1 && this.curr_elem.prev == null)) {
+        if (pos == 0 || (pos <= -1 && (this.curr_elem && this.curr_elem.prev === null)) || this.curr_elem === null) {
             // new start elem
             this.addElemLeft(data);
         }
@@ -300,8 +302,6 @@ class LinkedList<T extends ListElement>{
             this.removeStart();
         }
 
-        this.destroyArray(this.init_data);
-
         this.end = null;
         this.curr_elem = null;
         this.prev_elem = null;
@@ -392,8 +392,10 @@ class LinkedList<T extends ListElement>{
      * @param sort_func
      * @param list
      */
-    public rSort(sort_func:Function, list:LinkedList<T> = null):LinkedList<T> {
-        this.sort_func = sort_func;
+    public rSort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
+        if (sort_func !== null) {
+            this.sort_func = sort_func;
+        }
         return this.rMergeSort(list);
     }
 
@@ -402,7 +404,7 @@ class LinkedList<T extends ListElement>{
      * @param sort_func
      * @param list
      */
-    public sort(sort_func:Function, list:LinkedList<T> = null):LinkedList<T> {
+    public sort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
         this.sort_func = sort_func;
         return this.mergeSort(list);
     }
@@ -422,6 +424,12 @@ class LinkedList<T extends ListElement>{
         }
 
         return list
+    }
+
+    private defaultSortFunc() {
+        return (a:T, b:T):boolean => {
+            return a <= b;
+        }
     }
 
     /**
@@ -500,7 +508,7 @@ class LinkedList<T extends ListElement>{
         var current_right:T = sub_list_right.start;
 
         while (current_left != null && current_right != null) {
-            if (sub_list_left.start.data <= sub_list_right.start.data) {
+            if (this.sort_func(sub_list_left.start.data, sub_list_right.start.data)) {
                 sub_list_result.addElem(current_left.data);
                 sub_list_left.removeElem(current_left);
             }
@@ -542,17 +550,14 @@ class LinkedList<T extends ListElement>{
     /**
      *
      */
-    private setUpList():void {
+    private setUpList(init_data:Array<any>):void {
 
-        var l:number = this.init_data.length;
+        var l:number = init_data.length;
 
         for (let i = 0; i < l; i++) {
-            let data:any = this.init_data[i];
+            let data:any = init_data[i];
             this.addElem(data);
         }
-        
-        this.destroyArray(this.init_data);
-        this.init_data = [];
     }
 
     /**

@@ -1,3 +1,5 @@
+// TODO: let the user choice using a single instance through the test or one for every one
+
 class JasmineTestBuilder<T> {
 
     private describe_name:string;
@@ -37,6 +39,9 @@ class JasmineTestBuilder<T> {
     public init(describe_name:string,
                 c: {new(): T; },
                 init_params:Array<any> = []):void {
+
+        //this.destroyObject();
+
         this.describe_name = describe_name;
         this.generic_class = c;
 
@@ -58,6 +63,8 @@ class JasmineTestBuilder<T> {
         this.params_arr[this.test_index] = [];
         this.test_func_arr[this.test_index] = [];
         this.chained_test_index_arr[this.test_index] = 0;
+
+        this.createObject();
     }
 
     /**
@@ -105,7 +112,7 @@ class JasmineTestBuilder<T> {
      */
     public method(method_name:string):JasmineTestBuilder<T> {
 
-        this.createObject();
+        //this.createObject();
 
         var last_index:number = this.test_class_instance_arr.length - 1;
 
@@ -131,14 +138,8 @@ class JasmineTestBuilder<T> {
      * @returns {JasmineTestBuilder}
      */
     public withCustomTestFunc(func:Function):JasmineTestBuilder<T> {
-
-        this.createObject();
-
-        this.test_func_arr[this.test_index] = {
-            type: "custom",
-            func: func
-        };
-
+        //this.createObject();
+        this.pushTestCustomFunc(func);
         return this;
     }
 
@@ -156,8 +157,8 @@ class JasmineTestBuilder<T> {
      *
      * @returns {JasmineTestBuilder}
      */
-    public withMethod(method_name:string, params:Array<any>):JasmineTestBuilder<T> {
-        this.createObject();
+    public withMethod(method_name:string, params:Array<any> = []):JasmineTestBuilder<T> {
+        //this.createObject();
         this.pushTestInstanceMethod(method_name, params);
         return this;
     }
@@ -179,8 +180,20 @@ class JasmineTestBuilder<T> {
      * @param method_name
      * @param params
      */
-    public andMethod(method_name:string, params:Array<any>):JasmineTestBuilder<T> {
+    public andMethod(method_name:string, params:Array<any> = []):JasmineTestBuilder<T> {
         this.pushTestInstanceMethod(method_name, params);
+        return this;
+    }
+
+    /**
+     *
+     * Method to test, chain with a previous method or prop to test
+     *
+     * @param method_name
+     * @param params
+     */
+    public andCustomTestFunc(func:Function):JasmineTestBuilder<T> {
+        this.pushTestCustomFunc(func);
         return this;
     }
 
@@ -217,8 +230,6 @@ class JasmineTestBuilder<T> {
      */
     public resultFalse():JasmineTestBuilder<T> {
         this.push_it_method("toBe", false);
-        //this.chained_test_index = 0;
-        //this.test_index++;
         return this;
     }
 
@@ -228,8 +239,6 @@ class JasmineTestBuilder<T> {
      */
     public resultTrue():JasmineTestBuilder<T> {
         this.push_it_method("toBe", true);
-        //this.chained_test_index = 0;
-        //this.test_index++;
         return this;
     }
 
@@ -239,8 +248,6 @@ class JasmineTestBuilder<T> {
      */
     public resultUndefined():JasmineTestBuilder<T> {
         this.push_it_method("toBeUndefined", null);
-        //this.chained_test_index = 0;
-        //this.test_index++;
         return this;
     }
 
@@ -250,8 +257,6 @@ class JasmineTestBuilder<T> {
      */
     public resultNull():JasmineTestBuilder<T> {
         this.push_it_method("toBeNull", null);
-        //this.chained_test_index = 0;
-        //this.test_index++;
         return this;
     }
 
@@ -261,8 +266,6 @@ class JasmineTestBuilder<T> {
      */
     public resultNan():JasmineTestBuilder<T> {
         this.push_it_method("toBeNaN", null);
-        //this.chained_test_index = 0;
-        //this.test_index++;
         return this;
     }
 
@@ -360,6 +363,19 @@ class JasmineTestBuilder<T> {
     }
 
     /**
+     * Collect custom func to test in the array test_func_arr with type "custom"
+     *
+     * @param func
+     */
+    private pushTestCustomFunc(func:Function):void {
+        this.test_func_arr[this.test_index][this.chained_test_index_arr[this.test_index]] = {
+            type: "custom",
+            func: func
+        };
+        this.chained_test_index_arr[this.test_index]++;
+    }
+
+    /**
      *
      * @param index
      */
@@ -391,11 +407,11 @@ class JasmineTestBuilder<T> {
         this.it_method_arr.push(
             (index:number):void => {
 
-                var spec_name:string = this.spec_name_arr[index];
+                let spec_name:string = this.spec_name_arr[index];
 
                 it(spec_name, () => {
 
-                    var expect_func:jasmine.Matchers;
+                    let expect_func:jasmine.Matchers;
 
                     expect_func = expect(this.methodListToTest(index));
 
@@ -413,7 +429,7 @@ class JasmineTestBuilder<T> {
     }
 
     /**
-     * Compose sequence of methods and props to run to obtain the desidered value usend in the expect()
+     * Compose sequence of methods and props to run, to obtain the desidered value used in the expect()
      * Jasmine's function
      *
      * @param index
@@ -425,7 +441,8 @@ class JasmineTestBuilder<T> {
         console.log("this.test_index", this.test_index);
         console.log("this.test_func_arr", this.test_func_arr);*/
 
-        var test_instance:T = this.test_class_instance_arr[index];
+        //var test_instance:T = this.test_class_instance_arr[index];
+        var test_instance:T = this.test_class_instance_arr[0];
 
         for(let i = 0; i < this.chained_test_index_arr[index]; i++) {
 
@@ -472,6 +489,7 @@ class JasmineTestBuilder<T> {
         var test_class_instance = new this.generic_class();
 
         this.test_class_instance_arr.push(test_class_instance);
+        //this.test_class_instance_arr[0] = test_class_instance;
 
         var last_position = this.test_class_instance_arr.length - 1;
         var last_instance:T = this.test_class_instance_arr[last_position];
