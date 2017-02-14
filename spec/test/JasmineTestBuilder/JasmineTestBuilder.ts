@@ -40,8 +40,6 @@ class JasmineTestBuilder<T> {
                 c: {new(): T; },
                 init_params:Array<any> = []):void {
 
-        //this.destroyObject();
-
         this.describe_name = describe_name;
         this.generic_class = c;
 
@@ -86,7 +84,7 @@ class JasmineTestBuilder<T> {
     /**
      * Specify a test name
      *
-     * @param method_name
+     * @param test_name
      * @returns {JasmineTestBuilder}
      */
     public test(test_name:string):JasmineTestBuilder<T> {
@@ -153,7 +151,6 @@ class JasmineTestBuilder<T> {
     }
 
     /**
-     * TODO: mejo se je dai 'n occhio che non funziona una fava con il sort....
      *
      * @returns {JasmineTestBuilder}
      */

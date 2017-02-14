@@ -1,10 +1,7 @@
 import {ListElement} from "./ListElement";
 
 // TODO: test concat
-// TODO: test list to array
-// TODO: merge?
-// TODO: orderby
-// TODO: test init with elems
+// TODO: test merge e rMerge
 // TODO: test clone
 
 class LinkedList<T extends ListElement>{
@@ -340,10 +337,16 @@ class LinkedList<T extends ListElement>{
     public clone():LinkedList<T> {
 
         // creation
-        var ll:LinkedList<T> = new LinkedList<T>();
-        ll.init(this.elem_class, this.toArray());
+        let ll:LinkedList<T> = new LinkedList<T>();
+        let current:T = this.start;
+
+        while(current) {
+            ll.addElem(current.data);
+            current = this.next;
+        }
 
         // setting state
+        ll.toStart();
         while(ll.get() != this.get()) {
             ll.toNext();
         }
@@ -358,7 +361,7 @@ class LinkedList<T extends ListElement>{
      */
     public concat(list_to_append:LinkedList<T>):LinkedList<T> {
 
-        var current:T = list_to_append.start;
+        let current:T = list_to_append.start;
 
         while(current) {
             this.addElem(current.data);
@@ -366,6 +369,27 @@ class LinkedList<T extends ListElement>{
         }
 
         return this;
+    }
+
+    /**
+     *
+     * @param list_to_merge
+     * @param func
+     * @returns {LinkedList<T>}
+     */
+    public rMerge(list_to_merge:LinkedList<T>, func:Function = null):LinkedList<T> {
+        return this.concat(list_to_merge).rSort(func);
+    }
+
+    /**
+     * TODO: merge list without recoursion
+     *
+     * @param list_to_merge
+     * @param func
+     * @returns {LinkedList<T>}
+     */
+    public merge(list_to_merge:LinkedList<T>, func:Function = null):LinkedList<T> {
+        return this.concat(list_to_merge).sort(func);
     }
 
     /**
@@ -478,12 +502,11 @@ class LinkedList<T extends ListElement>{
         sub_list_left = this.rMergeSort(sub_list_left);
         sub_list_right = this.rMergeSort(sub_list_right);
 
-        return this.merge(sub_list_left, sub_list_right);
+        return this.mergeMethod(sub_list_left, sub_list_right);
     }
 
     /**
      * TODO: merge sort without recoursion
-     * TODO: destroy sub lists
      *
      * @param list
      * @returns {LinkedList}
@@ -498,8 +521,8 @@ class LinkedList<T extends ListElement>{
      * @param sub_list_right
      * @returns {LinkedList}
      */
-    private merge(sub_list_left:LinkedList<T>,
-                  sub_list_right:LinkedList<T>):LinkedList<T> {
+    private mergeMethod(sub_list_left:LinkedList<T>,
+                        sub_list_right:LinkedList<T>):LinkedList<T> {
 
         var sub_list_result:LinkedList<T> = new LinkedList<T>();
         sub_list_result.init(this.elem_class);
