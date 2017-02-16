@@ -46,8 +46,6 @@ class LinkedList<T extends ListElement>{
         this.sort_func = this.defaultSortFunc();
         this.elem_class = c;
 
-        console.log("\nc", c)
-
         this.setUpList(init_data);
     }
 
@@ -423,8 +421,6 @@ class LinkedList<T extends ListElement>{
     }
 
     /**
-     *
-     * TODO: pass a function
      *
      * @param sort_func
      * @param list
