@@ -73,3 +73,25 @@ tb_obj.init("LinkedList - Sort obj - SUITE",
         ]).start);
 
 tb_obj.run();
+
+var tb_merge_concat:JasmineTestBuilder<LinkedList<ListElement>> = new JasmineTestBuilder<LinkedList<ListElement>>();
+
+tb_merge_concat.init("LinkedList - Concat, clone and merge - SUITE", LinkedList, [ListElement, [4,6,2,5,1,8]]);
+
+    tb_merge_concat.test("Verify concat integer list not recursive")
+        .withMethod("concat", [DD.listFromArrayData([12, 3, 90])])
+        .andProp("start")
+        .result(DD.listFromArrayData([4,6,2,5,1,8,12,3,90]).start);
+
+    tb_merge_concat.test("Verify merge integer list not recursive")
+        .withMethod("rMerge", [DD.listFromArrayData([7, 10, 99])])
+        .andProp("start")
+        .result(DD.listFromArrayData([1,2,3,4,5,6,7,8,10,12,90,99]).start);
+
+    tb_merge_concat.test("Verify clone integer list not recursive")
+        .withMethod("clone")
+        .andProp("cloned_list")
+        .andProp("start")
+        .result(DD.listFromArrayData([1,2,3,4,5,6,7,8,10,12,90,99]).start);
+
+tb_merge_concat.run();

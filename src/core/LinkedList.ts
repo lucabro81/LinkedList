@@ -1,7 +1,7 @@
 import {ListElement} from "./ListElement";
 
-// TODO: test concat
-// TODO: test merge e rMerge
+// TODO: test merge
+// TODO: test sort
 // TODO: test clone
 
 class LinkedList<T extends ListElement>{
@@ -13,6 +13,8 @@ class LinkedList<T extends ListElement>{
 
     public start:T;
     public end:T;
+
+    public cloned_list:LinkedList<T>;
 
     // current elem props
     public prev:T;
@@ -36,12 +38,15 @@ class LinkedList<T extends ListElement>{
         this.end = null;
         this.prev_elem = null;
         this.curr_elem = null;
+        this.cloned_list = null;
 
         this.prev = null;
         this.data = null;
         this.next = null;
         this.sort_func = this.defaultSortFunc();
         this.elem_class = c;
+
+        console.log("\nc", c)
 
         this.setUpList(init_data);
     }
@@ -332,12 +337,14 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
-     * @returns {LinkedList}
+     * @param return_cloned
+     * @returns {LinkedList<T>}
      */
-    public clone():LinkedList<T> {
+    public clone(return_cloned:boolean = false):LinkedList<T> {
 
         // creation
         let ll:LinkedList<T> = new LinkedList<T>();
+        ll.init(this.elem_class);
         let current:T = this.start;
 
         while(current) {
@@ -351,7 +358,13 @@ class LinkedList<T extends ListElement>{
             ll.toNext();
         }
 
-        return ll;
+        this.cloned_list = ll;
+
+        if (return_cloned) {
+            return ll;
+        }
+
+        return this.setCurrentProps();
     }
 
     /**
