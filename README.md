@@ -46,7 +46,7 @@ Pointer to the next element of the list with respect of the current element
     
 Constructor
    
-##### init(c: {new (data: any): T;}, init_data?: Array<any>): void
+**init(c: {new (data: any): T;}, init_data?: Array<any>): void**
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType);
