@@ -55,23 +55,23 @@
 
 Pointer to the head of the list
 
-#### <a name="start"></a>end:T
+#### <a name="end"></a>end:T
 
 Pointer to the end of the list
 
-#### <a name="start"></a>cloned_list:LinkedList<T>
+#### <a name="cloned_list"></a>cloned_list:LinkedList<T>
 
 Reference to the cloned list
 
-#### <a name="start"></a>prev:T
+#### <a name="prev"></a>prev:T
 
 Pointer to the previous element of the list with respect of the current element 
 
-#### <a name="start"></a>data:any
+#### <a name="data"></a>data:any
 
 Value of the current element
 
-#### <a name="start"></a>next:T
+#### <a name="next"></a>next:T
 
 Pointer to the next element of the list with respect of the current element 
     
