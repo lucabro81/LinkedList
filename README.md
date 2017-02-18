@@ -15,14 +15,14 @@
 
 ### Index
 
- * Properties
+ * **<a href="#Properties">Properties</a>**
    * <a href="#start">start</a>
    * <a href="#end">end</a>
    * <a href="#cloned_list">cloned_list</a>
    * <a href="#prev">prev</a>
    * <a href="#data">data</a>
    * <a href="#next">next</a>
- * Methods
+ * **<a href="#Methods">Methods</a>**
    * <a href="#init">init(c: {new (data: any): T;}, init_data?: Array* <any>): void</a>
    * <a href="#addElem">addElem(data: any, ll?: LinkedList<T>): LinkedList<T></a>
    * <a href="#addElemRight">addElemRight(data: any, ll?: LinkedList<T>): LinkedList<T></a>
@@ -49,7 +49,7 @@
    * <a href="#sort">sort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T></a>
    * <a href="#isEqual">isEqual(list: LinkedList<T>, equality_func?: (a: T, b: T) => boolean): boolean</a>
 
-### Properties
+### <a name="Properties"></a>Properties
 
 #### <a name="start"></a>start:T
 
@@ -75,7 +75,7 @@ Value of the current element
 
 Pointer to the next element of the list with respect of the current element 
     
-### Methods
+### <a name="Methods"></a>Methods
 
 #### LinkedList();
    
