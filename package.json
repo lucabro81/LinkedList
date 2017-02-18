@@ -1,6 +1,6 @@
 {
   "name": "lucabro-linked-list",
-  "version": "1.0.8",
+  "version": "1.0.14",
   "description": "Class to managing linked lists for web projects",
   "main": "package/LinkedList.js",
   "types": "package/LinkedList.d.ts",

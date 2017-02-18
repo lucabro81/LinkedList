@@ -1,22 +1,19 @@
 import {ListElement} from "./ListElement";
 
-// TODO: test concat
-// TODO: test list to array
-// TODO: merge?
-// TODO: orderby
-// TODO: test init with elems
-// TODO: test clone
+// TODO: create and test merge
+// TODO: create and test sort
 
 class LinkedList<T extends ListElement>{
 
     private prev_elem:T;
     private curr_elem:T;
     private elem_class:{new(data:any):T;};
-    private init_data:Array<any>;
     private sort_func:Function;
 
     public start:T;
     public end:T;
+
+    public cloned_list:LinkedList<T>;
 
     // current elem props
     public prev:T;
@@ -28,9 +25,9 @@ class LinkedList<T extends ListElement>{
      */
     public constructor() {}
 
-    ////////////////////////////////////////////////
-    //////////////////// PUBLIC ////////////////////
-    ////////////////////////////////////////////////
+////////////////////////////////////////////////
+//////////////////// PUBLIC ////////////////////
+////////////////////////////////////////////////
 
     /**
      *
@@ -38,28 +35,40 @@ class LinkedList<T extends ListElement>{
     public init(c: {new(data:any): T; }, init_data:Array<any> = []):void {
         this.start = null;
         this.end = null;
-        this.sort_func = null;
+        this.prev_elem = null;
+        this.curr_elem = null;
+        this.cloned_list = null;
+
+        this.prev = null;
+        this.data = null;
+        this.next = null;
+        this.sort_func = this.defaultSortFunc();
         this.elem_class = c;
-        this.init_data = init_data;
 
-        this.setUpList();
+        this.setUpList(init_data);
     }
 
     /**
      *
      * @param data
+     * @param ll
+     * @returns {LinkedList<T>}
      */
-    public addElem(data:any):LinkedList<T> {
-        return this.addElemRight(data);
+    public addElem(data:any, ll:LinkedList<T> = null):LinkedList<T> {
+        return this.addElemRight(data, ll);
     }
 
     /**
      *
      * @param data
+     * @param ll
+     * @returns {LinkedList<T>}
      */
-    public addElemRight(data:any):LinkedList<T> {
+    public addElemRight(data:any, ll:LinkedList<T> = null):LinkedList<T> {
 
-        var new_elem:T = new this.elem_class(data);
+        //var list: LinkedList<T> = this.getContext(ll);
+
+        var new_elem: T = new this.elem_class(data);
 
         if (!this.isFirstElem(new_elem)) {
             new_elem.prev = this.end;
@@ -76,28 +85,36 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @param data
+     * @param ll
+     * @returns {LinkedList<T>}
      */
-    public addElemLeft(data:any):LinkedList<T> {
+    public addElemLeft(data:any, ll:LinkedList<T> = null):LinkedList<T> {
 
-        var new_elem:T = new this.elem_class(data);
+        var list: LinkedList<T> = this.getContext(ll);
 
-        if (!this.isFirstElem(new_elem)) {
-            new_elem.next = this.start;
-            this.start.prev = new_elem;
-            this.start = this.start.prev;
+        var new_elem:T = new list.elem_class(data);
+
+        if (!list.isFirstElem(new_elem)) {
+            new_elem.next = list.start;
+            list.start.prev = new_elem;
+            list.start = list.start.prev;
         }
 
-        this.curr_elem = this.start;
-        this.prev_elem = this.start;
+        list.curr_elem = list.start;
+        list.prev_elem = list.start;
 
-        return this.setCurrentProps();
+        return list.setCurrentProps();
     }
 
     /**
      *
      * @param elem
      */
-    public removeElem(elem:T):LinkedList<T> {
+    public removeElem(elem:T = null):LinkedList<T> {
+
+        if (elem === null) {
+            elem = this.curr_elem;
+        }
 
         if (this.isStart(elem)) {
             this.removeStart();
@@ -146,7 +163,7 @@ class LinkedList<T extends ListElement>{
             if (i === pos) {
                 this.curr_elem = current.prev;
                 this.removeElem(current);
-                return;
+                break;
             }
             i++;
             current = current.next;
@@ -166,7 +183,7 @@ class LinkedList<T extends ListElement>{
             if (current.data === data) {
                 this.curr_elem = current.prev;
                 this.removeElem(current);
-                return;
+                break;
             }
             current = current.next;
         }
@@ -184,7 +201,7 @@ class LinkedList<T extends ListElement>{
 
         var elem:T = new this.elem_class(data);
 
-        if (pos == 0 || (pos <= -1 && this.curr_elem.prev == null)) {
+        if (pos == 0 || (pos <= -1 && (this.curr_elem && this.curr_elem.prev === null)) || this.curr_elem === null) {
             // new start elem
             this.addElemLeft(data);
         }
@@ -231,36 +248,40 @@ class LinkedList<T extends ListElement>{
      *
      * @returns {LinkedList<T>}
      */
-    public toStart():LinkedList<T> {
-        this.curr_elem = this.start;
-        return this.setCurrentProps();
+    public toStart(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = list.start;
+        return list.setCurrentProps();
     }
 
     /**
      *
       * @returns {LinkedList<T>}
      */
-    public toNext():LinkedList<T> {
-        this.curr_elem = (this.curr_elem.next) ? this.curr_elem.next : this.end;
-        return this.setCurrentProps();
+    public toNext(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = (list.curr_elem.next) ? list.curr_elem.next : list.end;
+        return list.setCurrentProps();
     }
 
     /**
      *
      * @returns {LinkedList<T>}
      */
-    public toPrev():LinkedList<T> {
-        this.curr_elem = (this.curr_elem.prev) ? this.curr_elem.prev : this.start;
-        return this.setCurrentProps();
+    public toPrev(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = (list.curr_elem.prev) ? list.curr_elem.prev : list.start;
+        return list.setCurrentProps();
     }
 
     /**
      * 
      * @returns {LinkedList<T>}
      */
-    public toEnd():LinkedList<T> {
-        this.curr_elem = this.end;
-        return this.setCurrentProps();
+    public toEnd(ll:LinkedList<T> = null):LinkedList<T> {
+        var list: LinkedList<T> = this.getContext(ll);
+        list.curr_elem = list.end;
+        return list.setCurrentProps();
     }
 
     /**
@@ -279,8 +300,6 @@ class LinkedList<T extends ListElement>{
         while (this.start !== null) {
             this.removeStart();
         }
-
-        this.destroyArray(this.init_data);
 
         this.end = null;
         this.curr_elem = null;
@@ -315,20 +334,29 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
-     * @returns {LinkedList}
+     * @param return_cloned
+     * @returns {LinkedList<T>}
      */
-    public clone():LinkedList<T> {
+    public clone(return_cloned:boolean = false):LinkedList<T> {
 
-        // creation
-        var ll:LinkedList<T> = new LinkedList<T>();
-        ll.init(this.elem_class, this.toArray());
+        // init
+        let ll:LinkedList<T> = new LinkedList<T>();
+        ll.init(this.elem_class);
 
-        // setting state
-        while(ll.get() != this.get()) {
-            ll.toNext();
+        // add elems
+        let current:T = this.start;
+        while(current) {
+            ll.addElem(current.data);
+            current = current.next;
         }
 
-        return ll;
+        this.cloned_list = ll;
+
+        if (return_cloned) {
+            return ll;
+        }
+
+        return this.setCurrentProps();
     }
 
     /**
@@ -338,7 +366,7 @@ class LinkedList<T extends ListElement>{
      */
     public concat(list_to_append:LinkedList<T>):LinkedList<T> {
 
-        var current:T = list_to_append.start;
+        let current:T = list_to_append.start;
 
         while(current) {
             this.addElem(current.data);
@@ -346,6 +374,27 @@ class LinkedList<T extends ListElement>{
         }
 
         return this;
+    }
+
+    /**
+     *
+     * @param list_to_merge
+     * @param func
+     * @returns {LinkedList<T>}
+     */
+    public rMerge(list_to_merge:LinkedList<T>, func:Function = null):LinkedList<T> {
+        return this.concat(list_to_merge).rSort(func);
+    }
+
+    /**
+     * TODO: merge list without recoursion
+     *
+     * @param list_to_merge
+     * @param func
+     * @returns {LinkedList<T>}
+     */
+    public merge(list_to_merge:LinkedList<T>, func:Function = null):LinkedList<T> {
+        return this.concat(list_to_merge).sort(func);
     }
 
     /**
@@ -367,14 +416,14 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
-     * TODO: pass a function
-     *
      * @param sort_func
      * @param list
      */
-    public rSort(sort_func:Function, list:LinkedList<T> = null):LinkedList<T> {
-        this.sort_func = sort_func;
-        return this.rMergeSort(list);
+    public rSort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
+        if (sort_func !== null) {
+            this.sort_func = sort_func;
+        }
+        return this.setState(this.rMergeSort(list));
     }
 
     /**
@@ -382,14 +431,78 @@ class LinkedList<T extends ListElement>{
      * @param sort_func
      * @param list
      */
-    public sort(sort_func:Function, list:LinkedList<T> = null):LinkedList<T> {
-        this.sort_func = sort_func;
-        return this.mergeSort(list);
+    public sort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
+        if (sort_func !== null) {
+            this.sort_func = sort_func;
+        }
+        return this.setState(this.mergeSort(list));
     }
 
-    /////////////////////////////////////////////////
-    //////////////////// PRIVATE ////////////////////
-    /////////////////////////////////////////////////
+    /**
+     *
+     * @param list
+     * @param equality_func
+     * @returns {boolean}
+     */
+    public isEqual(list:LinkedList<T>, equality_func:(a:T, b:T) => boolean = null):boolean {
+
+        let current_list_elem:T = list.start;
+        let current_this_elem:T = this.start;
+
+        if (list.length() !== this.length()) {
+            return false;
+        }
+
+        if (equality_func === null) {
+            equality_func = (a:T, b:T):boolean => {
+                return a.data === b.data;
+            }
+        }
+
+        while (current_list_elem) {
+
+            if (equality_func(current_list_elem, current_this_elem)) {
+                return false;
+            }
+
+            current_list_elem = current_list_elem.next;
+            current_this_elem = current_this_elem.next;
+        }
+
+        return true;
+    }
+
+/////////////////////////////////////////////////
+//////////////////// PRIVATE ////////////////////
+/////////////////////////////////////////////////
+
+    /**
+     *
+     * @param ll
+     * @returns {LinkedList<T>}
+     */
+    private getContext(ll:LinkedList<T>):LinkedList<T> {
+        var list:LinkedList<T>;
+
+        if (ll) {
+            list = ll;
+        }
+        else {
+            list = this;
+        }
+
+        return list
+    }
+
+    /**
+     *
+     * @returns {(a:T, b:T)=>boolean}
+     */
+    private defaultSortFunc() {
+        return (a:T, b:T):boolean => {
+            return a <= b;
+        }
+    }
 
     /**
      * TODO: destroy sub lists?
@@ -437,12 +550,11 @@ class LinkedList<T extends ListElement>{
         sub_list_left = this.rMergeSort(sub_list_left);
         sub_list_right = this.rMergeSort(sub_list_right);
 
-        return this.merge(sub_list_left, sub_list_right);
+        return this.mergeMethod(sub_list_left, sub_list_right);
     }
 
     /**
      * TODO: merge sort without recoursion
-     * TODO: destroy sub lists
      *
      * @param list
      * @returns {LinkedList}
@@ -457,8 +569,8 @@ class LinkedList<T extends ListElement>{
      * @param sub_list_right
      * @returns {LinkedList}
      */
-    private merge(sub_list_left:LinkedList<T>,
-                  sub_list_right:LinkedList<T>):LinkedList<T> {
+    private mergeMethod(sub_list_left:LinkedList<T>,
+                        sub_list_right:LinkedList<T>):LinkedList<T> {
 
         var sub_list_result:LinkedList<T> = new LinkedList<T>();
         sub_list_result.init(this.elem_class);
@@ -467,7 +579,7 @@ class LinkedList<T extends ListElement>{
         var current_right:T = sub_list_right.start;
 
         while (current_left != null && current_right != null) {
-            if (sub_list_left.start.data <= sub_list_right.start.data) {
+            if (this.sort_func(sub_list_left.start.data, sub_list_right.start.data)) {
                 sub_list_result.addElem(current_left.data);
                 sub_list_left.removeElem(current_left);
             }
@@ -509,17 +621,14 @@ class LinkedList<T extends ListElement>{
     /**
      *
      */
-    private setUpList():void {
+    private setUpList(init_data:Array<any>):void {
 
-        var l:number = this.init_data.length;
+        var l:number = init_data.length;
 
         for (let i = 0; i < l; i++) {
-            let data:any = this.init_data[i];
+            let data:any = init_data[i];
             this.addElem(data);
         }
-        
-        this.destroyArray(this.init_data);
-        this.init_data = [];
     }
 
     /**
@@ -546,6 +655,31 @@ class LinkedList<T extends ListElement>{
         this.prev = (this.curr_elem) ? this.curr_elem.prev : null;
         this.data = (this.curr_elem) ? this.curr_elem.data : null;
         this.next = (this.curr_elem) ? this.curr_elem.next : null;
+        return this;
+    }
+
+    /**
+     *
+     * @param context
+     * @returns {LinkedList}
+     */
+    private setState(context:LinkedList<T>):LinkedList<T> {
+        
+        this.prev_elem = context.prev_elem;
+        this.curr_elem = context.curr_elem;
+        this.elem_class = context.elem_class;
+        this.sort_func = context.sort_func;
+
+        this.start = context.start;
+        this.end = context.end;
+
+        this.cloned_list = context.cloned_list;
+
+        // current elem props
+        this.prev = context.prev;
+        this.data = context.data;
+        this.next = context.next;
+
         return this;
     }
 
