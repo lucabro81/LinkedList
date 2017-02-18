@@ -13,29 +13,65 @@
     
 ## Documentation
 
+### Index
+
+ * Properties
+   * <a href="#start">start</a>
+   * <a href="#end">end</a>
+   * <a href="#cloned_list">cloned_list</a>
+   * <a href="#prev">prev</a>
+   * <a href="#data">data</a>
+   * <a href="#next">next</a>
+ * Methods
+   * <a href="#init">init(c: {new (data: any): T;}, init_data?: Array* <any>): void</a>
+   * <a href="#addElem">addElem(data: any, ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#addElemRight">addElemRight(data: any, ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#addElemLeft">addElemLeft(data: any, ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#removeElem">removeElem(elem?: T): LinkedList<T></a>
+   * <a href="#removeElemByPos">removeElemByPos(pos: number): LinkedList<T></a>
+   * <a href="#removeElemByData">removeElemByData(data: any): LinkedList<T></a>
+   * <a href="#insertElem">insertElem(data: any, pos?: number): LinkedList<T></a>
+   * <a href="#length">length(): number</a>
+   * <a href="#toStart">toStart(ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#toNext">toNext(ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#toPrev">toPrev(ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#toEnd">toEnd(ll?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#get">get(): T</a>
+   * <a href="#destroy">destroy(): void</a>
+   * <a href="#isStart">isStart(elem?: T): boolean</a>
+   * <a href="#isEnd">isEnd(elem?: T): boolean</a>
+   * <a href="#clone">clone(return_cloned?: boolean): LinkedList<T></a>
+   * <a href="#concat">concat(list_to_append: LinkedList<T>): LinkedList<T></a>
+   * <a href="#rMerge">rMerge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T></a>
+   * <a href="#merge">merge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T></a>
+   * <a href="#toArray">toArray(): Array* <any></a>
+   * <a href="#rSort">rSort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#sort">sort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T></a>
+   * <a href="#isEqual">isEqual(list: LinkedList<T>, equality_func?: (a: T, b: T) => boolean): boolean</a>
+
 ### Properties
 
-#### start:T
+#### <a name="start"></a>start:T
 
 Pointer to the head of the list
 
-#### end:T
+#### <a name="start"></a>end:T
 
 Pointer to the end of the list
 
-#### cloned_list:LinkedList<T>
+#### <a name="start"></a>cloned_list:LinkedList<T>
 
 Reference to the cloned list
 
-#### prev:T
+#### <a name="start"></a>prev:T
 
 Pointer to the previous element of the list with respect of the current element 
 
-#### data:any
+#### <a name="start"></a>data:any
 
 Value of the current element
 
-#### next:T
+#### <a name="start"></a>next:T
 
 Pointer to the next element of the list with respect of the current element 
     
@@ -47,7 +83,7 @@ Pointer to the next element of the list with respect of the current element
     
 Constructor
    
-#### init(c: {new (data: any): T;}, init_data?: Array<any>): void
+#### <a name="init"></a>init(c: {new (data: any): T;}, init_data?: Array<any>): void
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType);
@@ -59,7 +95,7 @@ or
     
 Init list, with or without initial data
 
-#### addElem(data: any, ll?: LinkedList<T>): LinkedList<T>`
+#### <a name="addElem"></a>addElem(data: any, ll?: LinkedList<T>): LinkedList<T>`
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -67,7 +103,7 @@ Init list, with or without initial data
     
 Add an element at the right of the list, alias of `addElemRight`
 
-#### addElemRight(data: any, ll?: LinkedList<T>): LinkedList<T>
+#### <a name="addElemRight"></a>addElemRight(data: any, ll?: LinkedList<T>): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -75,7 +111,7 @@ Add an element at the right of the list, alias of `addElemRight`
     
 Add an element at the right of the list
     
-#### addElemLeft(data: any, ll?: LinkedList<T>): LinkedList<T>
+#### <a name="addElemLeft"></a>addElemLeft(data: any, ll?: LinkedList<T>): LinkedList<T>
     
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -83,7 +119,7 @@ Add an element at the right of the list
 
 Add an element at the left of the list
     
-#### removeElem(elem?: T): LinkedList<T>
+#### <a name="removeElem"></a>removeElem(elem?: T): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -97,7 +133,7 @@ Add an element at the left of the list
     
 Remove current element or a specified one
     
-#### removeElemByPos(pos: number): LinkedList<T>
+#### <a name="removeElemByPos"></a>removeElemByPos(pos: number): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -105,7 +141,7 @@ Remove current element or a specified one
     
 Remove element by position in the list
 
-#### removeElemByData(data: any): LinkedList<T>
+#### <a name="removeElemByData"></a>removeElemByData(data: any): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -113,7 +149,7 @@ Remove element by position in the list
     
 Remove element by data
     
-#### insertElem(data: any, pos?: number): LinkedList<T>
+#### <a name="insertElem"></a>insertElem(data: any, pos?: number): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -121,7 +157,7 @@ Remove element by data
     
 Add element at the specified position, without position the element will be added at the start of the list like addElemLeft`
     
-#### length(): number`
+#### <a name="length"></a>length(): number`
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -129,7 +165,7 @@ Add element at the specified position, without position the element will be adde
     
 Return the length of the list
     
-#### toStart(): LinkedList<T>
+#### <a name="toStart"></a>toStart(): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -137,7 +173,7 @@ Return the length of the list
     
 Move the internal pointer to the head of the list
     
-#### toNext(): LinkedList<T>
+#### <a name="toNext"></a>toNext(): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -145,7 +181,7 @@ Move the internal pointer to the head of the list
     
 Move the internal pointer to the next element with rispect to the current element
     
-#### toPrev(): LinkedList<T>
+#### <a name="toPrev"></a>toPrev(): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -153,7 +189,7 @@ Move the internal pointer to the next element with rispect to the current elemen
     
 Move the internal pointer to the previous element with rispect to the current element
 
-#### toEnd(): LinkedList<T>
+#### <a name="toEnd"></a>toEnd(): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -161,7 +197,7 @@ Move the internal pointer to the previous element with rispect to the current el
     
 Move the internal pointer to the end of the list
     
-#### get(): T
+#### <a name="get"></a>get(): T
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -169,7 +205,7 @@ Move the internal pointer to the end of the list
     
 Return the current element    
     
-#### isStart(elem?: T): boolean
+#### <a name="isStart"></a>isStart(elem?: T): boolean
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -179,7 +215,7 @@ Return the current element
     
 Check if the passed element is the head of the list
     
-#### isEnd(elem?: T): boolean
+#### <a name="isEnd"></a>isEnd(elem?: T): boolean
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -189,7 +225,7 @@ Check if the passed element is the head of the list
     
 Check if the passed element is the end of the list
     
-#### clone(return_cloned?: boolean): LinkedList<T>
+#### <a name="clone"></a>clone(return_cloned?: boolean): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -201,7 +237,7 @@ Check if the passed element is the end of the list
     
 Clones the list, by default the reference of the cloned list will be stored in the `cloned_list`, if true value will be passed the refence will return directly
     
-#### concat(list_to_append: LinkedList<T>): LinkedList<T>
+#### <a name="concat"></a>concat(list_to_append: LinkedList<T>): LinkedList<T>
 
     var ll1:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll1.init(ElementType, ['data1', 'data2', 'data3']);
@@ -213,7 +249,7 @@ Clones the list, by default the reference of the cloned list will be stored in t
     
 Concatenate two lists
     
-#### rMerge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T>
+#### <a name="rMerge"></a>rMerge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T>
 
     var ll1:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll1.init(ElementType, ['data1', 'data2', 'data3']);
@@ -225,7 +261,7 @@ Concatenate two lists
     
 Merge recursively two lists, a sorting func can be passed    
 
-#### merge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T>
+#### <a name="merge"></a>merge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T>
 
     var ll1:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll1.init(ElementType, ['data1', 'data2', 'data3']);
@@ -237,7 +273,7 @@ Merge recursively two lists, a sorting func can be passed
     
 Merge two lists, a sorting func can be passed  `// TODO`
     
-#### toArray(): Array<any>
+#### <a name="toArray"></a>toArray(): Array<any>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, ['data1', 'data2', 'data3']);
@@ -245,7 +281,7 @@ Merge two lists, a sorting func can be passed  `// TODO`
     
 Return an array with value from the list's elements    
     
-#### rSort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T>
+#### <a name="rSort"></a>rSort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, [7, 5, 3, 9, 12, 0]);
@@ -253,7 +289,7 @@ Return an array with value from the list's elements
     
 Sort recursively the list, a sorting function an the list to sort can be passed    
         
-#### sort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T>
+#### <a name="sort"></a>sort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T>
 
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, [7, 5, 3, 9, 12, 0]);
@@ -261,7 +297,7 @@ Sort recursively the list, a sorting function an the list to sort can be passed
     
 Sort the list, a sorting function an the list to sort can be passed `// TODO
 
-#### isEqual(list: LinkedList<T>, equality_func?: (a: T, b: T) => boolean): boolean
+#### <a name="isEqual"></a>isEqual(list: LinkedList<T>, equality_func?: (a: T, b: T) => boolean): boolean
 
     var ll1:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll1.init(ElementType, ['data1', 'data2', 'data3']);
@@ -273,7 +309,7 @@ Sort the list, a sorting function an the list to sort can be passed `// TODO
     
 Check if the list is equal to another, compare function can be passed
     
-#### destroy(): void
+#### <a name="destroy"></a>destroy(): void
     
     var ll:LinkedList<ElementType> = new LinkedList<ElementType>();
     ll.init(ElementType, [7, 5, 3, 9, 12, 0]);
