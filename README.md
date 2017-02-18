@@ -23,7 +23,7 @@
    * <a href="#data">data</a>
    * <a href="#next">next</a>
  * **<a href="#Methods">Methods</a>**
-   * <a href="#init">init(c: {new (data: any): T;}, init_data?: Array* <any>): void</a>
+   * <a href="#init">init(c: {new (data: any): T;}, init_data?: Array<any>): void</a>
    * <a href="#addElem">addElem(data: any, ll?: LinkedList<T>): LinkedList<T></a>
    * <a href="#addElemRight">addElemRight(data: any, ll?: LinkedList<T>): LinkedList<T></a>
    * <a href="#addElemLeft">addElemLeft(data: any, ll?: LinkedList<T>): LinkedList<T></a>
@@ -44,7 +44,7 @@
    * <a href="#concat">concat(list_to_append: LinkedList<T>): LinkedList<T></a>
    * <a href="#rMerge">rMerge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T></a>
    * <a href="#merge">merge(list_to_merge: LinkedList<T>, func?: Function): LinkedList<T></a>
-   * <a href="#toArray">toArray(): Array* <any></a>
+   * <a href="#toArray">toArray(): Array<any></a>
    * <a href="#rSort">rSort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T></a>
    * <a href="#sort">sort(sort_func?: Function, list?: LinkedList<T>): LinkedList<T></a>
    * <a href="#isEqual">isEqual(list: LinkedList<T>, equality_func?: (a: T, b: T) => boolean): boolean</a>
