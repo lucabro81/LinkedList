@@ -88,7 +88,7 @@ tb_merge_concat.init("LinkedList - Concat, clone and merge - SUITE", LinkedList,
         .andProp("start")
         .result(DD.listFromArrayData([1,2,3,4,5,6,7,8,10,12,90,99]).start);
 
-    tb_merge_concat.test("Verify clone integer list not recursive")
+    tb_merge_concat.test("Verify clone integer list")
         .withMethod("clone")
         .andProp("cloned_list")
         .andProp("start")

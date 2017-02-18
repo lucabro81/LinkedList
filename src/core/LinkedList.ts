@@ -1,8 +1,7 @@
 import {ListElement} from "./ListElement";
 
-// TODO: test merge
-// TODO: test sort
-// TODO: test clone
+// TODO: create and test merge
+// TODO: create and test sort
 
 class LinkedList<T extends ListElement>{
 
@@ -26,9 +25,9 @@ class LinkedList<T extends ListElement>{
      */
     public constructor() {}
 
-    ////////////////////////////////////////////////
-    //////////////////// PUBLIC ////////////////////
-    ////////////////////////////////////////////////
+////////////////////////////////////////////////
+//////////////////// PUBLIC ////////////////////
+////////////////////////////////////////////////
 
     /**
      *
@@ -340,20 +339,15 @@ class LinkedList<T extends ListElement>{
      */
     public clone(return_cloned:boolean = false):LinkedList<T> {
 
-        // creation
+        // init
         let ll:LinkedList<T> = new LinkedList<T>();
         ll.init(this.elem_class);
-        let current:T = this.start;
 
+        // add elems
+        let current:T = this.start;
         while(current) {
             ll.addElem(current.data);
-            current = this.next;
-        }
-
-        // setting state
-        ll.toStart();
-        while(ll.get() != this.get()) {
-            ll.toNext();
+            current = current.next;
         }
 
         this.cloned_list = ll;
@@ -429,7 +423,7 @@ class LinkedList<T extends ListElement>{
         if (sort_func !== null) {
             this.sort_func = sort_func;
         }
-        return this.rMergeSort(list);
+        return this.setState(this.rMergeSort(list));
     }
 
     /**
@@ -438,14 +432,55 @@ class LinkedList<T extends ListElement>{
      * @param list
      */
     public sort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
-        this.sort_func = sort_func;
-        return this.mergeSort(list);
+        if (sort_func !== null) {
+            this.sort_func = sort_func;
+        }
+        return this.setState(this.mergeSort(list));
     }
 
-    /////////////////////////////////////////////////
-    //////////////////// PRIVATE ////////////////////
-    /////////////////////////////////////////////////
+    /**
+     *
+     * @param list
+     * @param equality_func
+     * @returns {boolean}
+     */
+    public isEqual(list:LinkedList<T>, equality_func:(a:T, b:T) => boolean = null):boolean {
 
+        let current_list_elem:T = list.start;
+        let current_this_elem:T = this.start;
+
+        if (list.length() !== this.length()) {
+            return false;
+        }
+
+        if (equality_func === null) {
+            equality_func = (a:T, b:T):boolean => {
+                return a.data === b.data;
+            }
+        }
+
+        while (current_list_elem) {
+
+            if (equality_func(current_list_elem, current_this_elem)) {
+                return false;
+            }
+
+            current_list_elem = current_list_elem.next;
+            current_this_elem = current_this_elem.next;
+        }
+
+        return true;
+    }
+
+/////////////////////////////////////////////////
+//////////////////// PRIVATE ////////////////////
+/////////////////////////////////////////////////
+
+    /**
+     *
+     * @param ll
+     * @returns {LinkedList<T>}
+     */
     private getContext(ll:LinkedList<T>):LinkedList<T> {
         var list:LinkedList<T>;
 
@@ -459,6 +494,10 @@ class LinkedList<T extends ListElement>{
         return list
     }
 
+    /**
+     *
+     * @returns {(a:T, b:T)=>boolean}
+     */
     private defaultSortFunc() {
         return (a:T, b:T):boolean => {
             return a <= b;
@@ -616,6 +655,31 @@ class LinkedList<T extends ListElement>{
         this.prev = (this.curr_elem) ? this.curr_elem.prev : null;
         this.data = (this.curr_elem) ? this.curr_elem.data : null;
         this.next = (this.curr_elem) ? this.curr_elem.next : null;
+        return this;
+    }
+
+    /**
+     *
+     * @param context
+     * @returns {LinkedList}
+     */
+    private setState(context:LinkedList<T>):LinkedList<T> {
+        
+        this.prev_elem = context.prev_elem;
+        this.curr_elem = context.curr_elem;
+        this.elem_class = context.elem_class;
+        this.sort_func = context.sort_func;
+
+        this.start = context.start;
+        this.end = context.end;
+
+        this.cloned_list = context.cloned_list;
+
+        // current elem props
+        this.prev = context.prev;
+        this.data = context.data;
+        this.next = context.next;
+
         return this;
     }
 
