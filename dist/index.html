@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <style>
         body {
             padding:20px;
+            font-family: "Courier New", Courier, monospace;
         }
         pre {
             background: #e0e0e0;
@@ -14,8 +16,29 @@
         }
     </style>
 </head>
+
 <body>
-    <h4>Create List</h4>
+    <h3>Index</h3>
+    <ul>
+        <li><a href="#label_examples">Examples</a></li>
+        <ul>
+            <li><a href="#label_create_list">Create List</a></li>
+            <li><a href="#label_add_left_list">Add left list</a></li>
+            <li><a href="#label_add_right_list">Add right list</a></li>
+            <li><a href="#label_remove_elem_by_pos">Remove elem by pos</a></li>
+            <li><a href="#label_remove_elem_by_data">Remove elem by data</a></li>
+            <li><a href="#label_insert_elem">Insert elem</a></li>
+            <li><a href="#label_length">List Length</a></li>
+            <li><a href="#label_clone_list">Clone list</a></li>
+            <li><a href="#label_concat_lists">Concat lists</a></li>
+            <li><a href="#label_rmerge_lists">Recursive merge</a></li>
+            <li><a href="#label_list_to_array">List to array</a></li>
+            <li><a href="#label_recursive_sort">Recursive sort</a></li>
+        </ul>
+    </ul>
+    <hr>
+    <a name="label_examples"></a><h3>Examples</h3>
+    <a name="label_create_list"></a><h4>Create List</h4>
 
     <h5>Code</h5>
     <pre>
@@ -30,7 +53,7 @@
             create_list += current.data + " <--> ";
             current = current.next;
         }
-        create_list = "\t" + create_list.slice(0, create_list.length-6);
+        create_list = create_list.slice(0, create_list.length-6);
         document.getElementById('create_list').innerHTML = create_list;
 
         ...
@@ -41,7 +64,9 @@
 
     <hr>
 
-    <h4>Add left list</h4>
+    <a name="label_add_left_list"></a><h4>Add left list</h4>
+
+    <h5>Code</h5>
     <pre>
         ...
 
@@ -55,7 +80,7 @@
             add_left_list += current.data + " <--> ";
             current = current.next;
         }
-        add_left_list = "\t" + add_left_list.slice(0, add_left_list.length-6);
+        add_left_list = add_left_list.slice(0, add_left_list.length-6);
         document.getElementById('add_left_list').innerHTML = add_left_list;
 
         ...
@@ -66,7 +91,9 @@
 
     <hr>
 
-    <h4>Add right list</h4>
+    <a name="label_add_right_list"></a><h4>Add right list</h4>
+
+    <h5>Code</h5>
     <pre>
         ...
 
@@ -80,8 +107,10 @@
             add_right_list += current.data + " <--> ";
             current = current.next;
         }
-        add_right_list = "\t" + add_right_list.slice(0, add_right_list.length-6);
+        add_right_list = add_right_list.slice(0, add_right_list.length-6);
         document.getElementById('add_right_list').innerHTML = add_right_list;
+
+        ...
     </pre>
 
     <h5>Result</h5>
@@ -89,9 +118,236 @@
 
     <hr>
 
+    <a name="label_remove_elem_by_pos"></a><h4>Remove elem by pos</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let remove_elem_by_pos:string = "";
+
+        ll.removeElemByPos(5).removeElemByPos(8);
+
+        ll.toStart();
+        current = ll.get();
+        while (current) {
+            remove_elem_by_pos += current.data + " <--> ";
+            current = current.next;
+        }
+        remove_elem_by_pos = remove_elem_by_pos.slice(0, remove_elem_by_pos.length-6);
+        document.getElementById('remove_elem_by_pos').innerHTML = remove_elem_by_pos;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="remove_elem_by_pos"></pre>
+
+    <hr>
+
+    <a name="label_remove_elem_by_data"></a><h4>Remove elem by data</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let remove_elem_by_data:string = "";
+        ll.removeElemByData(9);
+
+        ll.toStart();
+        current = ll.get();
+        while (current) {
+            remove_elem_by_data += current.data + " <--> ";
+            current = current.next;
+        }
+        remove_elem_by_data = remove_elem_by_data.slice(0, remove_elem_by_data.length-6);
+        document.getElementById('remove_elem_by_data').innerHTML = remove_elem_by_data;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="remove_elem_by_data"></pre>
+
+    <hr>
+
+    <a name="label_insert_elem"></a><h4>Insert elem</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let insert_elem:string = "";
+        ll.insertElem(102, 4);
+
+        ll.toStart();
+        current = ll.get();
+        while (current) {
+            insert_elem += current.data + " <--> ";
+            current = current.next;
+        }
+        insert_elem = insert_elem.slice(0, insert_elem.length-6);
+        document.getElementById('insert_elem').innerHTML = insert_elem;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="insert_elem"></pre>
+
+    <hr>
+
+    <a name="label_length"></a><h4>List Length</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        document.getElementById('length').innerHTML = ll.length().toString();
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="length"></pre>
+
+    <hr>
+
+    <a name="label_clone_list"></a><h4>Clone list</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let clone_list:string = "";
+        let cloned_list:LinkedList&lt;ListElement&gt; = ll.clone().cloned_list;
+
+        cloned_list.toStart();
+        current = cloned_list.get();
+        while (current) {
+            clone_list += current.data + " <--> ";
+            current = current.next;
+        }
+        clone_list = clone_list.slice(0, clone_list.length-6);
+        document.getElementById('clone_list').innerHTML = clone_list;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="clone_list"></pre>
+
+    <hr>
+
+    <a name="label_concat_lists"></a><h4>Concat lists</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let concat_lists:string = "";
+        let list_to_concat:LinkedList&lt;ListElement&gt; = new LinkedList();
+        list_to_concat.init(ListElement, [-23, 123, 99]);
+
+        ll.concat(list_to_concat);
+
+        cloned_list.toStart();
+        current = cloned_list.get();
+        while (current) {
+            concat_lists += current.data + " <--> ";
+            current = current.next;
+        }
+        concat_lists = concat_lists.slice(0, concat_lists.length-6);
+        document.getElementById('concat_lists').innerHTML = concat_lists;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="concat_lists"></pre>
+
+    <hr>
+
+    <a name="label_rmerge_lists"></a><h4>Recursive merge</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let rmerge_lists:string = "";
+        let list_to_rmerge:LinkedList&lt;ListElement&gt; = new LinkedList();
+        list_to_rmerge.init(ListElement, [-25, 120, 76]);
+
+        ll.rMerge(list_to_rmerge);
+
+        ll.toStart();
+        current = ll.get();
+        while (current) {
+            rmerge_lists += current.data + " <--> ";
+            current = current.next;
+        }
+        rmerge_lists = rmerge_lists.slice(0, rmerge_lists.length-6);
+        document.getElementById('rmerge_lists').innerHTML = rmerge_lists;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="rmerge_lists"></pre>
+
+    <hr>
+
+    <a name="label_list_to_array"></a><h4>List to array</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let list_to_array:string = "";
+        let array:Array&lt;any&gt; = ll.toArray();
+        for (let i = 0; i < array.length; i++) {
+            list_to_array += array[i] + ", ";
+        }
+        list_to_array = "[ " + list_to_array.slice(0, list_to_array.length-2) + " ]";
+        document.getElementById('list_to_array').innerHTML = list_to_array;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="list_to_array"></pre>
+
+    <hr>
+
+    <a name="label_recursive_sort"></a><h4>Recursive sort</h4>
+
+    <h5>Code</h5>
+    <pre>
+        ...
+
+        let recursive_sort:string = "";
+
+        ll.rSort((a:ListElement, b:ListElement) => { return !(a.data <= b.data); });
+
+        ll.toStart();
+        current = ll.get();
+        while (current) {
+            recursive_sort += current.data + " <--> ";
+            current = current.next;
+        }
+        recursive_sort = recursive_sort.slice(0, recursive_sort.length-6);
+        document.getElementById('recursive_sort').innerHTML = recursive_sort;
+
+        ...
+    </pre>
+
+    <h5>Result</h5>
+    <pre id="recursive_sort"></pre>
+
     <script data-main="js/config"
             type="text/javascript"
             src="libs/require.js"></script>
+
     <script type="text/javascript"
             src="js/app.js"></script>
 </body>
