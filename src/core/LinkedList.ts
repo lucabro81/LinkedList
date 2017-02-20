@@ -2,6 +2,8 @@ import {ListElement} from "./ListElement";
 
 // TODO: create and test merge
 // TODO: create and test sort
+// TODO: create and test contain
+// TODO: create and test pos
 
 class LinkedList<T extends ListElement>{
 
