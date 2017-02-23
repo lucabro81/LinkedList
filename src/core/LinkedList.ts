@@ -2,6 +2,16 @@ import {ListElement} from "./ListElement";
 
 // TODO: create and test merge
 // TODO: create and test sort
+// TODO: create and test contain
+// TODO: create and test pos
+// TODO: create and test getElemAtPos
+// TODO: create and test map
+// TODO: create and test mapReverse ?
+// TODO: create and test shift (left and right)
+// TODO: create and test reduce
+// TODO: create and test reduceReverse ?
+// TODO: create and test slice
+// TODO: optimize length()
 
 class LinkedList<T extends ListElement>{
 
@@ -9,6 +19,7 @@ class LinkedList<T extends ListElement>{
     private curr_elem:T;
     private elem_class:{new(data:any):T;};
     private sort_func:Function;
+    private length_num:number;
 
     public start:T;
     public end:T;
@@ -38,6 +49,7 @@ class LinkedList<T extends ListElement>{
         this.prev_elem = null;
         this.curr_elem = null;
         this.cloned_list = null;
+        this.length_num = 0;
 
         this.prev = null;
         this.data = null;
@@ -78,6 +90,7 @@ class LinkedList<T extends ListElement>{
 
         this.curr_elem = this.end;
         this.prev_elem = this.end;
+        this.length_num++;
 
         return this.setCurrentProps();
     }
@@ -102,6 +115,7 @@ class LinkedList<T extends ListElement>{
 
         list.curr_elem = list.start;
         list.prev_elem = list.start;
+        this.length_num++;
 
         return list.setCurrentProps();
     }
@@ -136,6 +150,7 @@ class LinkedList<T extends ListElement>{
             }
 
             this.curr_elem = next_elem;
+            this.length_num--;
         }
 
         elem = null;
@@ -169,6 +184,7 @@ class LinkedList<T extends ListElement>{
             current = current.next;
         }
 
+        this.length_num--;
         return this.setCurrentProps();
     }
 
@@ -188,6 +204,7 @@ class LinkedList<T extends ListElement>{
             current = current.next;
         }
 
+        this.length_num--;
         return this.setCurrentProps();
     }
 
@@ -233,7 +250,7 @@ class LinkedList<T extends ListElement>{
      */
     public length():number {
 
-        var i:number = 0;
+        /*var i:number = 0;
         var current:T = this.start;
 
         while (current) {
@@ -241,7 +258,8 @@ class LinkedList<T extends ListElement>{
             current = current.next;
         }
 
-        return i;
+        return i;*/
+        return this.length_num;
     }
 
     /**
@@ -308,6 +326,7 @@ class LinkedList<T extends ListElement>{
         this.data = null;
         this.next = null;
         this.sort_func = null;
+        this.length_num = 0;
     }
 
     /**
@@ -643,6 +662,7 @@ class LinkedList<T extends ListElement>{
         elem.next = after_elem;
         before_elem.next = elem;
         after_elem.prev = elem;
+        this.length_num++;
 
         this.curr_elem = elem;
     }
@@ -691,6 +711,7 @@ class LinkedList<T extends ListElement>{
         if (this.start) {
             this.start.prev = null;
         }
+        this.length_num--;
     }
 
     /**
@@ -701,6 +722,7 @@ class LinkedList<T extends ListElement>{
         if (this.end) {
             this.end.next = null;
         }
+        this.length_num--;
     }
 
     /**
