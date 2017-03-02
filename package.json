@@ -27,7 +27,9 @@
     "url": "https://github.com/lucabro81/LinkedList/issues"
   },
   "homepage": "https://github.com/lucabro81/LinkedList#readme",
-  "dependencies": {},
+  "dependencies": {
+    "jasmine-test-builder": "^1.0.1"
+  },
   "devDependencies": {
     "@types/jasmine": "^2.5.40",
     "@types/requirejs": "^2.1.28",

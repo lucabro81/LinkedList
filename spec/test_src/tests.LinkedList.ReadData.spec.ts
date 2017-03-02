@@ -1,6 +1,6 @@
-import {JasmineTestBuilder} from "../JasmineTestBuilder/JasmineTestBuilder";
-import {LinkedList} from "../../../src/core/LinkedList";
-import {ListElement} from "../../../src/core/ListElement";
+import {JasmineTestBuilder} from "jasmine-test-builder";
+import {LinkedList} from "../app/core/LinkedList";
+import {ListElement} from "../app/core/ListElement";
 
 var tb:JasmineTestBuilder<LinkedList<ListElement>> = new JasmineTestBuilder<LinkedList<ListElement>>();
 

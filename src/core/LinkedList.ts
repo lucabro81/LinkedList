@@ -2,16 +2,15 @@ import {ListElement} from "./ListElement";
 
 // TODO: create and test merge
 // TODO: create and test sort
-// TODO: create and test contain
-// TODO: create and test pos
-// TODO: create and test getElemAtPos
+// TODO: test contain
+// TODO: test pos
+// TODO: test getElemAtPos
 // TODO: create and test map
 // TODO: create and test mapReverse ?
 // TODO: create and test shift (left and right)
 // TODO: create and test reduce
 // TODO: create and test reduceReverse ?
 // TODO: create and test slice
-// TODO: optimize length()
 
 class LinkedList<T extends ListElement>{
 
@@ -184,7 +183,7 @@ class LinkedList<T extends ListElement>{
             current = current.next;
         }
 
-        this.length_num--;
+        //this.length_num--;
         return this.setCurrentProps();
     }
 
@@ -204,7 +203,7 @@ class LinkedList<T extends ListElement>{
             current = current.next;
         }
 
-        this.length_num--;
+        //this.length_num--;
         return this.setCurrentProps();
     }
 
@@ -490,6 +489,68 @@ class LinkedList<T extends ListElement>{
 
         return true;
     }
+
+    /**
+     *
+     * @param data
+     * @returns {any}
+     */
+    public contain(data:any):T|null {
+        let current:T = this.start;
+
+        while(current) {
+            if (current.data === data) {
+                return current;
+            }
+            current = current.next;
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @param data
+     * @returns {Array<number>}
+     */
+    public pos(data:any):Array<number> {
+
+        let current:T = this.start;
+        let i:number = 0;
+        let pos_arr:Array<number> = [];
+
+        while(current) {
+            if (current.data === data) {
+                pos_arr.push(i);
+            }
+            i++;
+            current = current.next;
+        }
+
+        return pos_arr;
+    }
+
+    /**
+     *
+     * @param pos
+     */
+    public getElemAtPos(pos:number):T {
+
+        let current:T = this.start;
+        let i:number = 0;
+
+        while(current) {
+            if (i === pos) {
+                return current
+            }
+            i++;
+            current = current.next;
+        }
+
+        return null;
+
+    }
+
 
 /////////////////////////////////////////////////
 //////////////////// PRIVATE ////////////////////
