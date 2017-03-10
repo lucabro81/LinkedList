@@ -16,9 +16,6 @@ import {ListElement} from "./ListElement";
 
 class LinkedList<T extends ListElement>{
 
-    public static LEFT_DIR:string = "left";
-    public static RIGHT_DIR:string = "right";
-
     public start:T;
     public end:T;
 
@@ -576,8 +573,8 @@ class LinkedList<T extends ListElement>{
         this.start.prev = null;
 
         new_end.prev = this.end;
-
         this.end.next = new_end;
+
         this.end = new_end;
         this.end.next = null;
 
@@ -596,9 +593,10 @@ class LinkedList<T extends ListElement>{
         this.end.next = null;
 
         new_start.next = this.start;
-
         this.start.prev = new_start;
+
         this.start = new_start;
+        this.start.prev = null;
 
         return this._setCurrentProps();
     }
