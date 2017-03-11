@@ -5,13 +5,12 @@ import {ListElement} from "./ListElement";
 // TODO: test contain
 // TODO: test pos
 // TODO: test getElemAtPos
-// TODO: create and test map
-// TODO: create and test mapReverse ?
+// TODO: test map
 // TODO: test shift (left and right)
 // TODO: create and test reduce
-// TODO: create and test reduceReverse ?
 // TODO: create and test slice
-// TODO: finish and test doOuroboros/undoOuroboros
+// TODO: test doOuroboros/undoOuroboros
+// TODO: test forEach
 // TODO: optimize sort function
 
 class LinkedList<T extends ListElement>{
@@ -223,7 +222,9 @@ class LinkedList<T extends ListElement>{
 
         let elem:T = new this._elem_class(data);
 
-        if (pos == 0 || (pos <= -1 && (this._curr_elem && this._curr_elem.prev === null)) || this._curr_elem === null) {
+        if (pos == 0 ||
+            (pos <= -1 && (this._curr_elem && this._curr_elem.prev === null)) ||
+            this._curr_elem === null) {
             // new start elem
             this.addElemLeft(data);
         }
@@ -570,13 +571,17 @@ class LinkedList<T extends ListElement>{
         let new_end:T = this.start;
 
         this.start = new_end.next;
-        this.start.prev = null;
+        if (!this._is_ouroboros) {
+            this.start.prev = null;
+        }
 
         new_end.prev = this.end;
         this.end.next = new_end;
 
         this.end = new_end;
-        this.end.next = null;
+        if (!this._is_ouroboros) {
+            this.end.next = null;
+        }
 
         return this._setCurrentProps();
     }
@@ -590,13 +595,17 @@ class LinkedList<T extends ListElement>{
         let new_start:T = this.end;
 
         this.end = new_start.prev;
-        this.end.next = null;
+        if (!this._is_ouroboros) {
+            this.end.next = null;
+        }
 
         new_start.next = this.start;
         this.start.prev = new_start;
 
         this.start = new_start;
-        this.start.prev = null;
+        if (!this._is_ouroboros) {
+            this.start.prev = null;
+        }
 
         return this._setCurrentProps();
     }
@@ -606,7 +615,8 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public doOuroboros():LinkedList<T> {
-
+        this.start.prev = this.end;
+        this.end.next = this.start;
         this._is_ouroboros = true;
         return this._setCurrentProps();
     }
@@ -616,7 +626,8 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public undoOuroboros():LinkedList<T> {
-
+        this.start.prev = null;
+        this.end.next = null;
         this._is_ouroboros = false;
         return this._setCurrentProps();
     }
@@ -629,6 +640,77 @@ class LinkedList<T extends ListElement>{
         return this._is_ouroboros;
     }
 
+    /**
+     *
+     * @param callback
+     * @param new_list
+     * @returns {LinkedList<T>}
+     */
+    public map(callback:(current, index, list) => any, new_list:boolean):LinkedList<T> {
+
+        let list:LinkedList<T>;
+
+        if (new_list) {
+            list = this.clone(true);
+        }
+        else {
+            list = this;
+        }
+
+        /*let i:number = 0;
+
+        list.toStart();
+        while (!list.isEnd()) {
+            list.get().data = callback(list.get().data, i, list);
+            i++;
+            list.toNext();
+        }*/
+
+        this._accrossList(callback, list, false, false);
+
+        return list;
+    }
+
+    /**
+     *
+     * @param callback
+     * @param recursive
+     * @param context
+     * @returns {LinkedList<T>}
+     */
+    public forEach(callback:(current:T,
+                             index:number,
+                             list:LinkedList<T>) => void,
+                   recursive:boolean = false,
+                   context:LinkedList<T> = null):LinkedList<T> {
+
+        if (context !== null) {
+            context = this;
+        }
+
+        /*let i:number = 0;
+
+        context.toStart();
+        while (!context.isEnd()) {
+            context._forEachCallbackContainer(callback, context.get().data, i, recursive);
+            i++;
+            context.toNext();
+        }*/
+
+        this._accrossList(callback, context, recursive, false);
+
+        return context._setCurrentProps();
+    }
+
+    /*public slice(start:number,
+                 delete_count:number,
+                 ...items_to_add:Array<any>):LinkedList<T> {
+
+        let i:number = 0;
+
+
+    }*/
+
 
 /////////////////////////////////////////////////
 //////////////////// PRIVATE ////////////////////
@@ -636,8 +718,58 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
+     * @param callback
+     * @param list
+     * @param recursive
+     * @param modify
+     * @private
+     */
+    private _accrossList(callback:(item:LinkedList<T>|T, i:number, context:LinkedList<T>) => any,
+                         list:LinkedList<T>,
+                         recursive:boolean,
+                         modify:boolean):void {
+
+        let i:number = 0;
+
+        list.toStart();
+        while (!list.isEnd()) {
+            list._forEachCallbackContainer(callback, list.get().data, i, recursive, modify);
+            i++;
+            list.toNext();
+        }
+    }
+
+    /**
+     *
+     * @param callback
+     * @param current
+     * @param index
+     * @param recursive
+     * @param modify
+     * @private
+     */
+    private _forEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
+                                      current:any,
+                                      index:number,
+                                      recursive:boolean,
+                                      modify:boolean):void {
+        if (modify) {
+            current.data = callback(current, index, this);
+        }
+        else {
+            callback(current, index, this);
+        }
+
+        if (recursive && current.start !== undefined) {
+            this.forEach(callback, recursive, current);
+        }
+    }
+
+    /**
+     *
      * @param ll
      * @returns {LinkedList<T>}
+     * @private
      */
     private _getContext(ll:LinkedList<T>):LinkedList<T> {
         let list:LinkedList<T>;
