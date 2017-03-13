@@ -657,15 +657,6 @@ class LinkedList<T extends ListElement>{
             list = this;
         }
 
-        /*let i:number = 0;
-
-        list.toStart();
-        while (!list.isEnd()) {
-            list.get().data = callback(list.get().data, i, list);
-            i++;
-            list.toNext();
-        }*/
-
         this._accrossList(callback, list, false, false);
 
         return list;
@@ -688,28 +679,26 @@ class LinkedList<T extends ListElement>{
             context = this;
         }
 
-        /*let i:number = 0;
-
-        context.toStart();
-        while (!context.isEnd()) {
-            context._forEachCallbackContainer(callback, context.get().data, i, recursive);
-            i++;
-            context.toNext();
-        }*/
-
         this._accrossList(callback, context, recursive, false);
 
         return context._setCurrentProps();
     }
 
-    /*public slice(start:number,
+    /**
+     *
+     * @param start
+     * @param delete_count
+     * @param items_to_add
+     * @returns {LinkedList<T>}
+     */
+    public slice(start:number,
                  delete_count:number,
                  ...items_to_add:Array<any>):LinkedList<T> {
 
         let i:number = 0;
 
-
-    }*/
+        return this._setCurrentProps();
+    }
 
 
 /////////////////////////////////////////////////
