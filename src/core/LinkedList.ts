@@ -6,10 +6,8 @@ import {ListElement} from "./ListElement";
 // TODO: test pos
 // TODO: test getElemAtPos
 // TODO: test map
-// TODO: test shift (left and right)
 // TODO: create and test reduce
 // TODO: create and test slice
-// TODO: test doOuroboros/undoOuroboros
 // TODO: test forEach
 // TODO: optimize sort function
 
@@ -563,7 +561,7 @@ class LinkedList<T extends ListElement>{
     }
 
     /**
-     *
+     * TODO: pass the elements to shift?
      * @returns {LinkedList<T>}
      */
     public shiftLeft():LinkedList<T> {
@@ -587,7 +585,7 @@ class LinkedList<T extends ListElement>{
     }
 
     /**
-     *
+     * TODO: pass the elements to shift?
      * @returns {LinkedList<T>}
      */
     public shiftRight():LinkedList<T> {
@@ -699,6 +697,13 @@ class LinkedList<T extends ListElement>{
 
         return this._setCurrentProps();
     }
+
+    /**
+     *
+     */
+    /*public splice():LinkedList<T> {
+
+    }*/
 
 
 /////////////////////////////////////////////////

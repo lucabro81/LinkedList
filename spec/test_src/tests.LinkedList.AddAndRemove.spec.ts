@@ -73,4 +73,45 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
         .andProp("start")
         .result(DD.listFromArrayData(["data6","data5","data4","data3","data7","data2","data1"]).start);
 
+    tb.test("Shift list to left")
+        .withMethod("shiftLeft")
+        .andProp("start")
+        .result(DD.listFromArrayData(["data5","data4","data3","data7","data2","data1","data6"]).start);
+
+    tb.test("Shift list to right")
+        .withMethod("shiftRight")
+        .andProp("start")
+        .result(DD.listFromArrayData(["data6","data5","data4","data3","data7","data2","data1"]).start);
+
+    tb.test("Ouroboros on")
+        .withMethod("doOuroboros")
+        .andProp("end")
+        .andProp("next")
+        .andProp("data")
+        .result("data6");
+
+    tb.test("Ouroboros off")
+        .withMethod("undoOuroboros")
+        .andProp("end")
+        .andProp("next")
+        .result(null);
+
+    tb.test("Shift list to left after do doOuroboros")
+        .withMethod("doOuroboros")
+        .andMethod("shiftLeft")
+        .andProp("end")
+        .andProp("next")
+        .andProp("data")
+        .result("data5");
+
+    tb.test("Shift list to left after do doOuroboros")
+        .withMethod("doOuroboros")
+        .andMethod("shiftRight")
+        .andProp("end")
+        .andProp("next")
+        .andProp("data")
+        .result("data6");
+
+    // NB: Ouroboros is now on
+
 tb.run();
