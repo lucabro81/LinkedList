@@ -8,6 +8,7 @@ import {ListElement} from "./ListElement";
 // TODO: test map
 // TODO: create and test reduce
 // TODO: create and test slice
+// TODO: create and test spice
 // TODO: test forEach
 // TODO: optimize sort function
 
@@ -280,20 +281,25 @@ class LinkedList<T extends ListElement>{
      *
      * @returns {LinkedList<T>}
      */
-    public toNext(ll:LinkedList<T> = null):LinkedList<T> {
-        let list: LinkedList<T> = this._getContext(ll);
-        list._curr_elem = (list._curr_elem.next) ? list._curr_elem.next : list.end;
-        return list._setCurrentProps();
+    public toNext():LinkedList<T> {
+        //let list: LinkedList<T> = this._getContext(ll);
+        //list._curr_elem = (list._curr_elem.next) ? list._curr_elem.next : list.end;
+        //this._curr_elem = (this._curr_elem.next) ? this._curr_elem.next : null;
+
+        this._curr_elem = this._curr_elem.next;
+        //this._curr_elem = (this._curr_elem.next) ? this._curr_elem.next : null;
+        return this._setCurrentProps();
     }
 
     /**
      *
      * @returns {LinkedList<T>}
      */
-    public toPrev(ll:LinkedList<T> = null):LinkedList<T> {
-        let list: LinkedList<T> = this._getContext(ll);
-        list._curr_elem = (list._curr_elem.prev) ? list._curr_elem.prev : list.start;
-        return list._setCurrentProps();
+    public toPrev():LinkedList<T> {
+        //let list: LinkedList<T> = this._getContext(ll);
+        //list._curr_elem = (list._curr_elem.prev) ? list._curr_elem.prev : list.start;
+        this._curr_elem = (this._curr_elem.prev) ? this._curr_elem.prev : null;
+        return this._setCurrentProps();
     }
 
     /**
@@ -311,7 +317,8 @@ class LinkedList<T extends ListElement>{
      * @returns {T}
      */
     public get():T {
-        return (this._curr_elem) ? this._curr_elem : this._prev_elem;
+        //return (this._curr_elem) ? this._curr_elem : this._prev_elem;
+        return (this._curr_elem) ? this._curr_elem : null;
     }
 
     /**
@@ -644,7 +651,7 @@ class LinkedList<T extends ListElement>{
      * @param new_list
      * @returns {LinkedList<T>}
      */
-    public map(callback:(current, index, list) => any, new_list:boolean):LinkedList<T> {
+    public map(callback:(current, index, list) => any, new_list:boolean = true):LinkedList<T> {
 
         let list:LinkedList<T>;
 
@@ -655,7 +662,7 @@ class LinkedList<T extends ListElement>{
             list = this;
         }
 
-        this._accrossList(callback, list, false, false);
+        this._accrossList(callback, list, false, true);
 
         return list;
     }
@@ -678,6 +685,7 @@ class LinkedList<T extends ListElement>{
         }
 
         this._accrossList(callback, context, recursive, false);
+
 
         return context._setCurrentProps();
     }
@@ -726,8 +734,8 @@ class LinkedList<T extends ListElement>{
         let i:number = 0;
 
         list.toStart();
-        while (!list.isEnd()) {
-            list._forEachCallbackContainer(callback, list.get().data, i, recursive, modify);
+        while (list.get()) {
+            list._forEachCallbackContainer(callback, list.get(), i, recursive, modify);
             i++;
             list.toNext();
         }
@@ -945,9 +953,11 @@ class LinkedList<T extends ListElement>{
      * @private
      */
     private _setCurrentProps():LinkedList<T> {
+
         this.prev = (this._curr_elem) ? this._curr_elem.prev : null;
         this.data = (this._curr_elem) ? this._curr_elem.data : null;
         this.next = (this._curr_elem) ? this._curr_elem.next : null;
+
         return this;
     }
 

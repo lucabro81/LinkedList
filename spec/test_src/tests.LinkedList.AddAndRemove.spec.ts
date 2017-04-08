@@ -114,4 +114,14 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
 
     // NB: Ouroboros is now on
 
+    tb.test("Modify data with map() function")
+        .withMethod("undoOuroboros")
+        .andMethod("map", [(current:any, index:number, list:LinkedList<ListElement>) => {
+            return current.data + "_mod";
+        }, false])
+        .andProp("start")
+        .result(DD.listFromArrayData(["data6_mod","data5_mod","data4_mod","data3_mod","data7_mod","data2_mod","data1_mod"]).start);
+
+    // NB: Ouroboros is now off
+
 tb.run();
