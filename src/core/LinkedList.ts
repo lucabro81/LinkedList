@@ -5,11 +5,9 @@ import {ListElement} from "./ListElement";
 // TODO: test contain
 // TODO: test pos
 // TODO: test getElemAtPos
-// TODO: test map
 // TODO: create and test reduce
 // TODO: create and test slice
 // TODO: create and test spice
-// TODO: test forEach
 // TODO: optimize sort function
 
 class LinkedList<T extends ListElement>{
@@ -271,10 +269,9 @@ class LinkedList<T extends ListElement>{
      *
      * @returns {LinkedList<T>}
      */
-    public toStart(ll:LinkedList<T> = null):LinkedList<T> {
-        let list: LinkedList<T> = this._getContext(ll);
-        list._curr_elem = list.start;
-        return list._setCurrentProps();
+    public toStart():LinkedList<T> {
+        this._curr_elem = this.start;
+        return this._setCurrentProps();
     }
 
     /**
@@ -298,7 +295,7 @@ class LinkedList<T extends ListElement>{
     public toPrev():LinkedList<T> {
         //let list: LinkedList<T> = this._getContext(ll);
         //list._curr_elem = (list._curr_elem.prev) ? list._curr_elem.prev : list.start;
-        this._curr_elem = (this._curr_elem.prev) ? this._curr_elem.prev : null;
+        this._curr_elem = this._curr_elem.prev;
         return this._setCurrentProps();
     }
 
@@ -306,10 +303,10 @@ class LinkedList<T extends ListElement>{
      *
      * @returns {LinkedList<T>}
      */
-    public toEnd(ll:LinkedList<T> = null):LinkedList<T> {
-        let list: LinkedList<T> = this._getContext(ll);
-        list._curr_elem = list.end;
-        return list._setCurrentProps();
+    public toEnd():LinkedList<T> {
+        //let list: LinkedList<T> = this._getContext(ll);
+        this._curr_elem = this.end;
+        return this._setCurrentProps();
     }
 
     /**
@@ -680,12 +677,11 @@ class LinkedList<T extends ListElement>{
                    recursive:boolean = false,
                    context:LinkedList<T> = null):LinkedList<T> {
 
-        if (context !== null) {
+        if (context === null) {
             context = this;
         }
 
         this._accrossList(callback, context, recursive, false);
-
 
         return context._setCurrentProps();
     }
@@ -735,6 +731,7 @@ class LinkedList<T extends ListElement>{
 
         list.toStart();
         while (list.get()) {
+        //while (!list.isEnd()) {
             list._forEachCallbackContainer(callback, list.get(), i, recursive, modify);
             i++;
             list.toNext();
@@ -829,7 +826,6 @@ class LinkedList<T extends ListElement>{
         sub_list_left.init(this._elem_class);
         sub_list_right.init(this._elem_class);
 
-        // TODO: try to refactor using pointers and moving functions
         while (current) {
             if (i < l/2) {
                 sub_list_left.addElem(current.data);
