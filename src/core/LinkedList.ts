@@ -252,16 +252,6 @@ class LinkedList<T extends ListElement>{
      * @returns {number}
      */
     public length():number {
-
-        /*let i:number = 0;
-         let current:T = this.start;
-
-         while (current) {
-         i++;
-         current = current.next;
-         }
-
-         return i;*/
         return this._length_num;
     }
 
@@ -279,12 +269,7 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public toNext():LinkedList<T> {
-        //let list: LinkedList<T> = this._getContext(ll);
-        //list._curr_elem = (list._curr_elem.next) ? list._curr_elem.next : list.end;
-        //this._curr_elem = (this._curr_elem.next) ? this._curr_elem.next : null;
-
         this._curr_elem = this._curr_elem.next;
-        //this._curr_elem = (this._curr_elem.next) ? this._curr_elem.next : null;
         return this._setCurrentProps();
     }
 
@@ -293,8 +278,6 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public toPrev():LinkedList<T> {
-        //let list: LinkedList<T> = this._getContext(ll);
-        //list._curr_elem = (list._curr_elem.prev) ? list._curr_elem.prev : list.start;
         this._curr_elem = this._curr_elem.prev;
         return this._setCurrentProps();
     }
@@ -304,7 +287,6 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public toEnd():LinkedList<T> {
-        //let list: LinkedList<T> = this._getContext(ll);
         this._curr_elem = this.end;
         return this._setCurrentProps();
     }
@@ -314,7 +296,6 @@ class LinkedList<T extends ListElement>{
      * @returns {T}
      */
     public get():T {
-        //return (this._curr_elem) ? this._curr_elem : this._prev_elem;
         return (this._curr_elem) ? this._curr_elem : null;
     }
 
@@ -752,6 +733,12 @@ class LinkedList<T extends ListElement>{
                                       index:number,
                                       recursive:boolean,
                                       modify:boolean):void {
+
+        if (recursive && current.data.start !== undefined) {
+            this.forEach(callback, recursive, current.data);
+            return;
+        }
+
         if (modify) {
             current.data = callback(current, index, this);
         }
@@ -759,9 +746,9 @@ class LinkedList<T extends ListElement>{
             callback(current, index, this);
         }
 
-        if (recursive && current.start !== undefined) {
-            this.forEach(callback, recursive, current);
-        }
+        /*if (recursive && current.data.start !== undefined) {
+            this.forEach(callback, recursive, current.data);
+        }*/
     }
 
     /**
@@ -795,7 +782,6 @@ class LinkedList<T extends ListElement>{
     }
 
     /**
-     * TODO: destroy sub lists?
      *
      * @param ll
      * @returns {any}

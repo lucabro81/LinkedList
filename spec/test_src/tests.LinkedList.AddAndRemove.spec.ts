@@ -124,7 +124,7 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
 
     // NB: Ouroboros is now off
 
-    tb.test("Do some with forEach() function - recoursive")
+    tb.test("Do some with forEach() function - not recoursive")
         .withCustomTestFunc((ll:LinkedList<ListElement>) => {
             let arr:Array<any> = [];
             ll.forEach((current:any, index:number, list:LinkedList<ListElement>) => {
@@ -133,5 +133,19 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             return arr;
         })
         .result([ 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data1' ]);
+
+    tb.test("Do some with forEach() function - recoursive")
+        .withCustomTestFunc((ll:LinkedList<ListElement>) => {
+
+            let new_ll:LinkedList<any> = ll.clone(true);
+            new_ll.insertElem(ll);
+
+            let arr:Array<any> = [];
+            new_ll.forEach((current:any, index:number, list:LinkedList<ListElement>) => {
+                arr.push(current.data.toString().replace("_mod", ""));
+            }, true);
+            return arr;
+        })
+        .result([ 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data1', 'data1' ]);
 
 tb.run();
