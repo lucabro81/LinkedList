@@ -640,7 +640,7 @@ class LinkedList<T extends ListElement>{
             list = this;
         }
 
-        this._accrossList(callback, list, false, true);
+        this._accrossList(callback, list, true);
 
         return list;
     }
@@ -654,6 +654,23 @@ class LinkedList<T extends ListElement>{
      */
     public forEach(callback:(current:T,
                              index:number,
+                             list:LinkedList<T>) => void):LinkedList<T> {
+
+        this._accrossList(callback, this, false);
+
+        return this._setCurrentProps();
+
+    }
+
+    /**
+     *
+     * @param callback
+     * @param recursive
+     * @param context
+     * @returns {LinkedList<T>}
+     */
+    public rForEach(callback:(current:T,
+                             index:number,
                              list:LinkedList<T>) => void,
                    recursive:boolean = false,
                    context:LinkedList<T> = null):LinkedList<T> {
@@ -662,33 +679,121 @@ class LinkedList<T extends ListElement>{
             context = this;
         }
 
-        this._accrossList(callback, context, recursive, false);
+        this._rAccrossList(callback, context, false);
 
         return context._setCurrentProps();
     }
 
     /**
      *
-     * @param start
-     * @param delete_count
-     * @param items_to_add
-     * @returns {LinkedList<T>}
+     * @param callback
+     * @param init_val
+     * @param recursive
+     * @param context
+     * @returns {any}
      */
-    public slice(start:number,
-                 delete_count:number,
-                 ...items_to_add:Array<any>):LinkedList<T> {
+    public reduce(callback:(acc:any,
+                            curr_val:any,
+                            index:number,
+                            list:LinkedList<T>) => any,
+                  init_val:any = null):any {
+
+        this.toStart();
 
         let i:number = 0;
+        let curr_acc:any = init_val;
+        while (this.get()) {
+            curr_acc = callback(curr_acc, this.get().data, i, this);
+            i++;
+            this.toNext();
+        }
 
-        return this._setCurrentProps();
+        return curr_acc;
     }
 
     /**
      *
+     * @param callback
+     * @param init_val
+     * @param recursive
+     * @param context
+     * @returns {any}
      */
-    /*public splice():LinkedList<T> {
+    public rReduce(callback:(acc:any,
+                            curr_val:any,
+                            index:number,
+                            list:LinkedList<T>) => any,
+                  init_val:any,
+                  context:LinkedList<T> = null):any {
 
-    }*/
+        if (context === null) {
+            context = this;
+        }
+
+        context.toStart();
+
+        let i:number = 0;
+        let curr_acc:any = init_val;
+        while (context.get()) {
+
+            if (context.get().data.start !== undefined) {
+                return context.rReduce(callback, curr_acc, context.data);
+            }
+
+            curr_acc = callback(init_val, context.get().data, i, context);
+            i++;
+            context.toNext();
+        }
+
+        return curr_acc;
+    }
+
+    /**
+     *
+     * @param start
+     * @param end
+     * @returns {LinkedList<T>}
+     */
+    public slice(start:number,
+                 end:number = -1):LinkedList<T> {
+
+        let i:number = 0;
+        let list_to_return:LinkedList<T> = new LinkedList();
+
+        if (end === -1) {
+            end = this.length();
+        }
+
+        list_to_return.init(this._elem_class);
+
+        this.toStart();
+
+        // reach the start point
+        while (this.get() || i < start) {
+            i++;
+            this.toNext();
+        }
+
+        // add until the end
+        while (this.get() && (i <= end)) {
+            list_to_return.addElem(this.get().data);
+            i++;
+            this.toNext();
+        }
+
+        return list_to_return;
+    }
+
+    /**
+     *
+     *
+     array.splice(start)
+     array.splice(start, deleteCount)
+     array.splice(start, deleteCount, item1, item2, ...)
+     */
+    public splice():LinkedList<T> {
+
+    }
 
 
 /////////////////////////////////////////////////
@@ -703,17 +808,33 @@ class LinkedList<T extends ListElement>{
      * @param modify
      * @private
      */
-    private _accrossList(callback:(item:LinkedList<T>|T, i:number, context:LinkedList<T>) => any,
+    private _accrossList(callback:(item:LinkedList<T>|T,
+                                   i:number,
+                                   context:LinkedList<T>) => any,
                          list:LinkedList<T>,
-                         recursive:boolean,
                          modify:boolean):void {
 
         let i:number = 0;
 
         list.toStart();
         while (list.get()) {
-        //while (!list.isEnd()) {
-            list._forEachCallbackContainer(callback, list.get(), i, recursive, modify);
+            list._forEachCallbackContainer(callback, list.get(), i, modify);
+            i++;
+            list.toNext();
+        }
+    }
+
+    private _rAccrossList(callback:(item:LinkedList<T>|T,
+                                    i:number,
+                                    context:LinkedList<T>) => any,
+                          list:LinkedList<T>,
+                          modify:boolean):void {
+
+        let i:number = 0;
+
+        list.toStart();
+        while (list.get()) {
+            list._rForEachCallbackContainer(callback, list.get(), i, modify);
             i++;
             list.toNext();
         }
@@ -731,11 +852,32 @@ class LinkedList<T extends ListElement>{
     private _forEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
                                       current:any,
                                       index:number,
-                                      recursive:boolean,
                                       modify:boolean):void {
 
-        if (recursive && current.data.start !== undefined) {
-            this.forEach(callback, recursive, current.data);
+        if (modify) {
+            current.data = callback(current, index, this);
+        }
+        else {
+            callback(current, index, this);
+        }
+    }
+
+    /**
+     *
+     * @param callback
+     * @param current
+     * @param index
+     * @param recursive
+     * @param modify
+     * @private
+     */
+    private _rForEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
+                                       current:any,
+                                       index:number,
+                                       modify:boolean):void {
+
+        if (current.data.start !== undefined) {
+            this.rForEach(callback, current.data);
             return;
         }
 
@@ -745,10 +887,6 @@ class LinkedList<T extends ListElement>{
         else {
             callback(current, index, this);
         }
-
-        /*if (recursive && current.data.start !== undefined) {
-            this.forEach(callback, recursive, current.data);
-        }*/
     }
 
     /**
