@@ -759,12 +759,11 @@ class LinkedList<T extends ListElement>{
 
         let i:number = 0;
         let list_to_return:LinkedList<T> = new LinkedList();
+        list_to_return.init(this._elem_class);
 
         if (end === -1) {
             end = this.length();
         }
-
-        list_to_return.init(this._elem_class);
 
         this.toStart();
 
@@ -791,7 +790,19 @@ class LinkedList<T extends ListElement>{
      array.splice(start, deleteCount)
      array.splice(start, deleteCount, item1, item2, ...)
      */
-    public splice():LinkedList<T> {
+    public splice(start:number,
+                  delete_count:number,
+                  ...items_to_add:Array<any>):LinkedList<T> {
+
+        let i:number = 0;
+        let list_to_return:LinkedList<T> = new LinkedList();
+        list_to_return.init(this._elem_class);
+
+        // reach the start point
+        while (this.get() || i < start) {
+            i++;
+            this.toNext();
+        }
 
     }
 
