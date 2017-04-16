@@ -1,4 +1,4 @@
-import {JasmineTestBuilder} from "jasmine-test-builder";
+import {JasmineTestBuilder} from "jasmine-test-builder/package/JasmineTestBuilder";
 import {DD} from "./assets/DummyData.asset";
 import {LinkedList} from "../app/core/LinkedList";
 import {ListElement} from "../app/core/ListElement";

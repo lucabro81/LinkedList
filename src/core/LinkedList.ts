@@ -67,8 +67,8 @@ class LinkedList<T extends ListElement>{
      * @param ll
      * @returns {LinkedList<T>}
      */
-    public addElem(data:any, ll:LinkedList<T> = null):LinkedList<T> {
-        return this.addElemRight(data, ll);
+    public addElem(data:any):LinkedList<T> {
+        return this.addElemRight(data);
     }
 
     /**
@@ -77,7 +77,7 @@ class LinkedList<T extends ListElement>{
      * @param ll
      * @returns {LinkedList<T>}
      */
-    public addElemRight(data:any, ll:LinkedList<T> = null):LinkedList<T> {
+    public addElemRight(data:any):LinkedList<T> {
 
         //let list: LinkedList<T> = this._getContext(ll);
 
@@ -754,14 +754,26 @@ class LinkedList<T extends ListElement>{
      * @param end
      * @returns {LinkedList<T>}
      */
-    public slice(start:number,
-                 end:number = -1):LinkedList<T> {
+    public slice(start:number = null,
+                 end:number = null):LinkedList<T> {
 
         let i:number = 0;
-        let list_to_return:LinkedList<T> = new LinkedList();
+        let list_to_return:LinkedList<T> = new LinkedList<T>();
         list_to_return.init(this._elem_class);
 
-        if (end === -1) {
+        // norm start
+        if (start < 0) {
+            start = this.length() + start;
+        }
+        else if (start === null) {
+            start = 0;
+        }
+
+        // norm end
+        if (end < 0) {
+            end = this.length() + end;
+        }
+        else if ((end === null) || (end > this.length())) {
             end = this.length();
         }
 
@@ -785,18 +797,38 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
-     *
-     array.splice(start)
-     array.splice(start, deleteCount)
-     array.splice(start, deleteCount, item1, item2, ...)
+     * @param start
+     * @param delete_count
+     * @param items_to_add
+     * @returns {LinkedList<T>}
      */
     public splice(start:number,
-                  delete_count:number,
-                  ...items_to_add:Array<any>):LinkedList<T> {
+                  delete_count:number = null,
+                  ...items_to_add:Array<T>):LinkedList<T> {
 
         let i:number = 0;
-        let list_to_return:LinkedList<T> = new LinkedList();
+        let list_to_return:LinkedList<T> = new LinkedList<T>();
         list_to_return.init(this._elem_class);
+
+        // norm start
+        if (start > this.length()) {
+            start = this.length();
+        }
+        else if (start < 0) {
+            start = this.length() - start;
+        }
+
+        // norm delete_count
+        if (delete_count === null) {
+            delete_count = this.length() - start;
+        }
+        else if ((delete_count === 0) && (items_to_add.length == 0)) {
+            // errore, ne serve almeno 1
+            throw new Error("Fatal Error: When delete_count is 0 you need at least an element to add");
+        }
+        else if (delete_count > (this.length() - start)) {
+            delete_count = this.length() - start;
+        }
 
         // reach the start point
         while (this.get() || i < start) {
@@ -804,6 +836,22 @@ class LinkedList<T extends ListElement>{
             this.toNext();
         }
 
+        // remove delete_count elems
+        while (delete_count > 0) {
+            this.removeElem();
+            delete_count++;
+        }
+
+        // eventually add elems
+        let l:number = items_to_add.length;
+        if (l > 0) {
+            while (i <= l) {
+                this.insertElem(items_to_add[i], i);
+                i++;
+            }
+        }
+
+        return this._setCurrentProps();
     }
 
 
