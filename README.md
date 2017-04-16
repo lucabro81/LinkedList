@@ -10,6 +10,7 @@
 * test slice
 * test spice
 * optimize sort function
+* update readme api documentation
 
 # Install
 ---
