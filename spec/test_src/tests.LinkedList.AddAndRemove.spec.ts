@@ -129,7 +129,7 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             let arr:Array<any> = [];
             ll.forEach((current:any, index:number, list:LinkedList<ListElement>) => {
                 arr.push(current.data.toString().replace("_mod", ""));
-            }, false);
+            });
             return arr;
         })
         .result([ 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data1' ]);
@@ -141,9 +141,9 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             new_ll.insertElem(ll);
 
             let arr:Array<any> = [];
-            new_ll.forEach((current:any, index:number, list:LinkedList<ListElement>) => {
+            new_ll.rForEach((current:any, index:number, list:LinkedList<ListElement>) => {
                 arr.push(current.data.toString().replace("_mod", ""));
-            }, true);
+            });
             return arr;
         })
         .result([ 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data1', 'data1' ]);

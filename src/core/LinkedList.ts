@@ -5,9 +5,9 @@ import {ListElement} from "./ListElement";
 // TODO: test contain
 // TODO: test pos
 // TODO: test getElemAtPos
-// TODO: create and test reduce
-// TODO: create and test slice
-// TODO: create and test spice
+// TODO: test reduce
+// TODO: test slice
+// TODO: test spice
 // TODO: optimize sort function
 
 class LinkedList<T extends ListElement>{
