@@ -1,3 +1,17 @@
+# TODOS
+---
+
+* create and test merge
+* create and test sort
+* test contain
+* test pos
+* test getElemAtPos
+* test reduce
+* test slice
+* test spice
+* optimize sort function
+* update readme api documentation
+
 # Install
 ---
 
