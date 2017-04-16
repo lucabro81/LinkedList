@@ -3,7 +3,9 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
-    yargs = require('yargs');
+    yargs = require('yargs'),
+    del = require('del'),
+    vinyl_paths = require('vinyl-paths'),
     replace = require('gulp-replace');
 
 ///////////////////////////////////////////////
@@ -44,8 +46,9 @@ function tsCommonJS(from, to, declaration) {
 
 gulp.task('build-test', ['__typescript-tests'], function() {
     return gulp.src(['spec/test/**/*.spec.js', 'spec/test/**/*.asset.js'])
-        .pipe(replace(/(?:(?:\.\.\/)+src)+/g, '../../app')) // capture strings like ../../../src
-        .pipe(gulp.dest('spec/test'));
+        .pipe(vinyl_paths(del))
+        .pipe(replace(/(?:(?:\.\.\/)+src)+/g, 'app')) // capture strings like ../../../src
+        .pipe(gulp.dest('spec/app/test'));
 });
 
 gulp.task('build-app', ['__typescript-app', '__typescript-config'], function() {

@@ -2,15 +2,15 @@ import {ListElement} from "./ListElement";
 
 // TODO: create and test merge
 // TODO: create and test sort
-// TODO: create and test contain
-// TODO: create and test pos
+// TODO: test contain
+// TODO: test pos
+// TODO: test getElemAtPos
+// TODO: test reduce
+// TODO: test slice
+// TODO: test spice
+// TODO: optimize sort function
 
 class LinkedList<T extends ListElement>{
-
-    private prev_elem:T;
-    private curr_elem:T;
-    private elem_class:{new(data:any):T;};
-    private sort_func:Function;
 
     public start:T;
     public end:T;
@@ -21,6 +21,13 @@ class LinkedList<T extends ListElement>{
     public prev:T;
     public data:any;
     public next:T;
+
+    private _prev_elem:T;
+    private _curr_elem:T;
+    private _elem_class:{new(data:any):T;};
+    private _sort_func:Function;
+    private _length_num:number;
+    private _is_ouroboros:boolean;
 
     /**
      *
@@ -35,19 +42,23 @@ class LinkedList<T extends ListElement>{
      *
      */
     public init(c: {new(data:any): T; }, init_data:Array<any> = []):void {
+        this._elem_class = c;
+
         this.start = null;
         this.end = null;
-        this.prev_elem = null;
-        this.curr_elem = null;
-        this.cloned_list = null;
+        this._prev_elem = null;
+        this._curr_elem = null;
+        this._sort_func = this._defaultSortFunc();
+        this._length_num = 0;
 
         this.prev = null;
         this.data = null;
         this.next = null;
-        this.sort_func = this.defaultSortFunc();
-        this.elem_class = c;
+        this.cloned_list = null;
 
-        this.setUpList(init_data);
+        this._is_ouroboros = false;
+
+        this._setUpList(init_data);
     }
 
     /**
@@ -56,8 +67,8 @@ class LinkedList<T extends ListElement>{
      * @param ll
      * @returns {LinkedList<T>}
      */
-    public addElem(data:any, ll:LinkedList<T> = null):LinkedList<T> {
-        return this.addElemRight(data, ll);
+    public addElem(data:any):LinkedList<T> {
+        return this.addElemRight(data);
     }
 
     /**
@@ -66,22 +77,23 @@ class LinkedList<T extends ListElement>{
      * @param ll
      * @returns {LinkedList<T>}
      */
-    public addElemRight(data:any, ll:LinkedList<T> = null):LinkedList<T> {
+    public addElemRight(data:any):LinkedList<T> {
 
-        //var list: LinkedList<T> = this.getContext(ll);
+        //let list: LinkedList<T> = this._getContext(ll);
 
-        var new_elem: T = new this.elem_class(data);
+        let new_elem: T = new this._elem_class(data);
 
-        if (!this.isFirstElem(new_elem)) {
+        if (!this._isFirstElem(new_elem)) {
             new_elem.prev = this.end;
             this.end.next = new_elem;
             this.end = this.end.next;
         }
 
-        this.curr_elem = this.end;
-        this.prev_elem = this.end;
+        this._curr_elem = this.end;
+        this._prev_elem = this.end;
+        this._length_num++;
 
-        return this.setCurrentProps();
+        return this._setCurrentProps();
     }
 
     /**
@@ -92,20 +104,21 @@ class LinkedList<T extends ListElement>{
      */
     public addElemLeft(data:any, ll:LinkedList<T> = null):LinkedList<T> {
 
-        var list: LinkedList<T> = this.getContext(ll);
+        let list: LinkedList<T> = this._getContext(ll);
 
-        var new_elem:T = new list.elem_class(data);
+        let new_elem:T = new list._elem_class(data);
 
-        if (!list.isFirstElem(new_elem)) {
+        if (!list._isFirstElem(new_elem)) {
             new_elem.next = list.start;
             list.start.prev = new_elem;
             list.start = list.start.prev;
         }
 
-        list.curr_elem = list.start;
-        list.prev_elem = list.start;
+        list._curr_elem = list.start;
+        list._prev_elem = list.start;
+        this._length_num++;
 
-        return list.setCurrentProps();
+        return list._setCurrentProps();
     }
 
     /**
@@ -115,34 +128,35 @@ class LinkedList<T extends ListElement>{
     public removeElem(elem:T = null):LinkedList<T> {
 
         if (elem === null) {
-            elem = this.curr_elem;
+            elem = this._curr_elem;
         }
 
         if (this.isStart(elem)) {
-            this.removeStart();
-            this.curr_elem = this.start;
+            this._removeStart();
+            this._curr_elem = this.start;
         }
         else if (this.isEnd(elem)) {
-            this.removeEnd();
-            this.curr_elem = this.end;
+            this._removeEnd();
+            this._curr_elem = this.end;
         }
         else {
-            var prev_elem:T = elem.prev;
-            var next_elem:T = elem.next;
+            let _prev_elem:T = elem.prev;
+            let next_elem:T = elem.next;
 
-            if (prev_elem) {
-                prev_elem.next = next_elem;
+            if (_prev_elem) {
+                _prev_elem.next = next_elem;
             }
             if (next_elem) {
-                next_elem.prev = prev_elem;
+                next_elem.prev = _prev_elem;
             }
 
-            this.curr_elem = next_elem;
+            this._curr_elem = next_elem;
+            this._length_num--;
         }
 
         elem = null;
 
-        return this.setCurrentProps();
+        return this._setCurrentProps();
     }
 
     /**
@@ -152,18 +166,18 @@ class LinkedList<T extends ListElement>{
     public removeElemByPos(pos:number):LinkedList<T> {
 
         if (pos === 0) {
-            this.removeStart();
-            this.curr_elem = this.start;
+            this._removeStart();
+            this._curr_elem = this.start;
 
-            return this.setCurrentProps();
+            return this._setCurrentProps();
         }
 
-        var i:number = 0;
-        var current:T = this.start;
+        let i:number = 0;
+        let current:T = this.start;
 
         while (current !== null) {
             if (i === pos) {
-                this.curr_elem = current.prev;
+                this._curr_elem = current.prev;
                 this.removeElem(current);
                 break;
             }
@@ -171,7 +185,8 @@ class LinkedList<T extends ListElement>{
             current = current.next;
         }
 
-        return this.setCurrentProps();
+        //this._length_num--;
+        return this._setCurrentProps();
     }
 
     /**
@@ -179,18 +194,19 @@ class LinkedList<T extends ListElement>{
      * @param data
      */
     public removeElemByData(data:any):LinkedList<T> {
-        var current:T = this.start;
+        let current:T = this.start;
 
         while (current !== null) {
             if (current.data === data) {
-                this.curr_elem = current.prev;
+                this._curr_elem = current.prev;
                 this.removeElem(current);
                 break;
             }
             current = current.next;
         }
 
-        return this.setCurrentProps();
+        //this._length_num--;
+        return this._setCurrentProps();
     }
 
     /**
@@ -201,9 +217,11 @@ class LinkedList<T extends ListElement>{
      */
     public insertElem(data:any, pos:number = -1):LinkedList<T> {
 
-        var elem:T = new this.elem_class(data);
+        let elem:T = new this._elem_class(data);
 
-        if (pos == 0 || (pos <= -1 && (this.curr_elem && this.curr_elem.prev === null)) || this.curr_elem === null) {
+        if (pos == 0 ||
+            (pos <= -1 && (this._curr_elem && this._curr_elem.prev === null)) ||
+            this._curr_elem === null) {
             // new start elem
             this.addElemLeft(data);
         }
@@ -213,20 +231,20 @@ class LinkedList<T extends ListElement>{
         }
         else if ((pos < this.length()) && (pos > 0)) {
             // insert at position
-            var i:number = 0;
+            let i:number = 0;
             this.toStart();
             while (i < pos) {
                 this.toNext();
                 i++;
             }
-            this.insertBeforeCurrent(elem);
+            this._insertBeforeCurrent(elem);
         }
         else {
             // insert before current
-            this.insertBeforeCurrent(elem);
+            this._insertBeforeCurrent(elem);
         }
 
-        return this.setCurrentProps();
+        return this._setCurrentProps();
     }
 
     /**
@@ -234,56 +252,43 @@ class LinkedList<T extends ListElement>{
      * @returns {number}
      */
     public length():number {
-
-        var i:number = 0;
-        var current:T = this.start;
-
-        while (current) {
-            i++;
-            current = current.next;
-        }
-
-        return i;
+        return this._length_num;
     }
 
     /**
      *
      * @returns {LinkedList<T>}
      */
-    public toStart(ll:LinkedList<T> = null):LinkedList<T> {
-        var list: LinkedList<T> = this.getContext(ll);
-        list.curr_elem = list.start;
-        return list.setCurrentProps();
-    }
-
-    /**
-     *
-      * @returns {LinkedList<T>}
-     */
-    public toNext(ll:LinkedList<T> = null):LinkedList<T> {
-        var list: LinkedList<T> = this.getContext(ll);
-        list.curr_elem = (list.curr_elem.next) ? list.curr_elem.next : list.end;
-        return list.setCurrentProps();
+    public toStart():LinkedList<T> {
+        this._curr_elem = this.start;
+        return this._setCurrentProps();
     }
 
     /**
      *
      * @returns {LinkedList<T>}
      */
-    public toPrev(ll:LinkedList<T> = null):LinkedList<T> {
-        var list: LinkedList<T> = this.getContext(ll);
-        list.curr_elem = (list.curr_elem.prev) ? list.curr_elem.prev : list.start;
-        return list.setCurrentProps();
+    public toNext():LinkedList<T> {
+        this._curr_elem = this._curr_elem.next;
+        return this._setCurrentProps();
     }
 
     /**
-     * 
+     *
      * @returns {LinkedList<T>}
      */
-    public toEnd(ll:LinkedList<T> = null):LinkedList<T> {
-        var list: LinkedList<T> = this.getContext(ll);
-        list.curr_elem = list.end;
-        return list.setCurrentProps();
+    public toPrev():LinkedList<T> {
+        this._curr_elem = this._curr_elem.prev;
+        return this._setCurrentProps();
+    }
+
+    /**
+     *
+     * @returns {LinkedList<T>}
+     */
+    public toEnd():LinkedList<T> {
+        this._curr_elem = this.end;
+        return this._setCurrentProps();
     }
 
     /**
@@ -291,7 +296,7 @@ class LinkedList<T extends ListElement>{
      * @returns {T}
      */
     public get():T {
-        return (this.curr_elem) ? this.curr_elem : this.prev_elem;
+        return (this._curr_elem) ? this._curr_elem : null;
     }
 
     /**
@@ -300,16 +305,18 @@ class LinkedList<T extends ListElement>{
     public destroy():void {
 
         while (this.start !== null) {
-            this.removeStart();
+            this._removeStart();
         }
 
         this.end = null;
-        this.curr_elem = null;
-        this.prev_elem = null;
+        this._curr_elem = null;
+        this._prev_elem = null;
         this.prev = null;
         this.data = null;
         this.next = null;
-        this.sort_func = null;
+        this._sort_func = null;
+        this._length_num = 0;
+        this._is_ouroboros = false;
     }
 
     /**
@@ -319,7 +326,7 @@ class LinkedList<T extends ListElement>{
      * @returns {boolean}
      */
     public isStart(elem:T = null):boolean {
-        var elem_to_test:T = (elem) ? elem : this.curr_elem;
+        let elem_to_test:T = (elem) ? elem : this._curr_elem;
         return elem_to_test === this.start;
     }
 
@@ -330,7 +337,7 @@ class LinkedList<T extends ListElement>{
      * @returns {boolean}
      */
     public isEnd(elem:T = null):boolean {
-        var elem_to_test:T = (elem) ? elem : this.curr_elem;
+        let elem_to_test:T = (elem) ? elem : this._curr_elem;
         return elem_to_test === this.end;
     }
 
@@ -343,7 +350,7 @@ class LinkedList<T extends ListElement>{
 
         // init
         let ll:LinkedList<T> = new LinkedList<T>();
-        ll.init(this.elem_class);
+        ll.init(this._elem_class);
 
         // add elems
         let current:T = this.start;
@@ -358,7 +365,7 @@ class LinkedList<T extends ListElement>{
             return ll;
         }
 
-        return this.setCurrentProps();
+        return this._setCurrentProps();
     }
 
     /**
@@ -405,8 +412,8 @@ class LinkedList<T extends ListElement>{
      */
     public toArray():Array<any> {
 
-        var current:T = this.start;
-        var arr_to_return:Array<any> = [];
+        let current:T = this.start;
+        let arr_to_return:Array<any> = [];
 
         while (current) {
             arr_to_return.push(current.data);
@@ -418,26 +425,26 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
-     * @param sort_func
+     * @param _sort_func
      * @param list
      */
-    public rSort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
-        if (sort_func !== null) {
-            this.sort_func = sort_func;
+    public rSort(_sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
+        if (_sort_func !== null) {
+            this._sort_func = _sort_func;
         }
-        return this.setState(this.rMergeSort(list));
+        return this._setState(this._rMergeSort(list));
     }
 
     /**
      *
-     * @param sort_func
+     * @param _sort_func
      * @param list
      */
-    public sort(sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
-        if (sort_func !== null) {
-            this.sort_func = sort_func;
+    public sort(_sort_func:Function = null, list:LinkedList<T> = null):LinkedList<T> {
+        if (_sort_func !== null) {
+            this._sort_func = _sort_func;
         }
-        return this.setState(this.mergeSort(list));
+        return this._setState(this._mergeSort(list));
     }
 
     /**
@@ -474,17 +481,481 @@ class LinkedList<T extends ListElement>{
         return true;
     }
 
+    /**
+     * Does the list contain the data?, eventualy return the first element
+     *
+     * @param data
+     * @returns {any}
+     */
+    public contain(data:any):T|null {
+        let current:T = this.start;
+
+        while(current) {
+            if (current.data === data) {
+                return current;
+            }
+            current = current.next;
+        }
+
+        return null;
+    }
+
+    /**
+     * Return an array of positions of elements matching with the specified data
+     *
+     * @param data
+     * @returns {Array<number>}
+     */
+    public pos(data:any):Array<number> {
+
+        let current:T = this.start;
+        let i:number = 0;
+        let pos_arr:Array<number> = [];
+
+        while(current) {
+            if (current.data === data) {
+                pos_arr.push(i);
+            }
+            i++;
+            current = current.next;
+        }
+
+        return pos_arr;
+    }
+
+    /**
+     * Return the elements at the specified position
+     *
+     * @param pos
+     */
+    public getElemAtPos(pos:number):T {
+
+        let current:T = this.start;
+        let i:number = 0;
+
+        while(current) {
+            if (i === pos) {
+                return current
+            }
+            i++;
+            current = current.next;
+        }
+
+        return null;
+
+    }
+
+    /**
+     * TODO: pass the elements to shift?
+     * @returns {LinkedList<T>}
+     */
+    public shiftLeft():LinkedList<T> {
+
+        let new_end:T = this.start;
+
+        this.start = new_end.next;
+        if (!this._is_ouroboros) {
+            this.start.prev = null;
+        }
+
+        new_end.prev = this.end;
+        this.end.next = new_end;
+
+        this.end = new_end;
+        if (!this._is_ouroboros) {
+            this.end.next = null;
+        }
+
+        return this._setCurrentProps();
+    }
+
+    /**
+     * TODO: pass the elements to shift?
+     * @returns {LinkedList<T>}
+     */
+    public shiftRight():LinkedList<T> {
+
+        let new_start:T = this.end;
+
+        this.end = new_start.prev;
+        if (!this._is_ouroboros) {
+            this.end.next = null;
+        }
+
+        new_start.next = this.start;
+        this.start.prev = new_start;
+
+        this.start = new_start;
+        if (!this._is_ouroboros) {
+            this.start.prev = null;
+        }
+
+        return this._setCurrentProps();
+    }
+
+    /**
+     *
+     * @returns {LinkedList<T>}
+     */
+    public doOuroboros():LinkedList<T> {
+        this.start.prev = this.end;
+        this.end.next = this.start;
+        this._is_ouroboros = true;
+        return this._setCurrentProps();
+    }
+
+    /**
+     *
+     * @returns {LinkedList<T>}
+     */
+    public undoOuroboros():LinkedList<T> {
+        this.start.prev = null;
+        this.end.next = null;
+        this._is_ouroboros = false;
+        return this._setCurrentProps();
+    }
+
+    /**
+     *
+     * @returns {boolean}
+     */
+    public isOuroborusActive():boolean {
+        return this._is_ouroboros;
+    }
+
+    /**
+     *
+     * @param callback
+     * @param new_list
+     * @returns {LinkedList<T>}
+     */
+    public map(callback:(current, index, list) => any, new_list:boolean = true):LinkedList<T> {
+
+        let list:LinkedList<T>;
+
+        if (new_list) {
+            list = this.clone(true);
+        }
+        else {
+            list = this;
+        }
+
+        this._accrossList(callback, list, true);
+
+        return list;
+    }
+
+    /**
+     *
+     * @param callback
+     * @param recursive
+     * @param context
+     * @returns {LinkedList<T>}
+     */
+    public forEach(callback:(current:T,
+                             index:number,
+                             list:LinkedList<T>) => void):LinkedList<T> {
+
+        this._accrossList(callback, this, false);
+
+        return this._setCurrentProps();
+
+    }
+
+    /**
+     *
+     * @param callback
+     * @param recursive
+     * @param context
+     * @returns {LinkedList<T>}
+     */
+    public rForEach(callback:(current:T,
+                             index:number,
+                             list:LinkedList<T>) => void,
+                   recursive:boolean = false,
+                   context:LinkedList<T> = null):LinkedList<T> {
+
+        if (context === null) {
+            context = this;
+        }
+
+        this._rAccrossList(callback, context, false);
+
+        return context._setCurrentProps();
+    }
+
+    /**
+     *
+     * @param callback
+     * @param init_val
+     * @param recursive
+     * @param context
+     * @returns {any}
+     */
+    public reduce(callback:(acc:any,
+                            curr_val:any,
+                            index:number,
+                            list:LinkedList<T>) => any,
+                  init_val:any = null):any {
+
+        this.toStart();
+
+        let i:number = 0;
+        let curr_acc:any = init_val;
+        while (this.get()) {
+            curr_acc = callback(curr_acc, this.get().data, i, this);
+            i++;
+            this.toNext();
+        }
+
+        return curr_acc;
+    }
+
+    /**
+     *
+     * @param callback
+     * @param init_val
+     * @param recursive
+     * @param context
+     * @returns {any}
+     */
+    public rReduce(callback:(acc:any,
+                            curr_val:any,
+                            index:number,
+                            list:LinkedList<T>) => any,
+                  init_val:any,
+                  context:LinkedList<T> = null):any {
+
+        if (context === null) {
+            context = this;
+        }
+
+        context.toStart();
+
+        let i:number = 0;
+        let curr_acc:any = init_val;
+        while (context.get()) {
+
+            if (context.get().data.start !== undefined) {
+                return context.rReduce(callback, curr_acc, context.data);
+            }
+
+            curr_acc = callback(init_val, context.get().data, i, context);
+            i++;
+            context.toNext();
+        }
+
+        return curr_acc;
+    }
+
+    /**
+     *
+     * @param start
+     * @param end
+     * @returns {LinkedList<T>}
+     */
+    public slice(start:number = null,
+                 end:number = null):LinkedList<T> {
+
+        let i:number = 0;
+        let list_to_return:LinkedList<T> = new LinkedList<T>();
+        list_to_return.init(this._elem_class);
+
+        // norm start
+        if (start < 0) {
+            start = this.length() + start;
+        }
+        else if (start === null) {
+            start = 0;
+        }
+
+        // norm end
+        if (end < 0) {
+            end = this.length() + end;
+        }
+        else if ((end === null) || (end > this.length())) {
+            end = this.length();
+        }
+
+        this.toStart();
+
+        // reach the start point
+        while (this.get() || i < start) {
+            i++;
+            this.toNext();
+        }
+
+        // add until the end
+        while (this.get() && (i <= end)) {
+            list_to_return.addElem(this.get().data);
+            i++;
+            this.toNext();
+        }
+
+        return list_to_return;
+    }
+
+    /**
+     *
+     * @param start
+     * @param delete_count
+     * @param items_to_add
+     * @returns {LinkedList<T>}
+     */
+    public splice(start:number,
+                  delete_count:number = null,
+                  ...items_to_add:Array<T>):LinkedList<T> {
+
+        let i:number = 0;
+        let list_to_return:LinkedList<T> = new LinkedList<T>();
+        list_to_return.init(this._elem_class);
+
+        // norm start
+        if (start > this.length()) {
+            start = this.length();
+        }
+        else if (start < 0) {
+            start = this.length() - start;
+        }
+
+        // norm delete_count
+        if (delete_count === null) {
+            delete_count = this.length() - start;
+        }
+        else if ((delete_count === 0) && (items_to_add.length == 0)) {
+            // errore, ne serve almeno 1
+            throw new Error("Fatal Error: When delete_count is 0 you need at least an element to add");
+        }
+        else if (delete_count > (this.length() - start)) {
+            delete_count = this.length() - start;
+        }
+
+        // reach the start point
+        while (this.get() || i < start) {
+            i++;
+            this.toNext();
+        }
+
+        // remove delete_count elems
+        while (delete_count > 0) {
+            this.removeElem();
+            delete_count++;
+        }
+
+        // eventually add elems
+        let l:number = items_to_add.length;
+        if (l > 0) {
+            while (i <= l) {
+                this.insertElem(items_to_add[i], i);
+                i++;
+            }
+        }
+
+        return this._setCurrentProps();
+    }
+
+
 /////////////////////////////////////////////////
 //////////////////// PRIVATE ////////////////////
 /////////////////////////////////////////////////
 
     /**
      *
+     * @param callback
+     * @param list
+     * @param recursive
+     * @param modify
+     * @private
+     */
+    private _accrossList(callback:(item:LinkedList<T>|T,
+                                   i:number,
+                                   context:LinkedList<T>) => any,
+                         list:LinkedList<T>,
+                         modify:boolean):void {
+
+        let i:number = 0;
+
+        list.toStart();
+        while (list.get()) {
+            list._forEachCallbackContainer(callback, list.get(), i, modify);
+            i++;
+            list.toNext();
+        }
+    }
+
+    private _rAccrossList(callback:(item:LinkedList<T>|T,
+                                    i:number,
+                                    context:LinkedList<T>) => any,
+                          list:LinkedList<T>,
+                          modify:boolean):void {
+
+        let i:number = 0;
+
+        list.toStart();
+        while (list.get()) {
+            list._rForEachCallbackContainer(callback, list.get(), i, modify);
+            i++;
+            list.toNext();
+        }
+    }
+
+    /**
+     *
+     * @param callback
+     * @param current
+     * @param index
+     * @param recursive
+     * @param modify
+     * @private
+     */
+    private _forEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
+                                      current:any,
+                                      index:number,
+                                      modify:boolean):void {
+
+        if (modify) {
+            current.data = callback(current, index, this);
+        }
+        else {
+            callback(current, index, this);
+        }
+    }
+
+    /**
+     *
+     * @param callback
+     * @param current
+     * @param index
+     * @param recursive
+     * @param modify
+     * @private
+     */
+    private _rForEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
+                                       current:any,
+                                       index:number,
+                                       modify:boolean):void {
+
+        if (current.data.start !== undefined) {
+            this.rForEach(callback, current.data);
+            return;
+        }
+
+        if (modify) {
+            current.data = callback(current, index, this);
+        }
+        else {
+            callback(current, index, this);
+        }
+    }
+
+    /**
+     *
      * @param ll
      * @returns {LinkedList<T>}
+     * @private
      */
-    private getContext(ll:LinkedList<T>):LinkedList<T> {
-        var list:LinkedList<T>;
+    private _getContext(ll:LinkedList<T>):LinkedList<T> {
+        let list:LinkedList<T>;
 
         if (ll) {
             list = ll;
@@ -499,22 +970,23 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @returns {(a:T, b:T)=>boolean}
+     * @private
      */
-    private defaultSortFunc() {
+    private _defaultSortFunc() {
         return (a:T, b:T):boolean => {
             return a <= b;
         }
     }
 
     /**
-     * TODO: destroy sub lists?
      *
      * @param ll
      * @returns {any}
+     * @private
      */
-    private rMergeSort(ll:LinkedList<T>):LinkedList<T> {
+    private _rMergeSort(ll:LinkedList<T>):LinkedList<T> {
 
-        var list:LinkedList<T>;
+        let list:LinkedList<T>;
 
         if (ll) {
             list = ll;
@@ -523,21 +995,20 @@ class LinkedList<T extends ListElement>{
             list = this;
         }
 
-        var l:number = list.length();
+        let l:number = list.length();
 
         if (l <= 1) {
             return list;
         }
 
-        var sub_list_left:LinkedList<T> = new LinkedList<T>();
-        var sub_list_right:LinkedList<T> = new LinkedList<T>();
-        var i:number = 0;
-        var current:T = list.start;
+        let sub_list_left:LinkedList<T> = new LinkedList<T>();
+        let sub_list_right:LinkedList<T> = new LinkedList<T>();
+        let i:number = 0;
+        let current:T = list.start;
 
-        sub_list_left.init(this.elem_class);
-        sub_list_right.init(this.elem_class);
+        sub_list_left.init(this._elem_class);
+        sub_list_right.init(this._elem_class);
 
-        // TODO: try to refactor using pointers and moving functions
         while (current) {
             if (i < l/2) {
                 sub_list_left.addElem(current.data);
@@ -549,10 +1020,10 @@ class LinkedList<T extends ListElement>{
             i++;
         }
 
-        sub_list_left = this.rMergeSort(sub_list_left);
-        sub_list_right = this.rMergeSort(sub_list_right);
+        sub_list_left = this._rMergeSort(sub_list_left);
+        sub_list_right = this._rMergeSort(sub_list_right);
 
-        return this.mergeMethod(sub_list_left, sub_list_right);
+        return this._mergeMethod(sub_list_left, sub_list_right);
     }
 
     /**
@@ -560,8 +1031,9 @@ class LinkedList<T extends ListElement>{
      *
      * @param list
      * @returns {LinkedList}
+     * @private
      */
-    private mergeSort(list:LinkedList<T>):LinkedList<T> {
+    private _mergeSort(list:LinkedList<T>):LinkedList<T> {
         return this;
     }
 
@@ -570,18 +1042,19 @@ class LinkedList<T extends ListElement>{
      * @param sub_list_left
      * @param sub_list_right
      * @returns {LinkedList}
+     * @private
      */
-    private mergeMethod(sub_list_left:LinkedList<T>,
-                        sub_list_right:LinkedList<T>):LinkedList<T> {
+    private _mergeMethod(sub_list_left:LinkedList<T>,
+                         sub_list_right:LinkedList<T>):LinkedList<T> {
 
-        var sub_list_result:LinkedList<T> = new LinkedList<T>();
-        sub_list_result.init(this.elem_class);
+        let sub_list_result:LinkedList<T> = new LinkedList<T>();
+        sub_list_result.init(this._elem_class);
 
-        var current_left:T = sub_list_left.start;
-        var current_right:T = sub_list_right.start;
+        let current_left:T = sub_list_left.start;
+        let current_right:T = sub_list_right.start;
 
         while (current_left != null && current_right != null) {
-            if (this.sort_func(sub_list_left.start.data, sub_list_right.start.data)) {
+            if (this._sort_func(sub_list_left.start.data, sub_list_right.start.data)) {
                 sub_list_result.addElem(current_left.data);
                 sub_list_left.removeElem(current_left);
             }
@@ -612,20 +1085,22 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @param arr
+     * @private
      */
-    private destroyArray(arr:Array<any>) {
-        var l:number = arr.length;
-        for (var i = l - 1; i >= 0; i--) {
+    private _destroyArray(arr:Array<any>) {
+        let l:number = arr.length;
+        for (let i = l - 1; i >= 0; i--) {
             arr.pop();
         }
     }
 
     /**
      *
+     * @private
      */
-    private setUpList(init_data:Array<any>):void {
+    private _setUpList(init_data:Array<any>):void {
 
-        var l:number = init_data.length;
+        let l:number = init_data.length;
 
         for (let i = 0; i < l; i++) {
             let data:any = init_data[i];
@@ -636,27 +1111,32 @@ class LinkedList<T extends ListElement>{
     /**
      *
      * @param elem
+     * @private
      */
-    private insertBeforeCurrent(elem:T):void {
-        var before_elem:T = this.curr_elem.prev;
-        var after_elem:T = this.curr_elem;
+    private _insertBeforeCurrent(elem:T):void {
+        let before_elem:T = this._curr_elem.prev;
+        let after_elem:T = this._curr_elem;
 
         elem.prev = before_elem;
         elem.next = after_elem;
         before_elem.next = elem;
         after_elem.prev = elem;
+        this._length_num++;
 
-        this.curr_elem = elem;
+        this._curr_elem = elem;
     }
 
     /**
      *
      * @returns {LinkedList}
+     * @private
      */
-    private setCurrentProps():LinkedList<T> {
-        this.prev = (this.curr_elem) ? this.curr_elem.prev : null;
-        this.data = (this.curr_elem) ? this.curr_elem.data : null;
-        this.next = (this.curr_elem) ? this.curr_elem.next : null;
+    private _setCurrentProps():LinkedList<T> {
+
+        this.prev = (this._curr_elem) ? this._curr_elem.prev : null;
+        this.data = (this._curr_elem) ? this._curr_elem.data : null;
+        this.next = (this._curr_elem) ? this._curr_elem.next : null;
+
         return this;
     }
 
@@ -664,13 +1144,14 @@ class LinkedList<T extends ListElement>{
      *
      * @param context
      * @returns {LinkedList}
+     * @private
      */
-    private setState(context:LinkedList<T>):LinkedList<T> {
-        
-        this.prev_elem = context.prev_elem;
-        this.curr_elem = context.curr_elem;
-        this.elem_class = context.elem_class;
-        this.sort_func = context.sort_func;
+    private _setState(context:LinkedList<T>):LinkedList<T> {
+
+        this._prev_elem = context._prev_elem;
+        this._curr_elem = context._curr_elem;
+        this._elem_class = context._elem_class;
+        this._sort_func = context._sort_func;
 
         this.start = context.start;
         this.end = context.end;
@@ -687,22 +1168,26 @@ class LinkedList<T extends ListElement>{
 
     /**
      *
+     * @private
      */
-    private removeStart():void {
+    private _removeStart():void {
         this.start = this.start.next;
         if (this.start) {
             this.start.prev = null;
         }
+        this._length_num--;
     }
 
     /**
      *
+     * @private
      */
-    private removeEnd():void {
+    private _removeEnd():void {
         this.end = this.end.prev;
         if (this.end) {
             this.end.next = null;
         }
+        this._length_num--;
     }
 
     /**
@@ -710,10 +1195,11 @@ class LinkedList<T extends ListElement>{
      *
      * @param new_elem
      * @returns {boolean}
+     * @private
      */
-    private isFirstElem(new_elem:T):boolean {
+    private _isFirstElem(new_elem:T):boolean {
         if (this.start === null) {
-            this.startList(new_elem);
+            this._startList(new_elem);
             return true;
         }
         return false;
@@ -723,8 +1209,9 @@ class LinkedList<T extends ListElement>{
      * Put the first elem in the list
      *
      * @param new_elem
+     * @private
      */
-    private startList(new_elem:T):void {
+    private _startList(new_elem:T):void {
         this.start = new_elem;
         this.end = this.start;
     }

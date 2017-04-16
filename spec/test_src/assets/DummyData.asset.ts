@@ -1,5 +1,5 @@
-import {ListElement} from "../../../src/core/ListElement";
-import {LinkedList} from "../../../src/core/LinkedList";
+import {ListElement} from "../../app/core/ListElement";
+import {LinkedList} from "../../app/core/LinkedList";
 
 class DummyData {
 
