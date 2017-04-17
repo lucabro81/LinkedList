@@ -1,171 +1,166 @@
 import {LinkedList} from "../core/LinkedList";
 import {ListElement} from "../core/ListElement";
 
-let ll = new LinkedList<ListElement>();
-ll.init(ListElement, [2,4,9,5,12,0]);
+class InfiniteScroll {
+
+    public count:number;
+    public cont:HTMLElement;
+    public padding_top:number = 21;
+
+    constructor() {}
+
+    public init(cont:HTMLElement) {
+        this.count = 0;
+        this.cont = cont;
+    }
+
+    public howManyElems():number {
+        return this.count;
+    }
+
+    public destroy():void {
+
+    }
+
+    public createElem(data:any, remove_padding:boolean = true):HTMLElement {
+
+        var cont_elem:HTMLElement = document.createElement("DIV");
+        var t = document.createTextNode(data);
+        cont_elem.appendChild(t);
+
+        cont_elem.style.width = '100%';
+        cont_elem.style.borderBottom = "solid 1px red";
+        cont_elem.style.padding = '10px 0';
+
+        if (remove_padding) {
+            this.cont.insertBefore(cont_elem, this.cont.childNodes[0]);
+            //console.log("cont_elem.offsetHeight", cont_elem.offsetHeight);
+            this.padding_top -= cont_elem.offsetHeight;
+            //console.log("this.padding_top:", this.padding_top, " - cont_elem.offsetHeight:", cont_elem.offsetHeight);
+            this.cont.style.paddingTop = this.padding_top + "px";
+        }
+        else {
+            this.cont.appendChild(cont_elem);
+        }
+
+        return cont_elem;
+    }
+
+    public removeElem(cont_elem:HTMLElement, add_padding:boolean = true) {
+        let offset_height:number = cont_elem.offsetHeight;
+        //console.log("offset_height", offset_height);
+        this.cont.removeChild(cont_elem);
+        if (add_padding) {
+            this.padding_top += offset_height;
+            //console.log("this.padding_top", this.padding_top);
+            this.cont.style.paddingTop = this.padding_top + "px";
+        }
+    }
+}
+
+// APP
+
+function craeteString(l:number) {
+    let str:string = '';
+    while (l>0) {
+        str += 'ziocan ';
+        l--;
+    }
+    return str;
+}
+
+let app:InfiniteScroll = new InfiniteScroll();
+let infinity_scroll_cont:HTMLElement = document.getElementById("infinite-scroll-cont");
+let inner_infinity_scroll_cont:HTMLElement = document.getElementById("inner-infinite-scroll-cont");
+app.init(inner_infinity_scroll_cont);
+
+// Create data source
+let data_source:Array<string> = [];
+for (let i = 0; i < 50000; i++) {
+    let l:number = (Math.random() * 100) + 1;
+    data_source.push((i+1) + ' - ' + craeteString(l));
+}
 
 // Create list
-
-let create_list:string = "";
-
-ll.toStart();
-let current:ListElement = ll.get();
-while (current) {
-    create_list += current.data + " <--> ";
-    current = current.next;
+let ll = new LinkedList<ListElement>();
+let current_elem_height:number = 0;
+ll.init(ListElement);
+for (let i = 0; i < 30; i++) {
+    ll.addElem(app.createElem(data_source[i], false));
 }
-create_list = create_list.slice(0, create_list.length-6);
-document.getElementById('create_list').innerHTML = create_list;
 
-// Add left element
+current_elem_height = inner_infinity_scroll_cont.offsetHeight;
 
-let add_left_list:string = "";
+// EVT
+let is_scroll_avaible:boolean = true;
+let pag:number = 1;
 
-ll.addElemLeft(3).addElemLeft(78);
+let previous_scroll_value:number = 0;
 
-ll.toStart();
-current = ll.get();
-while (current) {
-    add_left_list += current.data + " <--> ";
-    current = current.next;
-}
-add_left_list = add_left_list.slice(0, add_left_list.length-6);
-document.getElementById('add_left_list').innerHTML = add_left_list;
+infinity_scroll_cont.addEventListener("scroll", (evt:any) => {
 
-// Add right element
+    if (infinity_scroll_cont.scrollTop > previous_scroll_value) {
+        previous_scroll_value = infinity_scroll_cont.scrollTop;
 
-let add_right_list:string = "";
+        if (((infinity_scroll_cont.scrollTop) > current_elem_height - 600) && (is_scroll_avaible)) {
 
-ll.addElemRight(18).addElemRight(34);
+            is_scroll_avaible = false;
+            console.log("pag",pag);
+            for (let i = 30*pag; i < 30*(pag+1); i++) {
 
-ll.toStart();
-current = ll.get();
-while (current) {
-    add_right_list += current.data + " <--> ";
-    current = current.next;
-}
-add_right_list = add_right_list.slice(0, add_right_list.length-6);
-document.getElementById('add_right_list').innerHTML = add_right_list;
+                let new_elem:HTMLElement = app.createElem(data_source[i], false);
 
-// Remove elem by pos
+                if (pag > 2) {
+                    app.removeElem(ll.start.data);
+                    ll.shiftLeft().end.data = new_elem;
+                }
+                else {
+                    ll.addElem(new_elem);
+                }
+            }
+            pag++;
 
-let remove_elem_by_pos:string = "";
+            current_elem_height = inner_infinity_scroll_cont.offsetHeight;
 
-ll.removeElemByPos(5).removeElemByPos(8);
+            is_scroll_avaible = true;
 
-ll.toStart();
-current = ll.get();
-while (current) {
-    remove_elem_by_pos += current.data + " <--> ";
-    current = current.next;
-}
-remove_elem_by_pos = remove_elem_by_pos.slice(0, remove_elem_by_pos.length-6);
-document.getElementById('remove_elem_by_pos').innerHTML = remove_elem_by_pos;
+        }
 
-// Remove elem by data
+    }
+    else if (infinity_scroll_cont.scrollTop < previous_scroll_value) {
+        previous_scroll_value = infinity_scroll_cont.scrollTop;
 
-let remove_elem_by_data:string = "";
-ll.removeElemByData(9);
+        if (((infinity_scroll_cont.scrollTop) < (app.padding_top + 600)) && (is_scroll_avaible)) {
 
-ll.toStart();
-current = ll.get();
-while (current) {
-    remove_elem_by_data += current.data + " <--> ";
-    current = current.next;
-}
-remove_elem_by_data = remove_elem_by_data.slice(0, remove_elem_by_data.length-6);
-document.getElementById('remove_elem_by_data').innerHTML = remove_elem_by_data;
+            if (pag-3 > 0) {
+                is_scroll_avaible = false;
+                console.log("fd pag",pag-3, 30*((pag-4)+1), 30*(pag-4));
+                for (let i = 30*((pag-4)+1); i >= 30*(pag-4); i--) {
 
-// Insert elem
+                    //console.log("i", i);
 
-let insert_elem:string = "";
-ll.insertElem(102, 4);
+                    let new_elem:HTMLElement = app.createElem(data_source[i]);
 
-ll.toStart();
-current = ll.get();
-while (current) {
-    insert_elem += current.data + " <--> ";
-    current = current.next;
-}
-insert_elem = insert_elem.slice(0, insert_elem.length-6);
-document.getElementById('insert_elem').innerHTML = insert_elem;
+                    //if (pag > 2) {
+                    app.removeElem(ll.end.data, false);
+                    ll.shiftRight().start.data = new_elem;
+                    //}
+                    //else {
+                    //    ll.addElem(new_elem);
+                    //}
+                    //ll.end.data.innerHTML = data_source[i];
+                }
+                pag--;
 
-// Length
+                current_elem_height = inner_infinity_scroll_cont.offsetHeight;
 
-document.getElementById('length').innerHTML = ll.length().toString();
+                is_scroll_avaible = true;/**/
+            }
 
-// Clone list
+        }
 
-let clone_list:string = "";
-let cloned_list:LinkedList<ListElement> = ll.clone().cloned_list;
+    }
+});
 
-cloned_list.toStart();
-current = cloned_list.get();
-while (current) {
-    clone_list += current.data + " <--> ";
-    current = current.next;
-}
-clone_list = clone_list.slice(0, clone_list.length-6);
-document.getElementById('clone_list').innerHTML = clone_list;
 
-// Concat lists
-
-let concat_lists:string = "";
-let list_to_concat:LinkedList<ListElement> = new LinkedList();
-list_to_concat.init(ListElement, [-23, 123, 99]);
-
-ll.concat(list_to_concat);
-
-ll.toStart();
-current = ll.get();
-while (current) {
-    concat_lists += current.data + " <--> ";
-    current = current.next;
-}
-concat_lists = concat_lists.slice(0, concat_lists.length-6);
-document.getElementById('concat_lists').innerHTML = concat_lists;
-
-// Recursive merge
-
-let rmerge_lists:string = "";
-let list_to_rmerge:LinkedList<ListElement> = new LinkedList();
-list_to_rmerge.init(ListElement, [-25, 120, 76]);
-
-ll.rMerge(list_to_rmerge);
-
-ll.toStart();
-current = ll.get();
-while (current) {
-    rmerge_lists += current.data + " <--> ";
-    current = current.next;
-}
-rmerge_lists = rmerge_lists.slice(0, rmerge_lists.length-6);
-document.getElementById('rmerge_lists').innerHTML = rmerge_lists;
-
-// List to array
-
-let list_to_array:string = "";
-let array:Array<any> = ll.toArray();
-for (let i = 0; i < array.length; i++) {
-    list_to_array += array[i] + ", ";
-}
-list_to_array = "[ " + list_to_array.slice(0, list_to_array.length-2) + " ]";
-document.getElementById('list_to_array').innerHTML = list_to_array;
-
-// Recursive sort
-
-let recursive_sort:string = "";
-
-ll.rSort((a:any, b:any) => { return !(a <= b); });
-
-ll.toStart();
-current = ll.get();
-while (current) {
-    recursive_sort += current.data + " <--> ";
-    current = current.next;
-}
-recursive_sort = recursive_sort.slice(0, recursive_sort.length-6);
-document.getElementById('recursive_sort').innerHTML = recursive_sort;
-
-ll.destroy();
-
+window['ll'] = ll;
