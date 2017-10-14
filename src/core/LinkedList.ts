@@ -413,9 +413,10 @@ class LinkedList<T extends ListElement>{
     public toArray():Array<any> {
 
         let current:T = this.start;
+
         let arr_to_return:Array<any> = [];
 
-        while (current) {
+        while (arr_to_return.length < this.length()) {
             arr_to_return.push(current.data);
             current = current.next;
         }
@@ -549,21 +550,29 @@ class LinkedList<T extends ListElement>{
      * TODO: pass the elements to shift?
      * @returns {LinkedList<T>}
      */
-    public shiftLeft():LinkedList<T> {
+    public shiftLeft(delete_shifted:boolean = true):LinkedList<T> {
 
-        let new_end:T = this.start;
+        let start_next:T = this.start.next;
 
-        this.start = new_end.next;
-        if (!this._is_ouroboros) {
-            this.start.prev = null;
+        if (!delete_shifted) {
+            let old_start:T = start_next.prev;
+            this.end.next = old_start;
+            old_start.prev = this.end;
+            this.end = old_start;
+            this.end.next = null;
+        }
+        else {
+            this._length_num--;
         }
 
-        new_end.prev = this.end;
-        this.end.next = new_end;
+        this.start = start_next;
 
-        this.end = new_end;
-        if (!this._is_ouroboros) {
-            this.end.next = null;
+        if (this._is_ouroboros) {
+            this.start.prev = this.end;
+            this.end.next = this.start;
+        }
+        else {
+            this.start.prev = null;
         }
 
         return this._setCurrentProps();
@@ -573,21 +582,29 @@ class LinkedList<T extends ListElement>{
      * TODO: pass the elements to shift?
      * @returns {LinkedList<T>}
      */
-    public shiftRight():LinkedList<T> {
+    public shiftRight(delete_shifted:boolean = true):LinkedList<T> {
 
-        let new_start:T = this.end;
+        let end_prev:T = this.end.prev;
 
-        this.end = new_start.prev;
-        if (!this._is_ouroboros) {
-            this.end.next = null;
+        if (!delete_shifted) {
+            let old_end:T = end_prev.next;
+            this.start.prev = old_end;
+            old_end.next = this.start;
+            this.start = old_end;
+            this.start.prev = null;
+        }
+        else {
+            this._length_num--;
         }
 
-        new_start.next = this.start;
-        this.start.prev = new_start;
+        this.end = end_prev;
 
-        this.start = new_start;
-        if (!this._is_ouroboros) {
-            this.start.prev = null;
+        if (this._is_ouroboros) {
+            this.end.next = this.start;
+            this.start.prev = this.end;
+        }
+        else {
+            this.end.next = null;
         }
 
         return this._setCurrentProps();
@@ -598,6 +615,7 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public doOuroboros():LinkedList<T> {
+
         this.start.prev = this.end;
         this.end.next = this.start;
         this._is_ouroboros = true;
@@ -672,7 +690,6 @@ class LinkedList<T extends ListElement>{
     public rForEach(callback:(current:T,
                              index:number,
                              list:LinkedList<T>) => void,
-                   recursive:boolean = false,
                    context:LinkedList<T> = null):LinkedList<T> {
 
         if (context === null) {
@@ -893,6 +910,7 @@ class LinkedList<T extends ListElement>{
 
         list.toStart();
         while (list.get()) {
+
             list._rForEachCallbackContainer(callback, list.get(), i, modify);
             i++;
             list.toNext();
@@ -930,6 +948,7 @@ class LinkedList<T extends ListElement>{
      * @param modify
      * @private
      */
+
     private _rForEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
                                        current:any,
                                        index:number,

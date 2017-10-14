@@ -76,21 +76,21 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
     tb.test("Shift list to left")
         .withMethod("shiftLeft")
         .andProp("start")
-        .result(DD.listFromArrayData(["data5","data4","data3","data7","data2","data1","data6"]).start);
+        .result(DD.listFromArrayData(["data5","data4","data3","data7","data2","data1"]).start);
 
     tb.test("Shift list to right")
         .withMethod("shiftRight")
         .andProp("start")
-        .result(DD.listFromArrayData(["data6","data5","data4","data3","data7","data2","data1"]).start);
+        .result(DD.listFromArrayData(["data5","data4","data3","data7","data2"]).start);
 
     tb.test("Ouroboros on")
         .withMethod("doOuroboros")
         .andProp("end")
         .andProp("next")
         .andProp("data")
-        .result("data6");
+        .result("data5");
 
-    tb.test("Ouroboros off")
+     tb.test("Ouroboros off")
         .withMethod("undoOuroboros")
         .andProp("end")
         .andProp("next")
@@ -98,19 +98,15 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
 
     tb.test("Shift list to left after do doOuroboros")
         .withMethod("doOuroboros")
-        .andMethod("shiftLeft")
-        .andProp("end")
-        .andProp("next")
-        .andProp("data")
-        .result("data5");
+        .andMethod("shiftLeft", [false])
+        .andProp("start")
+        .result(DD.listFromArrayData(["data4","data3","data7","data2","data5"]).doOuroboros().start);
 
-    tb.test("Shift list to left after do doOuroboros")
+    tb.test("Shift list to right after do doOuroboros")
         .withMethod("doOuroboros")
-        .andMethod("shiftRight")
-        .andProp("end")
-        .andProp("next")
-        .andProp("data")
-        .result("data6");
+        .andMethod("shiftRight", [false])
+        .andProp("start")
+        .result(DD.listFromArrayData(["data5","data4","data3","data7","data2"]).doOuroboros().start);
 
     // NB: Ouroboros is now on
 
@@ -120,7 +116,7 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             return current.data + "_mod";
         }, false])
         .andProp("start")
-        .result(DD.listFromArrayData(["data6_mod","data5_mod","data4_mod","data3_mod","data7_mod","data2_mod","data1_mod"]).start);
+        .result(DD.listFromArrayData(["data5_mod","data4_mod","data3_mod","data7_mod","data2_mod"]).start);
 
     // NB: Ouroboros is now off
 
@@ -132,7 +128,7 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             });
             return arr;
         })
-        .result([ 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data1' ]);
+        .result([ 'data5', 'data4', 'data3', 'data7', 'data2' ]);
 
     tb.test("Do some with forEach() function - recoursive")
         .withCustomTestFunc((ll:LinkedList<ListElement>) => {
@@ -146,6 +142,6 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             });
             return arr;
         })
-        .result([ 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data6', 'data5', 'data4', 'data3', 'data7', 'data2', 'data1', 'data1' ]);
+        .result([ 'data5', 'data4', 'data3', 'data7', 'data5', 'data4', 'data3', 'data7', 'data2', 'data2' ]);
 
 tb.run();
