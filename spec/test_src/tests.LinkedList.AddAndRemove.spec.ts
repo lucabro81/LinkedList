@@ -90,7 +90,7 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
         .andProp("data")
         .result("data5");
 
-    tb.test("Ouroboros off")
+     tb.test("Ouroboros off")
         .withMethod("undoOuroboros")
         .andProp("end")
         .andProp("next")
@@ -98,19 +98,15 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
 
     tb.test("Shift list to left after do doOuroboros")
         .withMethod("doOuroboros")
-        .andMethod("shiftLeft")
-        .andProp("end")
-        .andProp("next")
-        .andProp("data")
-        .result("data4");
+        .andMethod("shiftLeft", [false])
+        .andProp("start")
+        .result(DD.listFromArrayData(["data4","data3","data7","data2","data5"]).doOuroboros().start);
 
-    tb.test("Shift list to left after do doOuroboros")
+    tb.test("Shift list to right after do doOuroboros")
         .withMethod("doOuroboros")
-        .andMethod("shiftRight")
-        .andProp("end")
-        .andProp("next")
-        .andProp("data")
-        .result("data5");
+        .andMethod("shiftRight", [false])
+        .andProp("start")
+        .result(DD.listFromArrayData(["data5","data4","data3","data7","data2"]).doOuroboros().start);
 
     // NB: Ouroboros is now on
 

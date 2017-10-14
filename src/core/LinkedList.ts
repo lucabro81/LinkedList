@@ -413,9 +413,10 @@ class LinkedList<T extends ListElement>{
     public toArray():Array<any> {
 
         let current:T = this.start;
+
         let arr_to_return:Array<any> = [];
 
-        while (current) {
+        while (arr_to_return.length < this.length()) {
             arr_to_return.push(current.data);
             current = current.next;
         }
@@ -549,52 +550,62 @@ class LinkedList<T extends ListElement>{
      * TODO: pass the elements to shift?
      * @returns {LinkedList<T>}
      */
-    public shiftLeft():LinkedList<T> {
+    public shiftLeft(delete_shifted:boolean = true):LinkedList<T> {
 
-        // il primo diventarà il nuovo ultimo
-        let new_end:T = this.start;
+        let start_next:T = this.start.next;
 
-        // il nuovo inizio è il next di quello appena salvato
-        this.start = new_end.next;
-
-        // se ouroboros non è attivo ...
-        if (!this._is_ouroboros) {
-            // ... il precedente del primo diventa null
-            this.start.prev = null;
-            return this._setCurrentProps();
+        if (!delete_shifted) {
+            let old_start:T = start_next.prev;
+            this.end.next = old_start;
+            old_start.prev = this.end;
+            this.end = old_start;
+            this.end.next = null;
+        }
+        else {
+            this._length_num--;
         }
 
-        // ... altrimenti il precedente di quello salvato punta all'ultimo attuale in modo
-        // da diventare di fatto l'ultimo
-        new_end.prev = this.end;
-        // e il prissimo dell'ultimo attuale punta a quello salvato
-        this.end.next = new_end;
-        // quello salvato diventa formalmente l'ultimo
-        this.end = new_end;
+        this.start = start_next;
+
+        if (this._is_ouroboros) {
+            this.start.prev = this.end;
+            this.end.next = this.start;
+        }
+        else {
+            this.start.prev = null;
+        }
 
         return this._setCurrentProps();
-
-
     }
 
     /**
      * TODO: pass the elements to shift?
      * @returns {LinkedList<T>}
      */
-    public shiftRight():LinkedList<T> {
+    public shiftRight(delete_shifted:boolean = true):LinkedList<T> {
 
-        let new_start:T = this.end;
+        let end_prev:T = this.end.prev;
 
-        this.end = new_start.prev;
-        if (!this._is_ouroboros) {
-            this.end.next = null;
-            return this._setCurrentProps();
+        if (!delete_shifted) {
+            let old_end:T = end_prev.next;
+            this.start.prev = old_end;
+            old_end.next = this.start;
+            this.start = old_end;
+            this.start.prev = null;
+        }
+        else {
+            this._length_num--;
         }
 
-        new_start.next = this.start;
-        this.start.prev = new_start;
+        this.end = end_prev;
 
-        this.start = new_start;
+        if (this._is_ouroboros) {
+            this.end.next = this.start;
+            this.start.prev = this.end;
+        }
+        else {
+            this.end.next = null;
+        }
 
         return this._setCurrentProps();
     }
@@ -604,6 +615,7 @@ class LinkedList<T extends ListElement>{
      * @returns {LinkedList<T>}
      */
     public doOuroboros():LinkedList<T> {
+
         this.start.prev = this.end;
         this.end.next = this.start;
         this._is_ouroboros = true;
