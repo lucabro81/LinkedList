@@ -551,22 +551,30 @@ class LinkedList<T extends ListElement>{
      */
     public shiftLeft():LinkedList<T> {
 
+        // il primo diventarà il nuovo ultimo
         let new_end:T = this.start;
 
+        // il nuovo inizio è il next di quello appena salvato
         this.start = new_end.next;
+
+        // se ouroboros non è attivo ...
         if (!this._is_ouroboros) {
+            // ... il precedente del primo diventa null
             this.start.prev = null;
+            return this._setCurrentProps();
         }
 
+        // ... altrimenti il precedente di quello salvato punta all'ultimo attuale in modo
+        // da diventare di fatto l'ultimo
         new_end.prev = this.end;
+        // e il prissimo dell'ultimo attuale punta a quello salvato
         this.end.next = new_end;
-
+        // quello salvato diventa formalmente l'ultimo
         this.end = new_end;
-        if (!this._is_ouroboros) {
-            this.end.next = null;
-        }
 
         return this._setCurrentProps();
+
+
     }
 
     /**
@@ -580,15 +588,13 @@ class LinkedList<T extends ListElement>{
         this.end = new_start.prev;
         if (!this._is_ouroboros) {
             this.end.next = null;
+            return this._setCurrentProps();
         }
 
         new_start.next = this.start;
         this.start.prev = new_start;
 
         this.start = new_start;
-        if (!this._is_ouroboros) {
-            this.start.prev = null;
-        }
 
         return this._setCurrentProps();
     }
@@ -672,7 +678,6 @@ class LinkedList<T extends ListElement>{
     public rForEach(callback:(current:T,
                              index:number,
                              list:LinkedList<T>) => void,
-                   recursive:boolean = false,
                    context:LinkedList<T> = null):LinkedList<T> {
 
         if (context === null) {
@@ -893,6 +898,7 @@ class LinkedList<T extends ListElement>{
 
         list.toStart();
         while (list.get()) {
+
             list._rForEachCallbackContainer(callback, list.get(), i, modify);
             i++;
             list.toNext();
@@ -930,6 +936,7 @@ class LinkedList<T extends ListElement>{
      * @param modify
      * @private
      */
+
     private _rForEachCallbackContainer(callback:(current:LinkedList<T>|T, index:number, list:LinkedList<T>) => any,
                                        current:any,
                                        index:number,
