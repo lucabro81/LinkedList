@@ -140,9 +140,6 @@ tb.init("LinkedList - Add and Remove - SUITE", LinkedList, [ListElement, ["data2
             let new_ll:LinkedList<any> = ll.clone(true);
             new_ll.insertElem(ll);
 
-            // console.log(new_ll.toArray()[4].toArray());
-            // console.log(ll.toArray());
-
             let arr:Array<any> = [];
             new_ll.rForEach((current:any, index:number, list:LinkedList<ListElement>) => {
                 arr.push(current.data.toString().replace("_mod", ""));
